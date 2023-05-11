@@ -298,8 +298,11 @@ header, main, footer {width: 100%;}
 }
 
 #keyword-cont .search-form .btn{
-  border-radius: 5px;
+   border-radius: 5px;
   display: inline-block;
+  padding: 10px;
+  background-color: pink;
+  margin: 5px;
 }
 
 /*메인 검색 - 민찬*/
