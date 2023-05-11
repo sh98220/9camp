@@ -7,7 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>가자구캠핑</title>
+<title>가자Goo캠핑</title>
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.0/css/all.css">
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -28,6 +28,7 @@ img {border: 0; display: block;}
 
 ul, li{list-style: none;}
 a {text-decoration: none; color: #333; display: block;}
+h1 {margin: 0; padding: 0;}
 header, main, footer {width: 100%;}
 
 /*사용자 지정 공통*/
@@ -38,9 +39,7 @@ header, main, footer {width: 100%;}
 /*헤더 상단*/
 .top-cont {
 	width: 100%;
-	max-width: 1200px; 
-	margin: 0 auto; 
-	padding: 14px 0; 
+	padding: 14px 7%; 
 	display: flex;
     justify-content: space-between;
     align-items: center;
@@ -52,6 +51,7 @@ header, main, footer {width: 100%;}
 	display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-left: 6%;
 }
 .top-cont .logo-cont .logo{
 	background: #ff5522;
@@ -92,7 +92,7 @@ header, main, footer {width: 100%;}
 .top-cont .icon-cont {
 	display: flex; 
 	justify-content: center;
-	align-items: center; 
+	align-items: center;
 }
 
 .top-cont .icon-cont > li {
@@ -165,7 +165,7 @@ header, main, footer {width: 100%;}
 /*서브메뉴*/
 .main-menu .sub-menu {
 	position: absolute;
-	background: #182952;
+	background: #000;
 	opacity: 0;
 	visibility: hidden;
 	transition: all 0.15s ease-in;
@@ -189,7 +189,7 @@ header, main, footer {width: 100%;}
 }
 
 .main-menu .sub-menu > li:hover {
-	background: #008793;
+	background: #182952;
 }
 
 /*이달의 추천 캠핑장*/
@@ -288,13 +288,11 @@ header, main, footer {width: 100%;}
       
 #keyword-cont input[type="checkbox"] + label{
   margin-top: 10px;
-  margin-right: 15px;
   display: inline-block;
   padding: 10px;
   border: 3px solid #707070;
   position: relative;
   width: auto;
-  font-size: 23px;
 }
 
 #keyword-cont input[type="checkbox"]:checked + label {
@@ -309,7 +307,7 @@ header, main, footer {width: 100%;}
 }
 
 #keyword-cont .search-form .btn{
-   border-radius: 5px;
+  border-radius: 5px;
   display: inline-block;
   padding: 10px;
   background-color: pink;
@@ -317,14 +315,34 @@ header, main, footer {width: 100%;}
 }
 
 /*메인 검색 - 민찬*/
+#main_search {
+	width: 100%;
+	background: #56b286;
+}
 #main_search .section_01 {
 	width: 100%;
-	background-color: rgb(255, 165, 0);
-	padding: 50px 0;
+	padding: 100px 0;
+	background-image: url("${pageContext.request.contextPath}/resource/images/main_search_bg.png");
+	background-size: 50%;
+	background-position: 15% center;
+	background-repeat: no-repeat;
+	position: relative;
+	height: 570px;
 }
 
 #main_search .section_01 h1 {
-	text-align: center;
+	color: #fffe5b;
+	font-size: 48px;
+}
+
+#main_search .section_01 .layout {
+	width: 600px;
+	position: absolute;
+	right: 10%;
+	top: 12%;
+	background: rgb(0, 0, 0, 0.6);
+	padding: 50px;
+	border-radius: 20px;
 }
 
 </style>
@@ -407,7 +425,6 @@ header, main, footer {width: 100%;}
 						</li>
 					</ul>
 				</li>
-				<li><a href="#">공지사항</a></li>
 				<li>
 					<a href="#">캠핑커뮤니티</a>
 					<ul class="sub-menu">
@@ -451,7 +468,10 @@ header, main, footer {width: 100%;}
 					<a href="#">고객센터</a>
 					<ul class="sub-menu">
 						<li>
-							<a href="#">Q&amp;A</a>
+							<a href="#">공지사항</a>
+						</li>
+						<li>
+							<a href="#">Q &amp; A</a>
 						</li>
 						<li>
 							<a href="#">정보수정요청</a>
@@ -474,10 +494,10 @@ header, main, footer {width: 100%;}
 	<!-- 메인 검색창 -->
 	<div id="main_search">
 		<div class="section_01">
-			<h1>
-				<span class="skip">캠핑장 정보검색</span>
-			</h1>
-			<div class="layout" style="margin: 0 auto; width: 600px; margin-top: 15px;" >
+			<div class="layout">
+				<h1>
+					<span class="skip">캠핑장 정보검색</span>
+				</h1>
 				<section id="layer_search">
 					<!--타이틀-->
 					<div class="m_title">
@@ -495,7 +515,7 @@ header, main, footer {width: 100%;}
 								
 								<label class="skip" for="searchKrwd_f"></label> 
 								<input type="text" name="userId" id="userId" class="form-control" 
-								style="width: 60%; height: 40px; border-radius: 5px; border-width: 1px; padding-left: 10px;">
+								style="width: 100%; height: 40px; border-radius: 5px; padding-left: 10px;">
 							</div>
 							
 							<br>
@@ -505,7 +525,7 @@ header, main, footer {width: 100%;}
 								<label class="skip" for="c_do"></label> 
 								
 								<select name="c_do" id="c_do" class="select_01" title="검색할 지역을 선택하세요." 
-													style="width: 30%; height: 40px; border-radius: 5px; padding-left: 10px;">
+													style="width: 40%; height: 40px; border-radius: 5px; padding-left: 10px;">
 									<option value="">전체/도</option>
 									<option value="1">서울시</option>
 									<option value="2">부산시</option>
@@ -529,7 +549,7 @@ header, main, footer {width: 100%;}
 									<label class="skip" for="c_signgu" style="color: white;"></label> <!-- 시군별 검색 -->
 									
 									<select name="c_signgu" id="c_signgu" class="select_02" title="검색할 지역을 선택하세요."
-															style="width: 30%; height: 40px; border-radius: 5px; padding-left: 10px;">
+															style="width: 40%; height: 40px; border-radius: 5px; padding-left: 10px;">
 									<option value="">전체/시/군</option>
 									</select>
 							</div>
@@ -541,7 +561,7 @@ header, main, footer {width: 100%;}
 								<label class="skip" for="searchLctCl"></label> 
 								
 								<select name="searchLctCl" id="searchLctCl" class="select_03" title="검색할 테마를 선택하세요."
-															style="width: 30%; height: 40px; border-radius: 5px; padding-left: 10px;">
+															style="width: 60%; height: 40px; border-radius: 5px; padding-left: 10px;">
 									<option value="">전체테마</option>
 									<option value="47">바다</option>
 									<option value="48">강</option>
@@ -554,7 +574,7 @@ header, main, footer {width: 100%;}
 								</select>
 								
 								<button type="submit" class="btnSearch_black01" style=" width: 80px; height: 40px;
-									background-color: black; color: white; border-radius: 5px;"> 검색
+									background-color: #fffe5b; color: #000; border-radius: 5px; font-weight: bold;"> 검색
 								</button>
 								
 							</div>
@@ -568,10 +588,7 @@ header, main, footer {width: 100%;}
 	</div>
 	<!-- //메인 검색창 -->
 	
-	<h3> </h3>
-	
 	<!-- 키워드 검색 -->
-	
  	<div class="center">키워드로 검색</div>
 	<div id="keyword-cont">
 		<form id="keyword-form" method="post">
