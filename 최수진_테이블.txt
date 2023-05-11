@@ -1,0 +1,118 @@
+CREATE TABLE auction ( -- 경매 테이블
+     auctionNum NUMBER NOT NULL,
+     auctionSaleId VARCHAR2 NOT NULL,
+     auctionObject VARCHAR2 NOT NULL,
+     auctionStartAmount NUMBER NOT NULL,
+     auctionPhotoOriginalname VARCHAR2 NOT NULL,
+     auctionRegDate DATE DEFAULT SYSDATE NOT NULL,
+     auctionEndDate DATE DEFAULT SYSDATE NOT NULL,
+     auctionContent VARCHAR2 NOT NULL, 
+     auctionFinalAmount NUMBER NOT NULL,
+     auctionEnable NUMBER DEFAULT 1 NOT NULL,
+     CONSTRAINT fk_auction_auctionSaleId FOREIGN KEY(auctionSaleId) REFERENCES member(userId)
+);
+
+CREATE TABLE auctionRecord ( -- 경매 기록
+     auctionNum NUMBER NOT NULL,
+     auctionuserId VARCHAR2 NOT NULL,
+     auctionRecPrice NUMBER NOT NULL,
+     auctionRecDate DATE DEFAULT SYSDATE NOT NULL,
+     auctionConfirm NUMBER NOT NULL,
+     CONSTRAINT fk_auctionRecord_auctionuserId FOREIGN KEY(auctionuserId) REFERENCES member(userId)
+);
+
+CREATE TABLE auctionPhoto ( -- 경매 사진
+    auctionPhotoNum NUMBER NOT NULL,
+    auctionNum NUMBER NOT NULL,
+    auctionPhotoName VARCHAR2 NOT NULL,
+    CONSTRAINT fk_auctionPhoto_auctionNum FOREIGN KEY(auctionNum) REFERENCES auction(auctionNum)
+);
+
+
+CREATE SEQUENCE auction_seq --경매 시퀀스
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+NOCACHE;
+
+
+CREATE TABLE reportAuction (
+   auctionNum NUMBER NOT NULL,
+   reportAuctionId VARCHAR2 NOT NULL,
+   reportAuctionContent VARCHAR2 NOT NULL,
+   reportAuctionDate DATE DEFAULT SYSDATE NOT NULL,
+   CONSTRAINT fk_reportAuction_auctionNum FOREIGN KEY(auctionNum) REFERENCES auction(auctionNum),
+   CONSTRAINT fk_reportAuction_reportAuctionId FOREIGN KEY(reportAuctionId) REFERENCES member(userId)
+
+);
+
+
+
+CREATE TABLE campReviews( -- 전국 캠핑 자랑
+   camRevNum NUMBER NOT NULL,
+   camInfoNum NUMBER NOT NULL,
+   userId VARCHAR2 NOT NULL,
+   camRevSubject VARCHAR2 NOT NULL,
+   camRevContent VARCHAR2 NOT NULL,
+   camRevHitCount VARCHAR2 NOT NULL,
+   camRevOriginalFileName VARCHAR2 NOT NULL,
+   camRevRegDate DATE DEFAULT SYSDATE NOT NULL,
+   CONSTRAINT fk_campReviews_camInfoNum FOREIGN KEY(camInfoNum) REFERENCES campInfo(camInfoNum)
+);
+
+CREATE SEQUENCE campReviews_seq -- 전국 캠핑 자랑 게시물 시퀀스
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+NOCACHE;
+
+CREATE TABLE campReviewsPhoto ( -- 전국 캠핑 자랑 사진
+   camRevPhotoNun VARCHAR2 NOT NULL,
+   camRevNum NUMBER NOT NULL,
+   camRevPhotoName VARCHAR2 NOT NULL,
+   CONSTRAINT fk_campReviewsPhoto_camRevNum FOREIGN KEY(camRevNum) REFERENCES campReviews(camRevNum)
+);
+
+CREATE SEQUENCE campReviewsPhoto_seq -- 전국 캠핑 자랑 사진 시퀀스
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+NOCACHE;
+
+CREATE TABLE campReviewsReply ( -- 전국 캠핑 자랑 리플
+   camRevRepNum NUMBER NOT NULL,
+   camRevRepContent CLOB NOT NULL,
+   camRevRepRegDate DATE DEFAULT SYSDATE NOT NULL,
+   camRevRepPreNum NUMBER NOT NULL,
+   camRevNum NUMBER NOT NULL,
+   userId VARCHAR2 NOT NULL,
+   CONSTRAINT fk_campReviewsReply_userId FOREIGN KEY(userId) REFERENCES member(userId)
+);
+
+CREATE SEQUENCE campReviewsReply_seq -- 전국 캠핑 자랑 리플 시퀀스
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+NOCACHE;
+
+CREATE TABLE campLike ( -- 전국 캠핑 자랑 좋아요 
+    camNum NUMBER NOT NULL,
+    userId VARCHAR2 NOT NULL,
+    CONSTRAINT fk_campLike_userId FOREIGN KEY(userId) REFERENCES member(userId),
+    CONSTRAINT fk_campLike_camNum FOREIGN KEY(camNum) REFERENCES member(camNum)
+);
+
+CREATE TABLE restrictedMember (
+    userId VARCHAR2 NOT NULL,
+    restContent VARCHAR2 NULL,
+    restStarDate DATE DEFAULT SYSDATE NOT NULL,
+    restEndDate DADTE DEFAULT SYSDATE NOT NULL,
+    CONSTRAINT fk_restrictedMember_userId FOREIGN KEY(userId) REFERENCES member(userId)
+);
+
+
+
