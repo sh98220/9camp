@@ -251,10 +251,16 @@ header, main, footer {width: 100%;}
 }
 
 /*키워드 검색 - 정현*/
+.center {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 30px;
+    color: pink;
+  }
 #keyword-cont {
 	width: 100%;
 	background: #fff;
-	padding: 50px 0;
+	padding: 10px 0;
 	padding-bottom: 10%;
 }
 
@@ -557,7 +563,11 @@ header, main, footer {width: 100%;}
 	</div>
 	<!-- //메인 검색창 -->
 	
+	<h3> </h3>
+	
 	<!-- 키워드 검색 -->
+	
+ 	<div class="center">키워드로 검색</div>
 	<div id="keyword-cont">
 		<form id="keyword-form" method="post">
 			<ul class="keyword-ul">
