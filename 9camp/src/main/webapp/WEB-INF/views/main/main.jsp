@@ -9,10 +9,6 @@
 <title>가자구캠핑</title>
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.0/css/all.css">
-<link rel="icon" href="data:;base64,iVBORw0KGgo=">
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-</head>
-
 
 <style type="text/css">
 /*여진*/
@@ -291,7 +287,7 @@ header, main, footer {width: 100%;}
 }
 
 #keyword-cont input[type="checkbox"]:checked + label {
-  background-color: #c7c4c4;
+  background-color: #ff5522;
 }
 
 #keyword-cont .search-form {
@@ -304,13 +300,8 @@ header, main, footer {width: 100%;}
 #keyword-cont .search-form .btn{
   border-radius: 5px;
   display: inline-block;
-  padding: 10px;
-  background-color: pink;
-  margin: 5px;
 }
 
-<<<<<<< HEAD
-=======
 /*메인 검색 - 민찬*/
 #main_search .section_01 {
 	width: 100%;
@@ -321,10 +312,9 @@ header, main, footer {width: 100%;}
 #main_search .section_01 h1 {
 	text-align: center;
 }
->>>>>>> branch 'main' of https://github.com/sh98220/9camp.git
 
 </style>
-
+</head>
 
 <body>
 
@@ -565,8 +555,6 @@ header, main, footer {width: 100%;}
 	<!-- //메인 검색창 -->
 	
 	<!-- 키워드 검색 -->
-	
-	
 	<div id="keyword-cont">
 		<form id="keyword-form" method="post">
 			<ul class="keyword-ul">
@@ -744,6 +732,7 @@ header, main, footer {width: 100%;}
 </main>
 
 <footer>
+
 </footer>
 
 <script type="text/javascript">
@@ -765,5 +754,6 @@ resetButton.addEventListener("click", function() {
 	});
 });
 </script>
+	
 </body>
 </html>
