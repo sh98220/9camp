@@ -11,7 +11,13 @@
 </head>
 <body>
 
+<<<<<<< HEAD
 <p>정현아 이렇게dddddd</p>
+=======
+<p>정현아 이렇게</p>
+<p>되라 좀 제발</p>
+<p>test</p>
+>>>>>>> branch 'main' of https://github.com/sh98220/9camp.git
 
 </body>
 </html>
