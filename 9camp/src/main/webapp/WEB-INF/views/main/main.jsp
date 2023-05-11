@@ -312,6 +312,7 @@ header, main, footer {width: 100%;}
   padding: 10px;
   background-color: pink;
   margin: 5px;
+  font-size: 20px;
 }
 
 /*메인 검색 - 민찬*/
