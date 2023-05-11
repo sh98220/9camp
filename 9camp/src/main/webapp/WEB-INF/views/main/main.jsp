@@ -291,7 +291,7 @@ header, main, footer {width: 100%;}
 }
 
 #keyword-cont input[type="checkbox"]:checked + label {
-  background-color: #ff5522;
+  background-color: #c7c4c4;
 }
 
 #keyword-cont .search-form {
@@ -304,8 +304,13 @@ header, main, footer {width: 100%;}
 #keyword-cont .search-form .btn{
   border-radius: 5px;
   display: inline-block;
+  padding: 10px;
+  background-color: pink;
+  margin: 5px;
 }
 
+<<<<<<< HEAD
+=======
 /*메인 검색 - 민찬*/
 #main_search .section_01 {
 	width: 100%;
@@ -316,6 +321,7 @@ header, main, footer {width: 100%;}
 #main_search .section_01 h1 {
 	text-align: center;
 }
+>>>>>>> branch 'main' of https://github.com/sh98220/9camp.git
 
 </style>
 
@@ -559,6 +565,8 @@ header, main, footer {width: 100%;}
 	<!-- //메인 검색창 -->
 	
 	<!-- 키워드 검색 -->
+	
+	
 	<div id="keyword-cont">
 		<form id="keyword-form" method="post">
 			<ul class="keyword-ul">
