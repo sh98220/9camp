@@ -192,15 +192,6 @@ header, main, footer {width: 100%;}
 	background: #008793;
 }
 
-
-/*키워드 검색*/
-#keyword-cont {
-	width: 100%;
-	height: 100px;
-	background: #fff;
-}
-
-
 /*이달의 추천 캠핑장*/
 #rcm-cont {
 	background: #eee;
@@ -263,6 +254,22 @@ header, main, footer {width: 100%;}
 }
 
 /*키워드 검색 - 정현*/
+#keyword-cont {
+	width: 100%;
+	background: #fff;
+	padding: 50px 0;
+	padding-bottom: 10%;
+}
+
+#keyword-cont .keyword-ul {
+	width: 90%;
+	margin: 0 auto;
+}
+
+#keyword-cont .keyword-ul > li {
+	display: inline-block;
+}
+
 #keyword-cont input[type="checkbox"]{
   display: none;
 }
@@ -289,12 +296,13 @@ header, main, footer {width: 100%;}
 #keyword-cont .search-form {
   margin-top: 30px;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
 }
 
 #keyword-cont .search-form .btn{
   border-radius: 5px;
+  display: inline-block;
 }
 
 </style>
@@ -443,73 +451,135 @@ header, main, footer {width: 100%;}
 	
 	<!-- 키워드 검색 -->
 	<div id="keyword-cont">
-		<input type="checkbox" name="key" id="check1" value="101" >
-        <label for="check1">#반려견동반</label>
- 		<input type="checkbox" name="key" id="check2" value="102" >
-        <label for="check2">#바다가 보이는</label>
- 		<input type="checkbox" name="key" id="check3" value="103" >
-        <label for="check3">#친절한</label>
- 		<input type="checkbox" name="key" id="check4" value="104">
-        <label for="check4">#생태교육</label>
- 		<input type="checkbox" name="key" id="check5" value="105">
-        <label for="check5">#힐링</label>
- 		<input type="checkbox" name="key" id="check6" value="106">
-        <label for="check6">#문화유적</label>
- 		<input type="checkbox" name="key" id="check7" value="107">
-        <label for="check7">#커플</label>
- 		<input type="checkbox" name="key" id="check8" value="108">
-        <label for="check8">#봄</label>
- 		<input type="checkbox" name="key" id="check9" value="109">
-        <label for="check9">#그늘이 많은</label>
- 		<input type="checkbox" name="key" id="check10" value="110">
-        <label for="check10">#별 보기 좋은</label>
- 		<input type="checkbox" name="key" id="check11" value="111">
-        <label for="check11">#익스트림</label>
- 		<input type="checkbox" name="key" id="check12" value="112">
-        <label for="check12">#재미있는</label>
- 		<input type="checkbox" name="key" id="check13" value="113">
-        <label for="check13">#여유있는</label>
- 		<input type="checkbox" name="key" id="check14" value="114">
-        <label for="check14">#물놀이 하기 좋은</label>
- 		<input type="checkbox" name="key" id="check15" value="115">
-        <label for="check15">#둘레길</label>
- 		<input type="checkbox" name="key" id="check16" value="116">
-        <label for="check16">#물맑은</label>
- 		<input type="checkbox" name="key" id="check17" value="117">
-        <label for="check17">#가족</label>
- 		<input type="checkbox" name="key" id="check18" value="118">
-        <label for="check18">#캠핑카</label>
- 		<input type="checkbox" name="key" id="check19" value="119">
-        <label for="check19">#깨끗한</label>
- 		<input type="checkbox" name="key" id="check20" value="120">
-        <label for="check20">#가을</label>
- 		<input type="checkbox" name="key" id="check21" value="121">
-        <label for="check21">#자전거 타기 좋은</label>
- 		<input type="checkbox" name="key" id="check22" value="122">
-        <label for="check22">#수영장 있는</label>
- 		<input type="checkbox" name="key" id="check23" value="123">
-        <label for="check23">#차대기 편한</label>
- 		<input type="checkbox" name="key" id="check24" value="124">
-        <label for="check24">#여름</label>
- 		<input type="checkbox" name="key" id="check25" value="125">
-        <label for="check25">#축제</label>
- 		<input type="checkbox" name="key" id="check26" value="126">
-        <label for="check26">#계곡옆</label>
- 		<input type="checkbox" name="key" id="check27" value="127">
-        <label for="check27">#아이들 놀기 좋은</label>
- 		<input type="checkbox" name="key" id="check28" value="128">
-        <label for="check28">#사이트 간격이 넓은</label>
- 		<input type="checkbox" name="key" id="check29" value="129">
-        <label for="check29">#온수 잘 나오는</label>
- 		<input type="checkbox" name="key" id="check30" value="130">
-        <label for="check30">#겨울</label>
-      
- 		<div class="search-form"> 
-			<form> 
+		<form id="keyword-form" method="post">
+			<ul class="keyword-ul">
+				<li>
+					<input type="checkbox" name="key" id="check1" value="101" >
+	        		<label for="check1">#반려견동반</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check2" value="102" >
+	        		<label for="check2">#바다가 보이는</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check3" value="103" >
+	        		<label for="check3">#친절한</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check4" value="104">
+	        		<label for="check4">#생태교육</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check5" value="105">
+	        		<label for="check5">#힐링</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check6" value="106">
+	        		<label for="check6">#문화유적</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check7" value="107">
+	        		<label for="check7">#커플</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check8" value="108">
+	        		<label for="check8">#봄</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check9" value="109">
+	        		<label for="check9">#그늘이 많은</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check10" value="110">
+	        		<label for="check10">#별 보기 좋은</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check11" value="111">
+	        		<label for="check11">#익스트림</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check12" value="112">
+	        		<label for="check12">#재미있는</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check13" value="113">
+	        		<label for="check13">#여유있는</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check14" value="114">
+	        		<label for="check14">#물놀이 하기 좋은</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check15" value="115">
+	        		<label for="check15">#둘레길</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check16" value="116">
+	        		<label for="check16">#물맑은</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check17" value="117">
+	        		<label for="check17">#가족</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check18" value="118">
+	        		<label for="check18">#캠핑카</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check19" value="119">
+	        		<label for="check19">#깨끗한</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check20" value="120">
+	        		<label for="check20">#가을</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check21" value="121">
+	        		<label for="check21">#자전거 타기 좋은</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check22" value="122">
+	        		<label for="check22">#수영장 있는</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check23" value="123">
+	        		<label for="check23">#차대기 편한</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check24" value="124">
+	        		<label for="check24">#여름</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check25" value="125">
+	        		<label for="check25">#축제</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check26" value="126">
+	        		<label for="check26">#계곡옆</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check27" value="127">
+	        		<label for="check27">#아이들 놀기 좋은</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check28" value="128">
+	        		<label for="check28">#사이트 간격이 넓은</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check29" value="129">
+	        		<label for="check29">#온수 잘 나오는</label>
+				</li>
+				<li>
+					<input type="checkbox" name="key" id="check30" value="130">
+	        		<label for="check30">#겨울</label>
+				</li>
+			</ul>
+	      
+	 		<div class="search-form"> 
 				<button type="button" class="btn" onclick="sendOk();">검색</button>
 				<button type="button" class="btn" id="reset-button">초기화</button>		 
-			</form>
- 		</div>
+	 		</div>
+		</form>
 	</div>
 	<!-- //키워드 검색 -->
 	
