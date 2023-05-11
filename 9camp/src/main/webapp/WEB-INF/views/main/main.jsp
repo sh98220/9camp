@@ -6,6 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>가자구캠핑</title>
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.0/css/all.css">
@@ -36,6 +37,7 @@ header, main, footer {width: 100%;}
 
 /*헤더 상단*/
 .top-cont {
+	width: 100%;
 	max-width: 1200px; 
 	margin: 0 auto; 
 	padding: 14px 0; 
