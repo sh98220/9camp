@@ -288,11 +288,13 @@ header, main, footer {width: 100%;}
       
 #keyword-cont input[type="checkbox"] + label{
   margin-top: 10px;
+  margin-right: 15px;
   display: inline-block;
   padding: 10px;
   border: 3px solid #707070;
   position: relative;
   width: auto;
+  font-size: 23px;
 }
 
 #keyword-cont input[type="checkbox"]:checked + label {
