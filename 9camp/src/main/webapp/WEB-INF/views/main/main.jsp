@@ -490,7 +490,7 @@ header, main, footer {width: 100%;}
 								
 								<label class="skip" for="searchKrwd_f"></label> 
 								<input type="text" name="userId" id="userId" class="form-control" 
-								style="width: 60%; height: 40px; border-radius: 5px; padding-left: 10px;">
+								style="width: 60%; height: 40px; border-radius: 5px; border-width: 1px; padding-left: 10px;">
 							</div>
 							
 							<br>
