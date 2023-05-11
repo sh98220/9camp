@@ -287,7 +287,7 @@ header, main, footer {width: 100%;}
 }
 
 #keyword-cont input[type="checkbox"]:checked + label {
-  background-color: #ff5522;
+  background-color: #c7c4c4;
 }
 
 #keyword-cont .search-form {
