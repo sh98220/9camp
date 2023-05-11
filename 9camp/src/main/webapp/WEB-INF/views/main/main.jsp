@@ -345,7 +345,6 @@ header, main, footer {width: 100%;}
 	padding: 50px;
 	border-radius: 20px;
 }
-
 </style>
 </head>
 
