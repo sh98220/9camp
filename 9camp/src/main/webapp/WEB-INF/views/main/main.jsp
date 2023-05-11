@@ -561,7 +561,7 @@ header, main, footer {width: 100%;}
 								<label class="skip" for="searchLctCl"></label> 
 								
 								<select name="searchLctCl" id="searchLctCl" class="select_03" title="검색할 테마를 선택하세요."
-															style="width: 60%; height: 40px; border-radius: 5px; padding-left: 10px;">
+															style="width: 40%; height: 40px; border-radius: 5px; padding-left: 10px;">
 									<option value="">전체테마</option>
 									<option value="47">바다</option>
 									<option value="48">강</option>
