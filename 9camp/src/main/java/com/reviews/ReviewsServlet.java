@@ -50,7 +50,7 @@ public class ReviewsServlet extends MyUploadServlet {
 	}
 	
 	protected void writeForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
+		forward(req, resp, "/WEB-INF/views/reviews/write.jsp");
 	}
 	
 	protected void writeSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

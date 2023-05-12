@@ -9,7 +9,8 @@ CREATE TABLE member ( --회원 테이블 1
     userRegDate DATE DEFAULT SYSDATE,
     userPoint NUMBER DEFAULT 0,
     userUpdateDate DATE,
-    CONSTRAINT pk_member_userId PRIMARY KEY(userId)
+    CONSTRAINT pk_member_userId PRIMARY KEY(userId),
+    CONSTRAINT uk_member_userNickName UNIQUE(userNickName)
 );
 
 CREATE TABLE admin( --관리자 테이블 2
