@@ -243,7 +243,7 @@ function searchList() {
 			</table>
 			
 			<div class="page-navigation">
-				${dataCount == 0 ? "등록된 게시물이 없습니다앙." : paging}
+				${dataCount == 0 ? "등록된 게시물이 없습니다앙d앙." : paging}
 			</div>
 			
 			<table class="table">
