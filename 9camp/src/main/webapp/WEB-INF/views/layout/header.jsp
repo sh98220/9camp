@@ -49,7 +49,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="#" class="top-icon ic_join" title="회원가입">
+				<a  href="${pageContext.request.contextPath}/member/member.do" class="top-icon ic_join" title="회원가입">
 					<i class="fa-solid fa-user-plus"></i>
 				</a>
 			</li>
