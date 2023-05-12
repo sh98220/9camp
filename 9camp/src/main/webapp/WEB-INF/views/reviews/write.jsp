@@ -10,6 +10,11 @@
 <title>spring</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 <style type="text/css">
+.body-main {
+	max-width: 700px;
+	padding-top: 15px;
+}
+
 
 .body-main {
 	max-width: 700px;
@@ -180,12 +185,50 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 .table-list .date { width: 100px; color: #ff5522; }
 .table-list .hit { width: 70px; color: #ff5522; }
 .table-list .file { width: 50px; color: #ff5522; }
+
+.table-form td { padding: 7px 0; }
+.table-form p { line-height: 200%; }
+.table-form tr:first-child { border-top: 2px solid #ff5522;  }
+.table-form tr > td:first-child { width: 110px; text-align: center; background: skyblue; }
+.table-form tr > td:nth-child(2) { padding-left: 10px; }
+
+.table-form input[type=text], .table-form input[type=file], .table-form textarea {
+	width: 96%; }
+	
 </style>
+
 <script type="text/javascript">
-function searchList() {
-	const f = document.searchForm;
-	f.submit();
+function sendOk() {
+    const f = document.boardForm;
+	let str;
+	
+    str = f.subject.value.trim();
+    if(!str) {
+        alert("제목을 입력하세요. ");
+        f.subject.focus();
+        return;
+    }
+
+    str = f.content.value.trim();
+    if(!str) {
+        alert("내용을 입력하세요. ");
+        f.content.focus();
+        return;
+    }
+
+    f.action = "${pageContext.request.contextPath}/reviews/${mode}_ok.do";
+    f.submit();
 }
+
+<c:if test="${mode == 'update'}">
+	function deleteFile(num) {
+		if(confirm('파일을 삭제하시겠습니까 ?')){
+			let query = "category=${category}&num="+num+"&page=${page}";
+			let url = "${pageContext.request.contextPath}/reviews/deleteFile.do";
+			location.href = url + "?" + query;
+		}
+	}
+</c:if>
 </script>
 </head>
 <body>
@@ -201,75 +244,69 @@ function searchList() {
 	    </div>
 	    
 	    <div class="body-main mx-auto">
-			<table class="table">
-				<tr>
-					<td width="50%">
-						${dataCount}개(${page}/${total_page} 페이지)
-					</td>
-					<td align="right">&nbsp;</td>
-				</tr>
-			</table>
-			
-			<table class="table table-border table-list">
-				<thead>
-					<tr>
-						<th class="num">번호</th>
-						<th class="subject">제목</th>
-						<th class="name">작성자</th>
-						<th class="date">작성일</th>
-						<th class="hit">조회수</th>
-						<th class="file">첨부</th>
+			<form name="boardForm" method="post" enctype="multipart/form-data">
+				<table class="table table-border table-form">
+					<tr> 
+						<td>제&nbsp;&nbsp;&nbsp;&nbsp;목</td>
+						<td> 
+							<input type="text" name="subject" maxlength="100" class="form-control" value="${dto.subject}">
+						</td>
 					</tr>
-				</thead>
-				
-				<tbody>
-					<c:forEach var="dto" items="${list}" varStatus="status">
+					
+					<tr> 
+						<td>작성자</td>
+						<td> 
+							<!--  <p>${sessionScope.member.userName}</p>  -->
+						</td>
+					</tr>
+					
+					<tr> 
+						<td valign="top">내&nbsp;&nbsp;&nbsp;&nbsp;용</td>
+						<td> 
+							<textarea name="content" class="form-control">${dto.content}</textarea>
+						</td>
+					</tr>
+					
+					<tr>
+						<td>첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
+						<td> 
+							<input type="file" name="selectFile" class="form-control">
+						</td>
+					</tr>
+					
+					<c:if test="${mode == 'update' }">
 						<tr>
-							<td>${dataCount - (page-1) * size - status.index}</td>
-							<td class="left">
-								<a href="${articleUrl}&num=${dto.num}">${dto.subject}</a>
-							</td>
-							<td>${dto.userName}</td>
-							<td>${dto.reg_date}</td>
-							<td>${dto.hitCount}</td>
+							<td>첨부된파일</td>
 							<td>
-								<c:if test="${not empty dto.saveFilename}">
-									<a href="${pageContext.request.contextPath}/sbbs/download.do?num=${dto.num}"><i class="far fa-file"></i></a>
-								</c:if>
+								<p>
+									<c:if test="${not empty dto.saveFilename}">	
+										<a href="javascript:deleteFile('${dto.num}')"><i class="far fa-trash-alt"></i></a>
+										${dto.originalFilename}
+									</c:if>
+								</p>
 							</td>
 						</tr>
-					</c:forEach>
-				</tbody>
-			</table>
-			
-			<div class="page-navigation">
-				${dataCount == 0 ? "등록된 게시물이 없습니다." : paging}
-			</div>
-			
-			<table class="table">
-				<tr>
-					<td width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/sbbs/list.do?category=${category}';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
-					</td>
-					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/sbbs/list.do" method="post">
-							<select name="condition" class="form-select">
-								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
-								<option value="userName" ${condition=="userName"?"selected='selected'":"" }>작성자</option>
-								<option value="reg_date"  ${condition=="reg_date"?"selected='selected'":"" }>등록일</option>
-								<option value="subject"  ${condition=="subject"?"selected='selected'":"" }>제목</option>
-								<option value="content"  ${condition=="content"?"selected='selected'":"" }>내용</option>
-							</select>
-							<input type="text" name="keyword" value="${keyword}" class="form-control">
-							<input type="hidden" name="category" value="${category}">
-							<button type="button" class="btn" onclick="searchList();">검색</button>
-						</form>
-					</td>
-					<td align="right" width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/reviews/write.do';">글올리기</button>
-					</td>
-				</tr>
-			</table>
+					</c:if>
+				</table>
+					
+				<table class="table">
+					<tr> 
+						<td align="center">
+							<button type="button" class="btn" onclick="sendOk();">${mode=="update"?"수정완료":"등록완료"}</button>
+							<button type="reset" class="btn">다시입력</button>
+							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/reviews/list.do';">${mode=="update"?"수정취소":"등록취소"}</button>
+							<c:if test="${mode=='update' }">
+								<input type="hidden" name="num" value="${dto.num}">
+								<input type="hidden" name="saveFilename" value="${dto.saveFilename}">
+								<input type="hidden" name="originalFilename" value="${dto.originalFilename}">
+								<input type="hidden" name="fileSize" value="${dto.fileSize}">
+								<input type="hidden" name="page" value="${page}">
+							</c:if>							
+						</td>
+					</tr>
+				</table>
+		
+			</form>
 
 	    </div>
 	</div>

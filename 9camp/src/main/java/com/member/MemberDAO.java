@@ -9,7 +9,7 @@ import java.util.List;
 import com.util.DBConn;
 
 public class MemberDAO {
-	private Connection conn = DBConn.getConnetion();
+	private Connection conn = DBConn.getConnection();
 
 	public MemberDTO loginMember(String userId, String userPwd) throws SQLException {
 		MemberDTO dto = null;
