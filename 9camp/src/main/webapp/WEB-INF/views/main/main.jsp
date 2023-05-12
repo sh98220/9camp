@@ -75,17 +75,16 @@
 }
 
 /*키워드 검색 - 정현*/
-.center {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 30px;
-    color: pink;
-  }
 #keyword-cont {
 	width: 100%;
 	background: #fff;
 	padding: 10px 0;
 	padding-bottom: 10%;
+}
+#keyword-cont h1 {
+	margin-top: 20px;
+    font-size: 30px;
+    color: pink;
 }
 
 #keyword-cont .keyword-ul {
@@ -144,7 +143,7 @@
 #main_search .section_01 {
 	width: 100%;
 	padding: 100px 0;
-	background-image: url("${pageContext.request.contextPath}/resource/images/main_search_bg.png");
+	background-image: url("${pageContext.request.contextPath}/resource/images/main/main_search_bg.png");
 	background-size: 50%;
 	background-position: 15% center;
 	background-repeat: no-repeat;
@@ -280,10 +279,8 @@
 	<!-- //메인 검색창 -->
 	
 	<!-- 키워드 검색 -->
- 	<div class="center">
- 		키워드로 검색
- 	</div>
 	<div id="keyword-cont">
+		<h1 class="center">키워드로 검색</h1>
 		<form id="keyword-form" method="post">
 			<ul class="keyword-ul">
 				<li>
