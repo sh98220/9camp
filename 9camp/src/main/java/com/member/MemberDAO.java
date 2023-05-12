@@ -4,14 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 import com.util.DBConn;
 
 public class MemberDAO {
 	private Connection conn = DBConn.getConnetion();
 
-	public MemberDTO loginMember(String userId, String userPwd) throws SQLException {
+	public MemberDTO loginMember(String userId, String userPwd) {
 		MemberDTO dto = null;
 		PreparedStatement pstmt = null;
 		String sql = null;
@@ -43,11 +42,8 @@ public class MemberDAO {
 				dto.setUserPwd(rs.getString("userUpdateDate"));
 			}
 			
-			
-
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			throw e;
 		} finally {
 			if(pstmt != null) {
 				try {
@@ -62,9 +58,9 @@ public class MemberDAO {
 				} catch (Exception e2) {
 				}
 
-
 			}
 		}
+		
 		return dto;
 	}
 
@@ -93,7 +89,6 @@ public class MemberDAO {
 	public List<MemberDTO> listMember() {
 
 	}
-	
 
 	public List<MemberDTO> listMember(String userName) {
 
