@@ -197,7 +197,7 @@ function searchList() {
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 전국캠핑자랑 </h2>
+			<h2><i class="fas fa-graduation-cap"></i> 자유게시판 </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
@@ -249,7 +249,7 @@ function searchList() {
 			<table class="table">
 				<tr>
 					<td width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/reviews/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/freeboard/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
 					</td>
 					<td align="center">
 						<form name="searchForm" action="${pageContext.request.contextPath}/sbbs/list.do" method="post">
@@ -266,7 +266,7 @@ function searchList() {
 						</form>
 					</td>
 					<td align="right" width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/reviews/write.do';">글올리기</button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/freeboard/write.do';">글올리기</button>
 					</td>
 				</tr>
 			</table>
