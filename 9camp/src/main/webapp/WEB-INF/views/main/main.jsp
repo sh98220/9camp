@@ -12,6 +12,7 @@
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 
 <style type="text/css">
+/*여진*/
 /*이달의 추천 캠핑장*/
 #rcm-cont {
 	background: #eee;
@@ -177,7 +178,7 @@
 <main>
 	<!-- 메인 배너 -->
 	<div id="main_ban">
-		<img src="${pageContext.request.contextPath}/resource/images/main_ban.jpg" style="width: 100%;">
+		<img src="${pageContext.request.contextPath}/resource/images/main/main_ban.jpg" style="width: 100%;">
 	</div>
 	<!-- //메인 배너 -->
 	
@@ -279,7 +280,9 @@
 	<!-- //메인 검색창 -->
 	
 	<!-- 키워드 검색 -->
- 	<div class="center">키워드로 검색</div>
+ 	<div class="center">
+ 		키워드로 검색
+ 	</div>
 	<div id="keyword-cont">
 		<form id="keyword-form" method="post">
 			<ul class="keyword-ul">
@@ -416,13 +419,13 @@
 	<!-- 이달의 추천 캠핑장 -->
 	<div id="rcm-cont">
 		<div class="rcm-cont-div">
-			<img src="${pageContext.request.contextPath}/resource/images/recommended.png" class="img_rcm">
+			<img src="${pageContext.request.contextPath}/resource/images/main/recommended.png" class="img_rcm">
 			<h1>이달의 추천 캠핑장</h1>
 			<ul class="rcm-cont-ul">
 				<li>
 					<a href="#">
 						<span class="rcm-img">
-							<img src="${pageContext.request.contextPath}/resource/images/camp_img01.jpg">
+							<img src="${pageContext.request.contextPath}/resource/images/main/camp_img01.jpg">
 						</span>
 						<span class="rcm-txt">
 							바다와 파도소리, 밤이면 별이 쏟아지는 해변에서 즐기는 감성캠핑. 그곳으로 떠나요~~
@@ -432,7 +435,7 @@
 				<li>
 					<a href="#">
 						<span class="rcm-img">
-							<img src="${pageContext.request.contextPath}/resource/images/camp_img01.jpg">
+							<img src="${pageContext.request.contextPath}/resource/images/main/camp_img01.jpg">
 						</span>
 						<span class="rcm-txt">
 							바다와 파도소리, 밤이면 별이 쏟아지는 해변에서 즐기는 감성캠핑. 그곳으로 떠나요~~
@@ -442,7 +445,7 @@
 				<li>
 					<a href="#">
 						<span class="rcm-img">
-							<img src="${pageContext.request.contextPath}/resource/images/camp_img01.jpg">
+							<img src="${pageContext.request.contextPath}/resource/images/main/camp_img01.jpg">
 						</span>
 						<span class="rcm-txt">
 							바다와 파도소리, 밤이면 별이 쏟아지는 해변에서 즐기는 감성캠핑. 그곳으로 떠나요~~
