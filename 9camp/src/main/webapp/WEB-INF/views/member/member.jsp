@@ -11,15 +11,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Insert title here</title>
-<link rel="icon" href="data:;base64,iVBORw0KGgo=">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.0/css/all.css">
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
-
 <style type="text/css">
 
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap');
 
 :root {
     --primary-color: orange;
@@ -39,7 +33,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Noto Sans KR', sans-serif;
 }
 
 html,
@@ -104,7 +97,7 @@ body {
 
 .input-group input {
     width: 100%;
-    padding: 1rem 3rem;
+    padding: 1rem 1rem;
     font-size: 1rem;
     background-color: var(--gray);
     border-radius: .5rem;
@@ -230,7 +223,7 @@ fjg
 .text h2 {
     font-size: 3.5rem;
     font-weight: 800;
-    margin: 2rem 0;
+    margin: -8rem 0;
     transition: 1s ease-in-out;
 }
 
@@ -366,6 +359,29 @@ fjg
 }
 </style>
 
+<script type="text/javascript">
+function sendLogin() {
+    const f = document.loginForm;
+
+	let str = f.userId.value;
+    if(!str) {
+        alert("아이디를 입력하세요. ");
+        f.userId.focus();
+        return;
+    }
+
+    str = f.userPwd.value;
+    if(!str) {
+        alert("패스워드를 입력하세요. ");
+        f.userPwd.focus();
+        return;
+    }
+
+    f.action = "${pageContext.request.contextPath}/member/login_ok.do";
+    f.submit();
+}
+</script>
+
 </head>
 <body>
 <div id="container" class="container">
@@ -377,7 +393,7 @@ fjg
           <div class="form sign-up">
             <div class="input-group">
               <i class='bx bxs-user'></i>
-              <input type="text" placeholder="Username">
+              <input type="text" placeholder="아이디">
             </div>
             <div class="input-group">
               <i class='bx bx-mail-send'></i>
@@ -385,18 +401,34 @@ fjg
             </div>
             <div class="input-group">
               <i class='bx bxs-lock-alt'></i>
-              <input type="password" placeholder="Password">
+              <input type="password" placeholder="비밀번호">
             </div>
             <div class="input-group">
               <i class='bx bxs-lock-alt'></i>
-              <input type="password" placeholder="Confirm password">
+              <input type="password" placeholder="비밀번호 확인">
+            </div>
+            <div class="input-group">
+              <i class=''></i>
+              <input type="text" placeholder="이름">
+            </div>
+            <div class="input-group">
+              <i class=''></i>
+              <input type="text" placeholder="닉네임">
+            </div>
+            <div class="input-group">
+              <i class=''></i>
+              <input type="text" placeholder="생년월일">
+            </div>
+            <div class="input-group">
+              <i class=''></i>
+              <input type="text" placeholder="전화번호">
             </div>
             <button>
               Sign up
             </button>
             <p>
               <span>
-                Already have an account?
+                계정이 이미 있으신가요?
               </span>
               <b onclick="toggle()" class="pointer">
                 Sign in here
@@ -408,39 +440,44 @@ fjg
       </div>
       <!-- END SIGN UP -->
       <!-- SIGN IN -->
-      <div class="col align-items-center flex-col sign-in">
-        <div class="form-wrapper align-items-center">
-          <div class="form sign-in">
-            <div class="input-group">
-              <i class='bx bxs-user'></i>
-              <input type="text" placeholder="Username">
-            </div>
-            <div class="input-group">
-              <i class='bx bxs-lock-alt'></i>
-              <input type="password" placeholder="Password">
-            </div>
-            <button>
-              Sign in
-            </button>
-            <p>
-              <b>
-                Forgot password?
-              </b>
-            </p>
-            <p>
-              <span>
-                Don't have an account?
-              </span>
-              <b onclick="toggle()" class="pointer">
-                Sign up here
-              </b>
-            </p>
-          </div>
-        </div>
-        <div class="form-wrapper">
-    
-        </div>
-      </div>
+      
+	      <div class="col align-items-center flex-col sign-in">
+	        <div class="form-wrapper align-items-center">
+	          <div class="form sign-in">
+	          <form name = "loginForm" method="post">
+	            <div class="input-group">
+	              <i class='bx bxs-user'></i>
+	              <input name="userId" type="text" placeholder="아이디를 입력해주세요">
+	            </div>
+	            <div class="input-group">
+	              <i class='bx bxs-lock-alt'></i>
+	              <input name="userPwd" type="password" placeholder="비밀번호를 입력해주세요">
+	            </div>
+	            <button type="button" onclick="sendLogin();">
+	              Sign in
+	            </button>
+	            <p>
+	              <b>
+	                비밀번호를 잊으셨나요?
+	              </b>
+	            </p>
+	            <p>
+	              <span>
+	                계정이 없으신가요?
+	              </span>
+	              <b onclick="toggle()" class="pointer">
+	                Sign up here
+	              </b>
+	            </p>
+	            </form>
+	          </div>
+	        </div>
+	       
+	        <div class="form-wrapper">
+	    
+	        </div>
+	      </div>
+	     
       <!-- END SIGN IN -->
     </div>
     <!-- END FORM SECTION -->
@@ -449,9 +486,10 @@ fjg
       <!-- SIGN IN CONTENT -->
       <div class="col align-items-center flex-col">
         <div class="text sign-in">
-          <h2>
-            환영합니다.
+          <h2 style="font-size: 60px;">
+            HELLO<br>CAMPER!
           </h2>
+          
   
         </div>
         <div class="img sign-in">
@@ -465,8 +503,8 @@ fjg
         
         </div>
         <div class="text sign-up">
-          <h2>
-            Join with us
+          <h2 style="margin: 0rem 0;">
+			TO BE CAMPER
           </h2>
   
         </div>
