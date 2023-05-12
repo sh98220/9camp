@@ -27,7 +27,7 @@
 body {
 	font-family:"Malgun Gothic", "맑은 고딕", NanumGothic, 나눔고딕, 돋움, sans-serif;
 	font-size: 14px;
-	color: #222222;
+	color: #ff5522;
 }
 
 a { color: #222222; text-decoration: none; cursor: pointer; }
@@ -102,13 +102,6 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 
 .mx-auto { margin-left: auto; margin-right: auto; }
 
-
-.btnConfirm {
-	background-color:#507cd1; border:none;
-	width: 100%; padding: 15px 0;
-	font-size: 15px; color:#ffffff; font-weight: 700;  cursor: pointer; vertical-align: baseline;
-}
-
 @charset "UTF-8";
 
 .container {
@@ -150,7 +143,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     padding-top: 35px;
     padding-bottom: 7px;
     margin: 0 0 25px 0;
-    border-bottom: 2px solid #e0f0fe;
+    border-bottom: 2px solid #ff5522;
 }
 
 .body-title h2 {
@@ -193,6 +186,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 .table-form tr > td:nth-child(2) { padding-left: 10px; }
 
 .table-form input[type=text], .table-form input[type=file], .table-form textarea {
+	border: 1px solid #ff5522;
 	width: 96%; }
 	
 </style>

@@ -145,7 +145,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     padding-top: 35px;
     padding-bottom: 7px;
     margin: 0 0 25px 0;
-    border-bottom: 2px solid #e0f0fe;
+    border-bottom: 2px solid #ff5522;
 }
 
 .body-title h2 {
