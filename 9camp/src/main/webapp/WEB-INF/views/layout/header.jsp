@@ -11,7 +11,7 @@
 		</div>
 		
 		<div class="logo-cont">
-			<a href="#">
+			<a href="${pageContext.request.contextPath}/index.jsp">
 				<span class="logo">
 					<i class="fa-solid fa-campground"></i>
 				</span>
