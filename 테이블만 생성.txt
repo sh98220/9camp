@@ -151,7 +151,7 @@ CREATE TABLE rental( --렌탈 테이블 14
 
 CREATE TABLE auction ( -- 경매 테이블 15
      auctionNum NUMBER,
-     auctionSaleId VARCHAR2(50) NOT NULL,
+     auctionSaleId VARCHAR2(50),
      auctionObject VARCHAR2(50) NOT NULL,
      auctionStartAmount NUMBER NOT NULL,
      auctionPhotoOriginalname VARCHAR2(50)  NOT NULL,
@@ -161,7 +161,7 @@ CREATE TABLE auction ( -- 경매 테이블 15
      auctionFinalAmount NUMBER NOT NULL,
      auctionEnabled NUMBER DEFAULT 1,
      CONSTRAINT pk_auction_auctionNum PRIMARY KEY(auctionNum),
-     CONSTRAINT fk_auction_auctionSaleId FOREIGN KEY(auctionSaleId) REFERENCES member(userId) ON DELETE CASCADE,
+     CONSTRAINT fk_auction_auctionSaleId FOREIGN KEY(auctionSaleId) REFERENCES member(userId),
      CHECK (auctionEnabled IN (0,1))
 );
 

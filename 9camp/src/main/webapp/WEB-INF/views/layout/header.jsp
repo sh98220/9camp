@@ -81,7 +81,7 @@
 					<a href="#">캠핑커뮤니티</a>
 					<ul class="sub-menu">
 						<li>
-							<a href="#">전국캠핑자랑</a>
+							<a href="${pageContext.request.contextPath}/reviews/list.do">전국캠핑자랑</a>
 						</li>
 						<li>
 							<a href="#">캠핑메이트</a>
