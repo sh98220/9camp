@@ -18,9 +18,20 @@ public class MainServlet extends MyServlet {
 		req.setCharacterEncoding("utf-8");
 		String uri=req.getRequestURI();
 		
+		
+		
 		if(uri.indexOf("main.do") != -1) {
 			forward(req, resp, "/WEB-INF/views/main/main.jsp");
 		}
+	}
+
+	protected void loginFrom(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		//String path = "/WEB-INF/views/member/login.jsp";
+	}
+	
+	protected void loginSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
 	}
 
 }
