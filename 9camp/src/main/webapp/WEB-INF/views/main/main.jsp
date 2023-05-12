@@ -35,7 +35,7 @@
 #rcm-cont .rcm-cont-div h1 {
 	text-align: center;
 	margin-bottom: 50px;
-	font-size: 60px;
+	font-size: 48px;
 }
 
 #rcm-cont .rcm-cont-div .rcm-cont-ul {
@@ -78,13 +78,13 @@
 #keyword-cont {
 	width: 100%;
 	background: #fff;
-	padding: 10px 0;
-	padding-bottom: 10%;
+	padding-top: 50px;
+	padding-bottom: 5%;
 }
 #keyword-cont h1 {
 	margin-top: 20px;
-    font-size: 30px;
-    color: pink;
+    font-size: 48px;
+    margin-bottom: 30px;
 }
 
 #keyword-cont .keyword-ul {
@@ -130,9 +130,10 @@
   border-radius: 5px;
   display: inline-block;
   padding: 10px;
-  background-color: pink;
+  background-color: #333;
   margin: 5px;
   font-size: 20px;
+  color: #fff;
 }
 
 /*메인 검색 - 민찬*/
