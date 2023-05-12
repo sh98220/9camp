@@ -84,10 +84,10 @@
 							<a href="${pageContext.request.contextPath}/reviews/list.do">전국캠핑자랑</a>
 						</li>
 						<li>
-							<a href="#">캠핑메이트</a>
+							<a href="${pageContext.request.contextPath}/mate/list.do">캠핑메이트</a>
 						</li>
 						<li>
-							<a href="#">자유게시판</a>
+							<a href="${pageContext.request.contextPath}/freeboard/list.do">자유게시판</a>
 						</li>
 					</ul>
 				</li>

@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import com.util.DBConn;
 
 public class MemberDAO {
-	private Connection conn = DBConn.getConnetion();
+	private Connection conn = DBConn.getConnection();
 
 	public MemberDTO loginMember(String userId, String userPwd) {
 		MemberDTO dto = null;
