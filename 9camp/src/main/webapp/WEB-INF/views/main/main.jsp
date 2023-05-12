@@ -12,6 +12,7 @@
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 
 <style type="text/css">
+/*여진*/
 /*이달의 추천 캠핑장*/
 #rcm-cont {
 	background: #eee;
@@ -74,17 +75,16 @@
 }
 
 /*키워드 검색 - 정현*/
-.center {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 30px;
-    color: pink;
-  }
 #keyword-cont {
 	width: 100%;
 	background: #fff;
 	padding: 10px 0;
 	padding-bottom: 10%;
+}
+#keyword-cont h1 {
+	margin-top: 20px;
+    font-size: 30px;
+    color: pink;
 }
 
 #keyword-cont .keyword-ul {
@@ -143,7 +143,7 @@
 #main_search .section_01 {
 	width: 100%;
 	padding: 100px 0;
-	background-image: url("${pageContext.request.contextPath}/resource/images/main_search_bg.png");
+	background-image: url("${pageContext.request.contextPath}/resource/images/main/main_search_bg.png");
 	background-size: 50%;
 	background-position: 15% center;
 	background-repeat: no-repeat;
@@ -177,7 +177,7 @@
 <main>
 	<!-- 메인 배너 -->
 	<div id="main_ban">
-		<img src="${pageContext.request.contextPath}/resource/images/main_ban.jpg" style="width: 100%;">
+		<img src="${pageContext.request.contextPath}/resource/images/main/main_ban.jpg" style="width: 100%;">
 	</div>
 	<!-- //메인 배너 -->
 	
@@ -279,8 +279,8 @@
 	<!-- //메인 검색창 -->
 	
 	<!-- 키워드 검색 -->
- 	<div class="center">키워드로 검색</div>
 	<div id="keyword-cont">
+		<h1 class="center">키워드로 검색</h1>
 		<form id="keyword-form" method="post">
 			<ul class="keyword-ul">
 				<li>
@@ -416,13 +416,13 @@
 	<!-- 이달의 추천 캠핑장 -->
 	<div id="rcm-cont">
 		<div class="rcm-cont-div">
-			<img src="${pageContext.request.contextPath}/resource/images/recommended.png" class="img_rcm">
+			<img src="${pageContext.request.contextPath}/resource/images/main/recommended.png" class="img_rcm">
 			<h1>이달의 추천 캠핑장</h1>
 			<ul class="rcm-cont-ul">
 				<li>
 					<a href="#">
 						<span class="rcm-img">
-							<img src="${pageContext.request.contextPath}/resource/images/camp_img01.jpg">
+							<img src="${pageContext.request.contextPath}/resource/images/main/camp_img01.jpg">
 						</span>
 						<span class="rcm-txt">
 							바다와 파도소리, 밤이면 별이 쏟아지는 해변에서 즐기는 감성캠핑. 그곳으로 떠나요~~
@@ -432,7 +432,7 @@
 				<li>
 					<a href="#">
 						<span class="rcm-img">
-							<img src="${pageContext.request.contextPath}/resource/images/camp_img01.jpg">
+							<img src="${pageContext.request.contextPath}/resource/images/main/camp_img01.jpg">
 						</span>
 						<span class="rcm-txt">
 							바다와 파도소리, 밤이면 별이 쏟아지는 해변에서 즐기는 감성캠핑. 그곳으로 떠나요~~
@@ -442,7 +442,7 @@
 				<li>
 					<a href="#">
 						<span class="rcm-img">
-							<img src="${pageContext.request.contextPath}/resource/images/camp_img01.jpg">
+							<img src="${pageContext.request.contextPath}/resource/images/main/camp_img01.jpg">
 						</span>
 						<span class="rcm-txt">
 							바다와 파도소리, 밤이면 별이 쏟아지는 해변에서 즐기는 감성캠핑. 그곳으로 떠나요~~
