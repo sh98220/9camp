@@ -15,7 +15,7 @@
 /*여진*/
 /*이달의 추천 캠핑장*/
 #rcm-cont {
-	background: #eee;
+	background: #f0f1f5;
 	padding: 50px 0;
 	position: relative;
 }
@@ -48,6 +48,7 @@
 	position: relative;
 	width: 30%;
 	height: 350px;
+	overflow: hidden;
 }
 
 #rcm-cont .rcm-cont-div .rcm-cont-ul > li > a {
@@ -58,6 +59,12 @@
 	width: 100%;
 	height: 100%;
 	display: block;
+	transition: transform ease-in 0.5s;
+}
+
+#rcm-cont .rcm-cont-div .rcm-cont-ul > li:hover .rcm-img {
+	transform: scale(1.2);
+	transition: transform ease-in 0.5s;
 }
 
 #rcm-cont .rcm-cont-div .rcm-cont-ul > li .rcm-img > img {
@@ -69,9 +76,16 @@
 	position: absolute;
 	bottom: 0;
 	width: 100%;
-	background: #000;
+	background: rgba(1,1,1,1);
 	padding: 10px;
 	display: block;
+	transition: transform ease-in 0.5s;
+}
+
+#rcm-cont .rcm-cont-div .rcm-cont-ul > li:hover .rcm-txt {
+	background: rgba(1,1,1,0.6);
+	transition: transform ease-in 0.5s;
+	/*height: 50%;*/
 }
 
 /*키워드 검색 - 정현*/
@@ -90,10 +104,12 @@
 #keyword-cont .keyword-ul {
 	width: 90%;
 	margin: 0 auto;
+	text-align: center;
 }
 
 #keyword-cont .keyword-ul > li {
 	display: inline-block;
+	margin: 3px;
 }
 
 #keyword-cont input[type="checkbox"]{
@@ -101,18 +117,22 @@
 }
 
 #keyword-cont label {
-  border-radius: 10px;
-  color: black;
-  backgroundcolor: "#ff5522";
+  border-radius: 5px;
+  border: 1px solid #707070;
+  display: inline-block;
+  padding: 5px 10px;
+  position: relative;
+  cursor: pointer;
+  font-size: 18px;
+  background: #efefef;
+}
+
+#keyword-cont label:hover {
+	background-color: #c7c4c4;
 }
       
 #keyword-cont input[type="checkbox"] + label{
-  margin-top: 10px;
-  display: inline-block;
-  padding: 10px;
-  border: 3px solid #707070;
-  position: relative;
-  width: auto;
+  
 }
 
 #keyword-cont input[type="checkbox"]:checked + label {
@@ -134,20 +154,22 @@
   margin: 5px;
   font-size: 20px;
   color: #fff;
+  cursor: pointer;
 }
 
 /*메인 검색 - 민찬*/
 #main_search {
 	width: 100%;
-	background: #56b286;
+	background: #f0f1f5;
+	overflow: hidden;
 }
 #main_search .section_01 {
 	width: 100%;
 	padding: 100px 0;
-	background-image: url("${pageContext.request.contextPath}/resource/images/main/main_search_bg.png");
-	background-size: 50%;
-	background-position: 15% center;
+	background-image: url("${pageContext.request.contextPath}/resource/images/main/main_search_bg02.jpg");
+	background-position: bottom;
 	background-repeat: no-repeat;
+	background-size: 100% 100%;
 	position: relative;
 	height: 570px;
 }
@@ -162,9 +184,29 @@
 	position: absolute;
 	right: 10%;
 	top: 12%;
-	background: rgb(0, 0, 0, 0.6);
+	background: rgb(86, 178, 134, 0.8);
 	padding: 50px;
 	border-radius: 20px;
+}
+
+#main_search .section_01 .btnSearch {
+	width: 80px; height: 40px;
+	background: #fffe5b;
+	border-radius: 5px; 
+	font-weight: bold; 
+	border: none; 
+	cursor: pointer;
+}
+
+#main_search .section_01 .btnSearch:hover {
+	background: #000;
+	color: #fff;
+}
+
+@media (max-width: 1920px) {
+	#main_search .section_01 {
+		background-image: url("${pageContext.request.contextPath}/resource/images/main/main_search_bg02_1920.jpg");
+	}
 }
 </style>
 </head>
@@ -202,7 +244,7 @@
 						<div class="search_box_form">
 						
 							<div class="form1_1">
-								<p class="tt" style="color: white; margin-bottom: 5px;">키워드검색</p>
+								<p class="tt" style="color: white; margin-bottom: 5px;">캠핑장 이름</p>
 								
 								<label class="skip" for="searchKrwd_f"></label> 
 								<input type="text" name="userId" id="userId" class="form-control" 
@@ -264,8 +306,7 @@
 									<option value="54">섬</option>
 								</select>
 								
-								<button type="submit" class="btnSearch_black01" style=" width: 80px; height: 40px;
-									background-color: #fffe5b; color: #000; border-radius: 5px; font-weight: bold;"> 검색
+								<button type="submit" class="btnSearch"> 검색
 								</button>
 								
 							</div>
