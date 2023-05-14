@@ -22,10 +22,10 @@
 		</div>
 		
 		<ul class="icon-cont">
-			<li class="point-li">
+			<li class="point-li hidden">
 				<a href="#"><span class="point-tit">보유 포인트</span> <span class="point-val">100,000</span> Point</a>
 			</li>
-			<li class="point-li bar">
+			<li class="point-li bar hidden">
 				|
 			</li>
 			<li class="hidden">

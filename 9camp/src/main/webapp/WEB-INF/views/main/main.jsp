@@ -13,6 +13,43 @@
 
 <style type="text/css">
 /*여진*/
+/*메인 배너*/
+#main_ban {
+	background: url(${pageContext.request.contextPath}/resource/images/main/main_ban01.jpg) no-repeat center center;
+	background-size: 100% 100%;
+	position: relative;
+	min-height: 470px;
+	cursor: pointer;
+}
+
+#main_ban .main_bg_txt {
+	width: 650px;
+	position: absolute;
+	top: 13%;
+	left: 5%;
+}
+
+#main_ban .main_bg_txt > img {
+	width: 100%;
+}
+
+#main_ban .main_bg_btn {
+	display: inline-block;
+	padding: 5px 14px;
+	position: absolute;
+	bottom: 17%;
+	left: 5%;
+	background: #ff5522;
+	color: #fff;
+	border-radius: 50px;
+	font-size: 32px;
+	font-weight: bold;
+}
+
+#main_ban .main_bg_btn:hover {
+	background: #000;
+}
+
 /*이달의 추천 캠핑장*/
 #rcm-cont {
 	background: #f0f1f5;
@@ -217,7 +254,12 @@
 <main>
 	<!-- 메인 배너 -->
 	<div id="main_ban">
-		<img src="${pageContext.request.contextPath}/resource/images/main/main_ban.jpg" style="width: 100%;">
+		<div class="main_bg_txt">
+			<img alt="" src="${pageContext.request.contextPath}/resource/images/main/main_bg_txt.png">
+		</div>
+		<a href="#main_search" class="main_bg_btn">
+			검색하기 &gt;
+		</a>
 	</div>
 	<!-- //메인 배너 -->
 	
@@ -244,7 +286,7 @@
 								<p class="tt" style="color: white; margin-bottom: 5px;">캠핑장 이름</p>
 								
 								<label class="skip" for="searchKrwd_f"></label> 
-								<input type="text" name="userId" id="userId" class="form-control" 
+								<input type="text" name="campId" id="campId" class="form-control" 
 								style="width: 100%; height: 40px; border-radius: 5px; padding-left: 10px;">
 							</div>
 							
@@ -517,6 +559,9 @@ resetButton.addEventListener("click", function() {
 		checkbox.checked = false;
 	});
 });
+
+/**/
+
 </script>
 	
 </body>
