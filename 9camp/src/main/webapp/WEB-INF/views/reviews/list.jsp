@@ -7,32 +7,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>spring</title>
+<title>전국캠핑자랑</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 <style type="text/css">
 
 .body-main {
 	max-width: 700px;
 }
-@charset "UTF-8";
-
-* { padding: 0; margin: 0; }
-*, *::after, *::before { box-sizing: border-box; }
-
-body {
-	font-family:"Malgun Gothic", "맑은 고딕", NanumGothic, 나눔고딕, 돋움, sans-serif;
-	font-size: 14px;
-	color: #222222;
-}
-
-a { color: #222222; text-decoration: none; cursor: pointer; }
-a:active, a:hover { color: #f28011; text-decoration: underline; }
 
 /* form-control */
 .btn {
-	color: #ff5522;
-	border: 1px solid #ff5522;
-	background-color: skyblue;
+	border: 1px solid #999;
 	padding: 5px 10px;
 	border-radius: 4px;
 	font-weight: 500;
@@ -80,7 +65,7 @@ input[type=checkbox], input[type=radio] { vertical-align: middle; }
 .table { width: 100%; border-spacing: 0; border-collapse: collapse; }
 .table th, .table td { padding-top: 10px; padding-bottom: 10px; }
 
-.table-border thead > tr { border-top: 2px solid #ff5522; border-bottom: 1px solid #ff5522; }
+.table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
 .table-border tbody > tr { border-bottom: 1px solid #ff5522; }
 .td-border td { border: 1px solid #ced4da; }
 
@@ -145,7 +130,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     padding-top: 35px;
     padding-bottom: 7px;
     margin: 0 0 25px 0;
-    border-bottom: 2px solid #ff5522;
+    border-bottom: 2px solid #eee;
 }
 
 .body-title h2 {
@@ -170,16 +155,16 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	padding-top: 35px;
 }
 
-.table-list thead > tr:first-child { background: skyblue; }
+.table-list thead > tr:first-child { color: #4e4e4e; }
 .table-list th, .table-list td { text-align: center; }
 .table-list .left { text-align: left; padding-left: 5px; }
 
-.table-list .num { width: 60px; color: #ff5522; }
-.table-list .subject { color: #ff5522; }
-.table-list .name { width: 100px; color: #ff5522; }
-.table-list .date { width: 100px; color: #ff5522; }
-.table-list .hit { width: 70px; color: #ff5522; }
-.table-list .file { width: 50px; color: #ff5522; }
+.table-list .num { width: 60px; }
+.table-list .subject {  }
+.table-list .name { width: 100px; }
+.table-list .date { width: 100px; }
+.table-list .hit { width: 70px; }
+.table-list .file { width: 50px; }
 </style>
 <script type="text/javascript">
 function searchList() {
