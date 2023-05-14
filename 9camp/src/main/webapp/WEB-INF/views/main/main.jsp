@@ -149,7 +149,7 @@
 #keyword-cont .search-form .btn{
   border-radius: 5px;
   display: inline-block;
-  padding: 10px;
+  padding: 5px 10px;
   background-color: #333;
   margin: 5px;
   font-size: 20px;
@@ -166,12 +166,9 @@
 #main_search .section_01 {
 	width: 100%;
 	padding: 100px 0;
-	background-image: url("${pageContext.request.contextPath}/resource/images/main/main_search_bg02.jpg");
-	background-position: bottom;
-	background-repeat: no-repeat;
-	background-size: 100% 100%;
+	background: url(${pageContext.request.contextPath}/resource/images/main/main_search_bg03_1.jpg) no-repeat center center;
 	position: relative;
-	height: 570px;
+	min-height: 570px;
 }
 
 #main_search .section_01 h1 {
@@ -184,7 +181,7 @@
 	position: absolute;
 	right: 10%;
 	top: 12%;
-	background: rgb(86, 178, 134, 0.8);
+	background: rgb(44, 55, 13, 0.8);
 	padding: 50px;
 	border-radius: 20px;
 }
@@ -205,7 +202,7 @@
 
 @media (max-width: 1920px) {
 	#main_search .section_01 {
-		background-image: url("${pageContext.request.contextPath}/resource/images/main/main_search_bg02_1920.jpg");
+		
 	}
 }
 </style>
