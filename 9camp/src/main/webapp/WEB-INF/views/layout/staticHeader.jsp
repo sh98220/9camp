@@ -8,4 +8,5 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resource/css/style.css" type="text/css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resource/css/layout.css" type="text/css">
 
+
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>

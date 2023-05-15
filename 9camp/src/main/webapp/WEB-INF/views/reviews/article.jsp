@@ -7,11 +7,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>전국캠핑자랑</title>
+<title>spring</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resource/css/paginate.css" type="text/css">
-
 <style type="text/css">
+.body-main {
+	max-width: 700px;
+	padding-top: 15px;
+}
+
 
 .body-main {
 	max-width: 700px;
@@ -125,6 +128,10 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     border-bottom: 3px solid #ff5522;
 }
 
+.body-title h2 i {
+	
+}
+
 .body-main {
 	display: block;
 	padding-bottom: 15px;
@@ -168,11 +175,17 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 }
 </style>
 <script type="text/javascript">
-function searchList() {
-	const f = document.searchForm;
-	f.submit();
-}
+<c:if test="${sessionScope.member.userId==dto.userId || sessionScope.member.userId=='admin'}">
+	function deleteBoard() {
+	    if(confirm("게시글을 삭제 하시 겠습니까 ? ")) {
+		    let query = "num=${dto.camRevnum}&${query}";
+		    let url = "${pageContext.request.contextPath}/reviews/delete.do?" + query;
+	    	location.href = url;
+	    }
+	}
+</c:if>
 </script>
+
 </head>
 <body>
 
@@ -183,81 +196,93 @@ function searchList() {
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 전국캠핑자랑 </h2>
+			<h2><i class="fas fa-graduation-cap"></i> 전국캠핑자랑	 </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
-			<table class="table">
-				<tr>
-					<td width="50%">
-						${dataCount}개(${page}/${total_page} 페이지)
-					</td>
-					<td align="right">&nbsp;</td>
-				</tr>
-			</table>
-			
-			<table class="table table-border table-list">
+			<table class="table table-border table-article">
 				<thead>
 					<tr>
-						<th class="num">번호</th>
-						<th class="subject">제목</th>
-						<th class="name">작성자</th>
-						<th class="date">작성일</th>
-						<th class="hit">조회수</th>
-						<th class="file">첨부</th>
+						<td colspan="2" align="center">
+							${dto.camRevsubject}
+						</td>
 					</tr>
 				</thead>
 				
 				<tbody>
-					<c:forEach var="dto" items="${list}" varStatus="status">
-						<tr>
-							<td>${dataCount - (page-1) * size - status.index}</td>
-							<td class="left">
-								<a href="${articleUrl}&num=${dto.camRevnum}">${dto.camRevsubject}</a>
-							</td>
-							<td>${dto.userName}</td>
-							<td>${dto.camRevregdate}</td>
-							<td>${dto.camRevhitcount}</td>
-						</tr>
-					</c:forEach>
+					<tr>
+						<td width="50%">
+							이름 : ${dto.userName}
+						</td>
+						<td align="right">
+							${dto.camRevregdate} | 조회 ${dto.camRevhitcount}
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="2" valign="top" height="200">
+							${dto.camRevcontent}
+						</td>
+					</tr>
+		
+					<tr>
+						<td colspan="2">
+							파&nbsp;&nbsp;일 :
+						</td>
+					</tr>
+		
+					<tr>
+						<td colspan="2">
+							이전글 :
+							<c:if test="${not empty preReadDto}">
+								<a href="${pageContext.request.contextPath}/reviews/article.do?${query}&num=${preReadDto.num}">${preReadDto.subject}</a>
+							</c:if>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							다음글 :
+							<c:if test="${not empty nextReadDto}">
+								<a href="${pageContext.request.contextPath}/reviews/article.do?${query}&num=${nextReadDto.num}">${nextReadDto.subject}</a>
+							</c:if>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 			
-			<div class="page-navigation">
-				${dataCount == 0 ? "등록된 게시물이 없습니다." : paging}
-			</div>
-			
 			<table class="table">
 				<tr>
-					<td width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/reviews/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+					<td width="50%">
+						<c:choose>
+							<c:when test="${sessionScope.member.userId==dto.userId}">
+								<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/reviews/update.do?num=${dto.camRevnum}&category=${category}&page=${page}';">수정</button>
+							</c:when>
+							<c:otherwise>
+								<button type="button" class="btn" disabled="disabled">수정</button>
+							</c:otherwise>
+						</c:choose>
+				    	
+						<c:choose>
+				    		<c:when test="${sessionScope.member.userId==dto.userId || sessionScope.member.userId=='admin'}">
+				    			<button type="button" class="btn" onclick="deleteBoard();">삭제</button>
+				    		</c:when>
+				    		<c:otherwise>
+				    			<button type="button" class="btn" disabled="disabled">삭제</button>
+				    		</c:otherwise>
+				    	</c:choose>
 					</td>
-					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/sbbs/list.do" method="post">
-							<select name="condition" class="form-select">
-								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
-								<option value="userName" ${condition=="userName"?"selected='selected'":"" }>작성자</option>
-								<option value="reg_date"  ${condition=="reg_date"?"selected='selected'":"" }>등록일</option>
-								<option value="subject"  ${condition=="subject"?"selected='selected'":"" }>제목</option>
-								<option value="content"  ${condition=="content"?"selected='selected'":"" }>내용</option>
-							</select>
-							<input type="text" name="keyword" value="${keyword}" class="form-control">
-							<input type="hidden" name="category" value="${category}">
-							<button type="button" class="btn" onclick="searchList();">검색</button>
-						</form>
-					</td>
-					<td align="right" width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/reviews/write.do';">글올리기</button>
+					<td align="right">
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/reviews/list.do?${query}';">리스트</button>
 					</td>
 				</tr>
 			</table>
-
+	        
 	    </div>
 	</div>
 </main>
 
 <footer>
-	<jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
+    <jsp:include page="/WEB-INF/views/layout/footer.jsp"></jsp:include>
 </footer>
 
 </body>
