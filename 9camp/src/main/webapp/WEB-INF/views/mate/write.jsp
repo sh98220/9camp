@@ -7,7 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>자유게시판</title>
+<title>캠핑메이트</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 <style type="text/css">
 .body-main {
@@ -134,6 +134,12 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	padding-top: 35px;
 }
 
+/* 캠핑스타일  */
+#keyword-cont .keyword-ul > li {
+	display: inline-block;
+	margin: 3px;
+}
+
 .table-list thead > tr:first-child { background: skyblue; }
 .table-list th, .table-list td { text-align: center; }
 .table-list .left { text-align: left; padding-left: 5px; }
@@ -222,7 +228,7 @@ function sendOk() {
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 자유게시판 </h2>
+			<h2><i class="fas fa-graduation-cap"></i> 캠핑메이트 </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
@@ -238,7 +244,7 @@ function sendOk() {
 					<tr> 
 						<td>작성자</td>
 						<td> 
-							<!--  <p>${sessionScope.member.userName}</p>  -->
+							 <p>${sessionScope.member.userName}</p> 
 						</td>
 					</tr>
 					
@@ -248,27 +254,53 @@ function sendOk() {
 							<textarea name="content" class="form-control">${dto.content}</textarea>
 						</td>
 					</tr>
+				
+					<tr>				
+						<td>캠핑스타일</td>
+						<td>
+							<div id="keyword-cont">
+									<ul class="keyword-ul">
+										<li>
+											<input type="checkbox" name="key" id="check1" value="101" >
+							        		<label for="check1">#술을 많이 마시는</label>
+										</li>
+										<li>
+											<input type="checkbox" name="key" id="check2" value="102" >
+							        		<label for="check2">#조용한</label>
+										</li>
+										<li>
+											<input type="checkbox" name="key" id="check3" value="103" >
+							        		<label for="check3">#시끌벅적한</label>
+										</li>
+										<li>
+											<input type="checkbox" name="key" id="check4" value="104">
+							        		<label for="check4">#슬을 마시지 않는</label>
+										</li>
+										<li>
+											<input type="checkbox" name="key" id="check5" value="105">
+							        		<label for="check5">#사람이 많은</label>
+										</li>
+										<li>
+											<input type="checkbox" name="key" id="check6" value="106">
+							        		<label for="check6">#단둘이</label>
+										</li>
+										<li>
+											<input type="checkbox" name="key" id="check7" value="107">
+							        		<label for="check7">#남녀가 섞인</label>
+										</li>
+															
+									</ul>
+								</div>
+						</td>					
+					</tr>
 					
-					<tr>
-						<td>첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
+					<tr> 
+						<td>기&nbsp;&nbsp;&nbsp;&nbsp;간</td>
 						<td> 
-							<input type="file" name="selectFile" class="form-control">
+							<textarea name="content" class="form-control">${dto.content}</textarea>
 						</td>
 					</tr>
 					
-					<c:if test="${mode == 'update' }">
-						<tr>
-							<td>첨부된파일</td>
-							<td>
-								<p>
-									<c:if test="${not empty dto.saveFilename}">	
-										<a href="javascript:deleteFile('${dto.num}')"><i class="far fa-trash-alt"></i></a>
-										${dto.originalFilename}
-									</c:if>
-								</p>
-							</td>
-						</tr>
-					</c:if>
 				</table>
 					
 				<table class="table">
@@ -276,7 +308,7 @@ function sendOk() {
 						<td align="center">
 							<button type="button" class="btn" onclick="sendOk();">${mode=="update"?"수정완료":"등록완료"}</button>
 							<button type="reset" class="btn">다시입력</button>
-							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/freeboard/list.do';">${mode=="update"?"수정취소":"등록취소"}</button>
+							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mate/list.do';">${mode=="update"?"수정취소":"등록취소"}</button>
 							<c:if test="${mode=='update' }">
 								<input type="hidden" name="num" value="${dto.num}">
 								<input type="hidden" name="saveFilename" value="${dto.saveFilename}">

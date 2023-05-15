@@ -11,12 +11,12 @@
 		</div>
 		
 		<div class="logo-cont">
-			<a href="${pageContext.request.contextPath}/index.jsp">
+			<a href="${pageContext.request.contextPath}/main.do">
 				<span class="logo">
 					<i class="fa-solid fa-campground"></i>
 				</span>
 				<span class="logo-txt">
-					가자GOO캠핑
+					가자Goo캠핑
 				</span>
 			</a>
 		</div>
@@ -48,7 +48,7 @@
 			</li>
 			<li>
 				<c:if test="${not empty sessionScope.member}">
-					<a href="#" class="top-icon ic_msg" title="쪽지">
+					<a href="${pageContext.request.contextPath}/message/list.do" class="top-icon ic_msg" title="쪽지">
 						<i class="fa-regular fa-envelope"></i>
 					</a>
 				</c:if>

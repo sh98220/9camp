@@ -52,13 +52,15 @@
 
 /*이달의 추천 캠핑장*/
 #rcm-cont {
+	width: 100%;
 	background: #f0f1f5;
 	padding: 50px 0;
 	position: relative;
 }
 
 #rcm-cont .rcm-cont-div {
-	width: 1200px;
+	width: 90%;
+	max-width: 1200px;
 	margin: 0 auto;
 }
 
@@ -79,6 +81,7 @@
 	display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 #rcm-cont .rcm-cont-div .rcm-cont-ul > li {
@@ -203,7 +206,7 @@
 #main_search .section_01 {
 	width: 100%;
 	padding: 100px 0;
-	background: url(${pageContext.request.contextPath}/resource/images/main/main_search_bg03_1.jpg) no-repeat center center;
+	background: url(${pageContext.request.contextPath}/resource/images/main/main_search_bg03_3.jpg) no-repeat center center;
 	position: relative;
 	min-height: 570px;
 }
@@ -538,7 +541,7 @@
 </main>
 
 <footer>
-
+	<jsp:include page="/WEB-INF/views/layout/footer.jsp"></jsp:include>
 </footer>
 
 <script type="text/javascript">

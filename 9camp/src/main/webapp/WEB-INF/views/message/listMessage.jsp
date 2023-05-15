@@ -1,14 +1,15 @@
-﻿<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8"%>
 <%@ page trimDirectiveWhitespaces="true" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>자유게시판</title>
+<title>쪽지</title>
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
+
 <style type="text/css">
 
 .body-main {
@@ -137,11 +138,12 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	padding-top: 35px;
 }
 
-.table-list thead > tr:first-child { color: #4e4e4e; }
+.table-list thead > tr:first-child { color: #4e4e4e; background: #f9f9f9; }
+.table-list thead th { border-left: 1px solid #e4e5e7; }
 .table-list th, .table-list td { text-align: center; }
 .table-list .left { text-align: left; padding-left: 5px; }
 
-.table-list .num { width: 60px; }
+.table-list thead th.num { width: 60px; border-left: none; }
 .table-list .subject {  }
 .table-list .name { width: 100px; }
 .table-list .date { width: 100px; }
@@ -169,23 +171,26 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	}
 }
 </style>
-<script type="text/javascript">
-function searchList() {
-	const f = document.searchForm;
-	f.submit();
+
+<style type="text/css">
+#menu_write {
+	display: flex;
+	justify-content: center;
+	align-items : center;
 }
-</script>
+</style>
+
 </head>
 <body>
 
 <header>
 	<jsp:include page="/WEB-INF/views/layout/header.jsp"></jsp:include>
 </header>
-	
+
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 자유게시판 </h2>
+			<h2><i class="fa-regular fa-envelope"></i> 받은쪽지함 </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
@@ -202,11 +207,9 @@ function searchList() {
 				<thead>
 					<tr>
 						<th class="num">번호</th>
-						<th class="subject">제목</th>
-						<th class="name">작성자</th>
-						<th class="date">작성일</th>
-						<th class="hit">조회수</th>
-						<th class="file">첨부</th>
+						<th class="subject">내용</th>
+						<th class="name">보낸사람</th>
+						<th class="date">날짜</th>
 					</tr>
 				</thead>
 				
@@ -237,7 +240,7 @@ function searchList() {
 			<table class="table">
 				<tr>
 					<td width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/freeboard/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/reviews/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
 					</td>
 					<td align="center">
 						<form name="searchForm" action="${pageContext.request.contextPath}/sbbs/list.do" method="post">
@@ -254,7 +257,7 @@ function searchList() {
 						</form>
 					</td>
 					<td align="right" width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/freeboard/write.do';">글올리기</button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mate/write.do';">쪽지쓰기</button>
 					</td>
 				</tr>
 			</table>
@@ -264,7 +267,7 @@ function searchList() {
 </main>
 
 <footer>
-	<jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
+	<jsp:include page="/WEB-INF/views/layout/footer.jsp"></jsp:include>
 </footer>
 
 </body>
