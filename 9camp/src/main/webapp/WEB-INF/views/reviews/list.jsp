@@ -27,8 +27,8 @@
 	vertical-align: baseline;
 }
 .btn:active, .btn:focus, .btn:hover {
-	background-color: pink;
-	color:#ff5522;
+	background-color: #333;
+	color:#fff;
 }
 .btn[disabled], fieldset[disabled] .btn {
 	pointer-events: none;
@@ -89,8 +89,6 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	font-size: 15px; color:#ffffff; font-weight: 700;  cursor: pointer; vertical-align: baseline;
 }
 
-@charset "UTF-8";
-
 .container {
     width: 100%;
     padding-right: 15px;
@@ -98,26 +96,6 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     margin-right: auto;
     margin-left: auto;
 
-}
-@media (min-width: 576px) {
-	.container {
-	    max-width: 540px;
-	}
-}
-@media (min-width: 768px) {
-	.container {
-	    max-width: 720px;
-	}
-}
-@media (min-width: 992px) {
-	.container {
-		max-width: 960px;
-	}
-}
-@media (min-width: 1200px) {
-	.container {
-	    max-width: 750px;
-	}
 }
 
 /* body-container */
@@ -145,6 +123,10 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     border-bottom: 3px solid #ff5522;
 }
 
+.body-title h2 i {
+	
+}
+
 .body-main {
 	display: block;
 	padding-bottom: 15px;
@@ -165,6 +147,27 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 .table-list .date { width: 100px; }
 .table-list .hit { width: 70px; }
 .table-list .file { width: 50px; }
+
+@media (min-width: 576px) {
+	.container {
+	    max-width: 540px;
+	}
+}
+@media (min-width: 768px) {
+	.container {
+	    max-width: 720px;
+	}
+}
+@media (min-width: 992px) {
+	.container {
+		max-width: 960px;
+	}
+}
+@media (min-width: 1200px) {
+	.container {
+	    max-width: 750px;
+	}
+}
 </style>
 <script type="text/javascript">
 function searchList() {
@@ -261,6 +264,7 @@ function searchList() {
 </main>
 
 <footer>
+	<jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
 </footer>
 
 </body>

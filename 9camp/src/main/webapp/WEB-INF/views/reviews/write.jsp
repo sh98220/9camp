@@ -7,7 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>spring</title>
+<title>전국캠핑자랑</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 <style type="text/css">
 .body-main {
@@ -19,25 +19,12 @@
 .body-main {
 	max-width: 700px;
 }
-@charset "UTF-8";
-
-* { padding: 0; margin: 0; }
-*, *::after, *::before { box-sizing: border-box; }
-
-body {
-	font-family:"Malgun Gothic", "맑은 고딕", NanumGothic, 나눔고딕, 돋움, sans-serif;
-	font-size: 14px;
-	color: #ff5522;
-}
-
-a { color: #222222; text-decoration: none; cursor: pointer; }
-a:active, a:hover { color: #f28011; text-decoration: underline; }
 
 /* form-control */
 .btn {
-	color: #ff5522;
-	border: 1px solid #ff5522;
-	background-color: skyblue;
+	color: #333;
+	border: 1px solid #999;
+	background-color: #eee;
 	padding: 5px 10px;
 	border-radius: 4px;
 	font-weight: 500;
@@ -47,8 +34,8 @@ a:active, a:hover { color: #f28011; text-decoration: underline; }
 	vertical-align: baseline;
 }
 .btn:active, .btn:focus, .btn:hover {
-	background-color: pink;
-	color:#ff5522;
+	background-color: #333;
+	color:#fff;
 }
 .btn[disabled], fieldset[disabled] .btn {
 	pointer-events: none;
@@ -85,8 +72,9 @@ input[type=checkbox], input[type=radio] { vertical-align: middle; }
 .table { width: 100%; border-spacing: 0; border-collapse: collapse; }
 .table th, .table td { padding-top: 10px; padding-bottom: 10px; }
 
-.table-border thead > tr { border-top: 2px solid #ff5522; border-bottom: 1px solid #ff5522; }
-.table-border tbody > tr { border-bottom: 1px solid #ff5522; }
+.table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
+.table-border tbody > tr { border-bottom: 1px solid #666; }
+
 .td-border td { border: 1px solid #ced4da; }
 
 tr.hover:hover { cursor: pointer; background: #f5fffa; }
@@ -102,8 +90,6 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 
 .mx-auto { margin-left: auto; margin-right: auto; }
 
-@charset "UTF-8";
-
 .container {
     width: 100%;
     padding-right: 15px;
@@ -111,26 +97,6 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     margin-right: auto;
     margin-left: auto;
 
-}
-@media (min-width: 576px) {
-	.container {
-	    max-width: 540px;
-	}
-}
-@media (min-width: 768px) {
-	.container {
-	    max-width: 720px;
-	}
-}
-@media (min-width: 992px) {
-	.container {
-		max-width: 960px;
-	}
-}
-@media (min-width: 1200px) {
-	.container {
-	    max-width: 750px;
-	}
 }
 
 /* body-container */
@@ -143,7 +109,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     padding-top: 35px;
     padding-bottom: 7px;
     margin: 0 0 25px 0;
-    border-bottom: 2px solid #ff5522;
+    border-bottom: 2px solid #eee;;
 }
 
 .body-title h2 {
@@ -181,13 +147,35 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 
 .table-form td { padding: 7px 0; }
 .table-form p { line-height: 200%; }
-.table-form tr:first-child { border-top: 2px solid #ff5522;  }
-.table-form tr > td:first-child { width: 110px; text-align: center; background: skyblue; }
+.table-form tr:first-child { border-top: 2px solid #666;  }
+.table-form tr > td:first-child { width: 110px; text-align: center; background: #eee; }
 .table-form tr > td:nth-child(2) { padding-left: 10px; }
 
 .table-form input[type=text], .table-form input[type=file], .table-form textarea {
-	border: 1px solid #ff5522;
-	width: 96%; }
+	border: 1px solid #999;
+	width: 96%;
+}
+	
+@media (min-width: 576px) {
+	.container {
+	    max-width: 540px;
+	}
+}
+@media (min-width: 768px) {
+	.container {
+	    max-width: 720px;
+	}
+}
+@media (min-width: 992px) {
+	.container {
+		max-width: 960px;
+	}
+}
+@media (min-width: 1200px) {
+	.container {
+	    max-width: 750px;
+	}
+}
 	
 </style>
 
@@ -307,6 +295,7 @@ function sendOk() {
 </main>
 
 <footer>
+	<jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
 </footer>
 
 </body>
