@@ -276,6 +276,7 @@ function searchList() {
 </main>
 
 <footer>
+	<jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
 </footer>
 
 </body>
