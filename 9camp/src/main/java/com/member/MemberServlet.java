@@ -44,7 +44,7 @@ public class MemberServlet extends MyServlet {
 
 	protected void loginForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 로그인 폼
-		String path = "/WEB-INF/views/member/login.jsp";
+		String path = "/WEB-INF/views/member/member.jsp";
         forward(req, resp, path);		
 	}
 
@@ -82,7 +82,7 @@ public class MemberServlet extends MyServlet {
 		String msg = "아이디 또는 패스워드가 일치하지 않습니다.";
 		req.setAttribute("message", msg);
 
-		forward(req, resp, "/WEB-INF/views/member/login.jsp");
+		forward(req, resp, "/WEB-INF/views/member/member.jsp");
 	}
 	
 

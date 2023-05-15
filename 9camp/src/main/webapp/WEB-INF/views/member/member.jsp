@@ -358,7 +358,7 @@ fjg
     }
 }
 </style>
-<!-- 김성훈 -->
+<!-- 김성훈 포기하지마 -->
 
 <script type="text/javascript">
 function sendLogin() {
