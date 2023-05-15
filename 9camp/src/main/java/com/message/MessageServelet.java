@@ -41,7 +41,7 @@ public class MessageServelet extends MyServlet {
 	}
 	
 	protected void writeForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		forward(req, resp, "/WEB-INF/views/message/write.jsp");
+		forward(req, resp, "/WEB-INF/views/message/writeMessage.jsp");
 	}
 	
 	protected void writeSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
