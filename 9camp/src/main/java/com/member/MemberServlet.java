@@ -19,6 +19,8 @@ public class MemberServlet extends MyServlet {
 	protected void execute(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("utf-8");
 
+		
+		
 		String uri = req.getRequestURI();
 
 		// uri에 따른 작업 구분

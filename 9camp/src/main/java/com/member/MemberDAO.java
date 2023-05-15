@@ -10,6 +10,9 @@ import com.util.DBConn;
 public class MemberDAO {
 	private Connection conn = DBConn.getConnetion();
 
+	
+	
+	
 	public MemberDTO loginMember(String userId, String userPwd) {
 		MemberDTO dto = null;
 		PreparedStatement pstmt = null;
