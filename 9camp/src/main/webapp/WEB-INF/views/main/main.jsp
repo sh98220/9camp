@@ -206,7 +206,7 @@
 #main_search .section_01 {
 	width: 100%;
 	padding: 100px 0;
-	background: url(${pageContext.request.contextPath}/resource/images/main/main_search_bg03_1.jpg) no-repeat center center;
+	background: url(${pageContext.request.contextPath}/resource/images/main/main_search_bg03_3.jpg) no-repeat center center;
 	position: relative;
 	min-height: 570px;
 }

@@ -48,7 +48,7 @@
 			</li>
 			<li>
 				<c:if test="${not empty sessionScope.member}">
-					<a href="#" class="top-icon ic_msg" title="쪽지">
+					<a href="${pageContext.request.contextPath}/message/list.do" class="top-icon ic_msg" title="쪽지">
 						<i class="fa-regular fa-envelope"></i>
 					</a>
 				</c:if>
