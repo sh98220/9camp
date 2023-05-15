@@ -38,13 +38,13 @@ public class MemberDAO {
 				dto.setUserId(rs.getString("userId"));
 				dto.setUserName(rs.getString("userName"));
 				dto.setUserPwd(rs.getString("userPwd"));
-				dto.setUserPwd(rs.getString("userTel"));
-				dto.setUserPwd(rs.getString("userBirth"));
-				dto.setUserPwd(rs.getString("userNickName"));
-				dto.setUserPwd(rs.getString("userEmail"));
-				dto.setUserPwd(rs.getString("userRegDate"));
+				dto.setUserTel(rs.getString("userTel"));
+				dto.setUserBirth(rs.getString("userBirth"));
+				dto.setUserNickName(rs.getString("userNickName"));
+				dto.setUserEmail(rs.getString("userEmail"));
+				dto.setUserRegDate(rs.getString("userRegDate"));
 				dto.setUserPoint(rs.getLong("userPoint"));
-				dto.setUserPwd(rs.getString("userUpdateDate"));
+				dto.setUserUpdateDate(rs.getString("userUpdateDate"));
 			}
 			
 		} catch (Exception e) {
