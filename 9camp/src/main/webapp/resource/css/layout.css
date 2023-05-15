@@ -1,5 +1,6 @@
 @charset "UTF-8";
 
+/*헤더*/
 /*헤더 상단*/
 .top-cont {
 	width: 100%;
@@ -98,12 +99,13 @@
 	background: linear-gradient(90deg, #ff5522, #ff7c0f, #ff9c00, #ff7c0f, #ff5522);
 }
 #header-menu > nav > ul.main-menu {
-	width: 80%;
+	width: 100%;
 	max-width: 1200px;
 	margin: 0 auto;
 	display: flex; 
 	justify-content: center;
 	align-items: center; 
+	flex-wrap: wrap;
 	color: #fff; 
 	text-align: center; 
 	font-size: 18px; 
@@ -155,4 +157,74 @@
 
 .main-menu .sub-menu > li:hover {
 	background: #182952;
+}
+
+
+/*푸터*/
+footer {
+	background: #2e2f31;
+	padding: 30px 0;
+}
+
+#footerWrap {
+	width: 90%;
+	max-width: 1200px;
+	margin: 0 auto;
+	overflow: hidden;
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#footerWrap .logo-cont {
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
+    float: left;
+}
+#footerWrap .logo-cont .logo{
+	background: #626262;
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	text-align: center;
+	color: #2e2f31;
+	font-size: 24px;
+	line-height: 32px;
+	display: inline-block;
+	vertical-align: middle;
+}
+#footerWrap .logo-cont .logo-txt {
+	font-family: 'Black Han Sans', sans-serif;
+	font-weight: bold;
+	font-size: 36px;
+	margin-left: 5px;
+	color: #626262;
+	padding-top: 5px;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+#footerWrap .f-menu {
+	display: flex;
+	justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    float: right;
+    font-size: 14px;
+    color: #626262;
+}
+
+#footerWrap .f-menu > li {
+	display: inline-block;
+}
+
+#footerWrap .f-menu > li a {
+	color: #fff;
+	margin: 0 18px;
+	color: #fff;
+}
+
+#footerWrap .f-menu > li a:hover {
+	color: #ff9b2f;
 }

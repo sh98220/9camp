@@ -11,12 +11,12 @@
 		</div>
 		
 		<div class="logo-cont">
-			<a href="${pageContext.request.contextPath}/index.jsp">
+			<a href="${pageContext.request.contextPath}/main.do">
 				<span class="logo">
 					<i class="fa-solid fa-campground"></i>
 				</span>
 				<span class="logo-txt">
-					가자GOO캠핑
+					가자Goo캠핑
 				</span>
 			</a>
 		</div>
