@@ -16,6 +16,8 @@ public class MemberDAO {
 		String sql = null;
 		ResultSet rs = null;
 
+		
+		
 		try {
 			sql = "SELECT userId, userName, userPwd, userTel, userBirth, userNickName, userEmail, "
 					+ "userRegDate, userPoint, userUpdateDate "
