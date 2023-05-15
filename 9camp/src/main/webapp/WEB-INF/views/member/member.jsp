@@ -358,7 +358,7 @@ fjg
     }
 }
 </style>
-<!-- 김성훈 -->
+<!-- 김성훈 포기하지마 -->
 
 <script type="text/javascript">
 function sendLogin() {
@@ -379,6 +379,7 @@ function sendLogin() {
     }
 
     f.action = "${pageContext.request.contextPath}/member/login_ok.do";
+    
     f.submit();
 }
 </script>
@@ -470,7 +471,13 @@ function sendLogin() {
 	                Sign up here
 	              </b>
 	            </p>
+	            <div class="members-message">
+				<p class="text-center">
+					${message}
+				</p>
+				</div>
 	            </form>
+	            
 	          </div>
 	        </div>
 	       

@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import com.util.DBConn;
 
 public class MemberDAO {
-	private Connection conn = DBConn.getConnection();
+	private Connection conn = DBConn.getConnetion();
 
 	public MemberDTO loginMember(String userId, String userPwd) {
 		MemberDTO dto = null;
@@ -65,8 +65,38 @@ public class MemberDAO {
 	}
 
 	public void insertMember(MemberDTO dto) throws SQLException {
-
-
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "INSERT INTO member (userId, userName, userPwd, userTel, userBirth, userNickName, "
+					+ "userEmail, userRegDate, userPoint, userUpdateDate) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, SYSDATE, 0, SYSDATE)";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, dto.getUserId());
+			pstmt.setString(2, dto.getUserName());
+			pstmt.setString(3, dto.getUserPwd());
+			pstmt.setString(4, dto.getUserTel());
+			pstmt.setString(5, dto.getUserBirth());
+			pstmt.setString(6, dto.getUserNickName());
+			pstmt.setString(7, dto.getUserEmail());
+			
+			pstmt.executeUpdate();
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
 	}
 
 	public void updateMember(MemberDTO dto) throws SQLException {
