@@ -41,7 +41,7 @@ public class MemberServlet extends MyServlet {
 			userIdCheck(req, resp);
 		}
 	}
-
+// 수정
 	protected void loginForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 로그인 폼
 		String path = "/WEB-INF/views/member/member.jsp";
