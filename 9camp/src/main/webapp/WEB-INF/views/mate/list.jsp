@@ -7,32 +7,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>spring</title>
+<title>캠핑메이트</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 <style type="text/css">
 
 .body-main {
 	max-width: 700px;
 }
-@charset "UTF-8";
-
-* { padding: 0; margin: 0; }
-*, *::after, *::before { box-sizing: border-box; }
-
-body {
-	font-family:"Malgun Gothic", "맑은 고딕", NanumGothic, 나눔고딕, 돋움, sans-serif;
-	font-size: 14px;
-	color: #222222;
-}
-
-a { color: #222222; text-decoration: none; cursor: pointer; }
-a:active, a:hover { color: #f28011; text-decoration: underline; }
 
 /* form-control */
 .btn {
-	color: #ff5522;
-	border: 1px solid #ff5522;
-	background-color: skyblue;
+	border: 1px solid #999;
 	padding: 5px 10px;
 	border-radius: 4px;
 	font-weight: 500;
@@ -42,8 +27,8 @@ a:active, a:hover { color: #f28011; text-decoration: underline; }
 	vertical-align: baseline;
 }
 .btn:active, .btn:focus, .btn:hover {
-	background-color: pink;
-	color:#ff5522;
+	background-color: #333;
+	color:#fff;
 }
 .btn[disabled], fieldset[disabled] .btn {
 	pointer-events: none;
@@ -80,7 +65,7 @@ input[type=checkbox], input[type=radio] { vertical-align: middle; }
 .table { width: 100%; border-spacing: 0; border-collapse: collapse; }
 .table th, .table td { padding-top: 10px; padding-bottom: 10px; }
 
-.table-border thead > tr { border-top: 2px solid #ff5522; border-bottom: 1px solid #ff5522; }
+.table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
 .table-border tbody > tr { border-bottom: 1px solid #ff5522; }
 .td-border td { border: 1px solid #ced4da; }
 
@@ -104,8 +89,6 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	font-size: 15px; color:#ffffff; font-weight: 700;  cursor: pointer; vertical-align: baseline;
 }
 
-@charset "UTF-8";
-
 .container {
     width: 100%;
     padding-right: 15px;
@@ -114,6 +97,57 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     margin-left: auto;
 
 }
+
+/* body-container */
+.body-container {
+	min-height: 500px;
+}
+
+.body-title {
+    color: #424951;
+    padding-top: 35px;
+    padding-bottom: 7px;
+    margin: 0 0 25px 0;
+    border-bottom: 2px solid #eee;
+}
+
+.body-title h2 {
+    font-size: 24px;
+    min-width: 300px;
+    font-family:"Malgun Gothic", "맑은 고딕", NanumGothic, 나눔고딕, 돋움, sans-serif;
+    color: #ff5522;
+    font-weight: 700;
+    padding-bottom: 10px;
+    display: inline-block;
+    margin: 0 0 -7px 0;
+    border-bottom: 3px solid #ff5522;
+}
+
+.body-title h2 i {
+	
+}
+
+.body-main {
+	display: block;
+	padding-bottom: 15px;
+}
+
+.inner-page{
+	display: block;
+	padding-top: 35px;
+}
+
+.table-list thead > tr:first-child { color: #4e4e4e; }
+.table-list th, .table-list td { text-align: center; }
+.table-list .left { text-align: left; padding-left: 5px; }
+
+.table-list .num { width: 60px; }
+.table-list .subject {  }
+.table-list .name { width: 100px; }
+.table-list .date { width: 100px; }
+.table-list .hit { width: 70px; }
+.table-list .file { width: 50px; }
+
 @media (min-width: 576px) {
 	.container {
 	    max-width: 540px;
@@ -134,52 +168,6 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	    max-width: 750px;
 	}
 }
-
-/* body-container */
-.body-container {
-	min-height: 500px;
-}
-
-.body-title {
-    color: #424951;
-    padding-top: 35px;
-    padding-bottom: 7px;
-    margin: 0 0 25px 0;
-    border-bottom: 2px solid #ff5522;
-}
-
-.body-title h2 {
-    font-size: 24px;
-    min-width: 300px;
-    font-family:"Malgun Gothic", "맑은 고딕", NanumGothic, 나눔고딕, 돋움, sans-serif;
-    color: #ff5522;
-    font-weight: 700;
-    padding-bottom: 10px;
-    display: inline-block;
-    margin: 0 0 -7px 0;
-    border-bottom: 3px solid #ff5522;
-}
-
-.body-main {
-	display: block;
-	padding-bottom: 15px;
-}
-
-.inner-page{
-	display: block;
-	padding-top: 35px;
-}
-
-.table-list thead > tr:first-child { background: skyblue; }
-.table-list th, .table-list td { text-align: center; }
-.table-list .left { text-align: left; padding-left: 5px; }
-
-.table-list .num { width: 60px; color: #ff5522; }
-.table-list .subject { color: #ff5522; }
-.table-list .name { width: 100px; color: #ff5522; }
-.table-list .date { width: 100px; color: #ff5522; }
-.table-list .hit { width: 70px; color: #ff5522; }
-.table-list .file { width: 50px; color: #ff5522; }
 </style>
 <script type="text/javascript">
 function searchList() {
@@ -243,13 +231,13 @@ function searchList() {
 			</table>
 			
 			<div class="page-navigation">
-				${dataCount == 0 ? "등록된 게시물이 없습니다앙d앙." : paging}
+				${dataCount == 0 ? "등록된 게시물이 없습니다." : paging}
 			</div>
 			
 			<table class="table">
 				<tr>
 					<td width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mate/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/reviews/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
 					</td>
 					<td align="center">
 						<form name="searchForm" action="${pageContext.request.contextPath}/sbbs/list.do" method="post">
@@ -266,7 +254,7 @@ function searchList() {
 						</form>
 					</td>
 					<td align="right" width="100">
-						<button type="button" class="btn" onclick="location.href=''">글올리기</button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mate/write.do';">글올리기</button>
 					</td>
 				</tr>
 			</table>
