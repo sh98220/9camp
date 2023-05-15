@@ -88,6 +88,14 @@ public class MemberServlet extends MyServlet {
 
 	protected void logout(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 로그아웃
+		HttpSession session = req.getSession();
+		String cp = req.getContextPath();
+
+		session.removeAttribute("member");
+	
+		session.invalidate();
+
+		resp.sendRedirect(cp + "/");
 	
 	}
 
