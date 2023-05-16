@@ -48,7 +48,7 @@ public class MemberServlet extends MyServlet {
 
 	protected void loginForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 로그인 폼
-		String path = "/WEB-INF/views/member/login.jsp";
+		String path = "/WEB-INF/views/member/member.jsp";
 		forward(req, resp, path);		
 	}
 
