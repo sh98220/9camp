@@ -48,7 +48,7 @@
 			</li>
 			<li>
 				<c:if test="${not empty sessionScope.member}">
-					<a href="${pageContext.request.contextPath}/message/list.do" class="top-icon ic_msg" title="쪽지">
+					<a href="${pageContext.request.contextPath}/message/listRecMsg.do" class="top-icon ic_msg" title="쪽지">
 						<i class="fa-regular fa-envelope"></i>
 					</a>
 				</c:if>
@@ -119,7 +119,7 @@
 							<a href="#">내 글보기</a>
 						</li>
 						<li>
-							<a href="${pageContext.request.contextPath}/member/pwd.do">정보수정</a>
+							<a href="#">정보수정</a>
 						</li>
 					</ul>
 				</li>
