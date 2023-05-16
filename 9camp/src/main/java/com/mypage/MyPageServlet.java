@@ -20,7 +20,7 @@ import com.util.MyUtil;
 @WebServlet("/mypage/*")
 public class MyPageServlet extends MyServlet {
 	private static final long serialVersionUID = 1L;
-	private String pathname;
+
 	
 	@Override
 	protected void execute(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -45,16 +45,12 @@ public class MyPageServlet extends MyServlet {
 			profile(req, resp);
 		} else if (uri.indexOf("wish.do") != -1) {
 			wish(req, resp);
-		} else if (uri.indexOf("mateListAdmin.do") != -1) {
-			mateListAdmin(req, resp); //내가 관리 중인 캠핑 메이트 리스트
+		} else if (uri.indexOf("mateList.do") != -1) {
+			mateList(req, resp); //내가 관리 중인 캠핑 메이트 리스트
 		} else if (uri.indexOf("deleteWish.do") != -1) {
 			deleteWish(req, resp);
-		} else if (uri.indexOf("deleteCampMate.do") != -1) {
-			deleteCampMate(req, resp);
-		} else if (uri.indexOf("deleteWish.do") != -1) {
-			deleteWish(req, resp);
-		} else if (uri.indexOf("deleteWish.do") != -1) {
-			deleteWish(req, resp);
+		} else if (uri.indexOf("deleteMate.do") != -1) {
+			deleteMate(req, resp);
 		}
 	}
 
@@ -192,7 +188,7 @@ public class MyPageServlet extends MyServlet {
 		forward(req, resp, "/WEB-INF/views/mypage/wish.jsp");
 	}
 	
-	protected void mateListAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void mateList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 캠핑 메이트 관리 리스트
 		
 		
@@ -261,8 +257,8 @@ public class MyPageServlet extends MyServlet {
 					
 					
 					// 페이징 처리
-					String listUrl = cp + "/mypage/mateListAdmin.do";
-					String articleUrl = cp + "/mypage/mateListAdmin.do?page=" + current_page;
+					String listUrl = cp + "/mypage/mateList.do";
+					String articleUrl = cp + "/mypage/mateList.do?page=" + current_page;
 					if (query.length() != 0) {
 						listUrl += "?" + query;
 						articleUrl += "&" + query;
@@ -285,7 +281,7 @@ public class MyPageServlet extends MyServlet {
 				}
 
 				// JSP로 포워딩
-		forward(req, resp, "/WEB-INF/views/mypage/mateListAdmin.jsp");
+		forward(req, resp, "/WEB-INF/views/mypage/mateList.jsp");
 	}
 	
 	protected void deleteWish(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -326,7 +322,7 @@ public class MyPageServlet extends MyServlet {
 	}
 
 	
-	protected void deleteCampMate(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void deleteMate(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
 		String cp = req.getContextPath();
@@ -353,14 +349,14 @@ public class MyPageServlet extends MyServlet {
 			MateDAO dao = new MateDAOImpl();
 
 
-			// 게시글 삭제
+			// 메이트 삭제
 			dao.deleteMate(nums, info.getUserId());
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		resp.sendRedirect(cp + "/mypage/wish.do?" + query);
+		resp.sendRedirect(cp + "/mypage/mateList.do?" + query);
 	}
 
 }

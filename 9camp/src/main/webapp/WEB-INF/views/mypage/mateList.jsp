@@ -35,9 +35,6 @@ function searchList() {
 	const f = document.searchForm;
 	f.submit();
 }
-
-
-
 	$(function(){  
 		$("#chkAll").click(function(){
 			if($(this).is(":checked")) {
@@ -46,21 +43,9 @@ function searchList() {
 				$("input[name=nums]").prop("checked", false);
 			}
 		});
-		
-		$("#btnDeleteList").click(function(){
-			let cnt = $("input[name=nums]:checked").length;
-			if(cnt === 0) {
-				alert("삭제할 메이트를 먼저 선택하세요.");
-				return false;
-			}
-			
-			if(confirm("선택한 메이트를 삭제 하시겠습니까 ?")) {
-				const f = document.listForm;
-				f.action="${pageContext.request.contextPath}/mypage/deleteCampMate.do";
-				f.submit();
-			}
-		});
 	});
+
+	
 </script>
 </head>
 <body>
@@ -91,8 +76,8 @@ function searchList() {
 					<thead>
 						<tr>
 							<th class="num">번호</th>
-							<th class="subject">메이트제목</th>
-							<th class="campNum">캠핑장제목</th>
+							<th class="mateSubject">메이트제목</th>
+							<th class="campSubject">캠핑장제목</th>
 							<th class="startDate">시작일</th>
 							<th class="endDate">종료일</th>
 							<th class="dues">최대 인원</th>
@@ -127,10 +112,10 @@ function searchList() {
 			<table class="table">
 				<tr>
 					<td width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mypage/mateListAdim.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mypage/mateList.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
 					</td>
 					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/mypage/mateListAdim.do" method="post">
+						<form name="searchForm" action="${pageContext.request.contextPath}/mypage/mateList.do" method="post">
 							<select name="condition" class="form-select">
 								<!-- <option value="all" ${condition=="all"?"selected='selected'":"" }>제목+내용</option> -->
 								<option value="camMateNum" ${condition=="camMateNum"?"selected='selected'":"" }>메이트번호</option>
@@ -144,7 +129,23 @@ function searchList() {
 						</form>
 					</td>
 					<td align="right" width="100">
-						<button type="button" class="btn" onclick="btnDeleteList();">삭제 하기</button>
+						<button type="button" class="btn" onclick="btnDeleteMate();">삭제 하기</button>
+						<script type="text/javascript">
+						function btnDeleteMate() {
+							let cnt = $("input[name=nums]:checked").length;
+							if(cnt === 0) {
+								alert("삭제할 메이트를 먼저 선택하세요.");
+								return false;
+							}
+
+							if(confirm("선택한 메이트를 삭제 하시겠습니까 ?")) {
+								const f = document.listForm;
+								f.action="${pageContext.request.contextPath}/mypage/deleteMate.do";
+								f.submit();
+							}
+						}
+							
+						</script>
 					</td>
 				</tr>
 			</table>
