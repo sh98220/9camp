@@ -393,7 +393,6 @@ public class MyPageDAO {
 				}
 
 			}
-
-
+		
 		
 }

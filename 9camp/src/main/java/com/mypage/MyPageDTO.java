@@ -24,6 +24,7 @@ public class MyPageDTO {
 	private String camInfoRegDate;
 	private String camThemaName;
 	
+
 	
 	
 	public String getUserId() {
@@ -170,5 +171,5 @@ public class MyPageDTO {
 	public void setCamThemaName(String camThemaName) {
 		this.camThemaName = camThemaName;
 	}
-	
+
 }

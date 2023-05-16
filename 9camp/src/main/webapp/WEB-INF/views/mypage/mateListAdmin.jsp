@@ -50,13 +50,13 @@ function searchList() {
 		$("#btnDeleteList").click(function(){
 			let cnt = $("input[name=nums]:checked").length;
 			if(cnt === 0) {
-				alert("삭제할 찜을 먼저 선택하세요.");
+				alert("삭제할 메이트를 먼저 선택하세요.");
 				return false;
 			}
 			
-			if(confirm("선택한 찜을 삭제 하시겠습니까 ?")) {
+			if(confirm("선택한 메이트를 삭제 하시겠습니까 ?")) {
 				const f = document.listForm;
-				f.action="${pageContext.request.contextPath}/mypage/deleteWish.do";
+				f.action="${pageContext.request.contextPath}/mypage/deleteCampMate.do";
 				f.submit();
 			}
 		});
@@ -72,7 +72,7 @@ function searchList() {
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-clipboard-list"></i> 나의 찜 목록 </h2>
+			<h2><i class="fas fa-clipboard-list"></i> 나의 메이트 관리 목록 </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
@@ -91,10 +91,11 @@ function searchList() {
 					<thead>
 						<tr>
 							<th class="num">번호</th>
-							<th class="subject">제목</th>
-							<th class="date">작성일</th>
-							<th class="addr">주소</th>
-							<th class="thema">테마</th>
+							<th class="subject">메이트제목</th>
+							<th class="campNum">캠핑장제목</th>
+							<th class="startDate">시작일</th>
+							<th class="endDate">종료일</th>
+							<th class="dues">최대 인원</th>
 							<th class="chk">
 								<input type="checkbox" name="chkAll" id="chkAll">        
 							</th>
@@ -104,13 +105,14 @@ function searchList() {
 					<tbody>
 						<c:forEach var="dto" items="${list}" varStatus="status">
 						<tr>
-							<td>${dto.camInfoNum}</td>
+							<td>${dto.camMateNum}</td>
+							<td>${dto.camMateSubject}</td>
 							<td>${dto.camInfoSubject}</td>
-							<td>${dto.camInfoRegDate}</td>
-							<td>${dto.camInfoAddr}</td>
-							<td>${dto.camThemaName}</td>
+							<td>${dto.camMateStartDate}</td>
+							<td>${dto.camMateEndDate}</td>
+							<td>${dto.camMateDues}</td>
 							<td>
-								<input type="checkbox" name="nums" value="${dto.camInfoNum}">
+								<input type="checkbox" name="nums" value="${dto.camMateNum}">
 							</td>
 						</tr>
 						</c:forEach>
@@ -125,18 +127,16 @@ function searchList() {
 			<table class="table">
 				<tr>
 					<td width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mypage/wish.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mypage/mateListAdim.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
 					</td>
 					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/mypage/wish.do" method="post">
+						<form name="searchForm" action="${pageContext.request.contextPath}/mypage/mateListAdim.do" method="post">
 							<select name="condition" class="form-select">
 								<!-- <option value="all" ${condition=="all"?"selected='selected'":"" }>제목+내용</option> -->
-								<option value="camThemaName" ${condition=="camThemaName"?"selected='selected'":"" }>테마</option>
-								<option value="campWish.camInfoNum" ${condition=="campWish.camInfoNum"?"selected='selected'":"" }>번호</option>
-								<!-- <option value="camInfoRegDate"  ${condition=="camInfoRegDate "?"selected='selected'":"" }>번호</option> -->
-								<option value="camInfoAddr"  ${condition=="camInfoAddr"?"selected='selected'":"" }>주소</option>
-								<option value="camInfoSubject"  ${condition=="camInfoSubject "?"selected='selected'":"" }>제목</option>
-								<option value="camInfoContent"  ${condition=="camInfoContent "?"selected='selected'":"" }>내용</option>
+								<option value="camMateNum" ${condition=="camMateNum"?"selected='selected'":"" }>메이트번호</option>
+								<option value="camMateSubject"  ${condition=="camMateSubject "?"selected='selected'":"" }>메이트제목</option>
+								<option value="camMateContent"  ${condition=="camMateContent "?"selected='selected'":"" }>메이트내용</option>
+								<option value="camInfoSubject"  ${condition=="camInfoSubject "?"selected='selected'":"" }>캠핑장제목</option>
 							</select>
 							<input type="text" name="keyword" value="${keyword}" class="form-control">
 							<input type="hidden" name="size" value="${size}">
