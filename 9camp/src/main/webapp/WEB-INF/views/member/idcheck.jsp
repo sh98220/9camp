@@ -59,7 +59,7 @@ function sendOk() {
 		<div class="inner-page">
 			<div class="members-form">
 				<div class="members-title">
-					<h3><i class="fa-solid fa-lock"></i> 비밀번호 찾기</h3>
+					<h3><i class="fa-solid fa-lock"></i>비밀번호 찾기</h3>
 				</div>
 				<div class="info-box">
 					<form name="pwdForm" method="post">

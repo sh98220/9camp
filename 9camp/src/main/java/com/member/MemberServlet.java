@@ -328,13 +328,11 @@ public class MemberServlet extends MyServlet {
 			
 			if (dto == null) {
 				req.setAttribute("message", "존재하지 않는 아이디입니다.");
-				resp.sendRedirect(cp + "/");
 				return;
 			} else if(dto != null) {
 				String userName = req.getParameter("userName");
 				if(!userName.equals(dto.getUserName())) {
 					req.setAttribute("message", "회원 정보에 등록된 이름과 다릅니다.");
-					resp.sendRedirect(cp + "/");
 					return;
 				}
 			}
