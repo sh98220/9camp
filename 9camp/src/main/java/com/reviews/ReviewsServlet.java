@@ -1,14 +1,20 @@
 package com.reviews;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import com.member.SessionInfo;
 import com.util.MyUploadServlet;
+import com.util.MyUtil;
 
 @MultipartConfig
 @WebServlet("/reviews/*")
@@ -46,6 +52,88 @@ public class ReviewsServlet extends MyUploadServlet {
 	}
 
 	protected void list(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		ReviewsDAO dao = new ReviewsDAO();
+		MyUtil util = new MyUtil();
+
+		String cp = req.getContextPath();
+		
+		try {
+			String page = req.getParameter("page");
+			int current_page = 1;
+			if (page != null) {
+				current_page = Integer.parseInt(page);
+			}
+			
+			// 검색
+			String condition = req.getParameter("condition");
+			String keyword = req.getParameter("keyword");
+			if (condition == null) {
+				condition = "all";
+				keyword = "";
+			}
+
+			// GET 방식인 경우 디코딩
+			if (req.getMethod().equalsIgnoreCase("GET")) {
+				keyword = URLDecoder.decode(keyword, "utf-8");
+			}
+
+			// 전체 데이터 개수
+			int dataCount;
+			if (keyword.length() == 0) {
+				dataCount = dao.dataCount();
+			} else {
+				dataCount = dao.dataCount(condition, keyword);
+			}
+			
+			// 전체 페이지 수
+			int size = 5;
+			int total_page = util.pageCount(dataCount, size);
+			if (current_page > total_page) {
+				current_page = total_page;
+			}
+
+			// 게시물 가져오기
+			int offset = (current_page - 1) * size;
+			if(offset < 0) offset = 0;
+			
+			List<ReviewsDTO> list = null;
+			if (keyword.length() == 0) {
+				list = dao.listReviews(offset, size);
+			} else {
+				list = dao.listReviews(offset, size, condition, keyword);
+			}
+
+			String query = "";
+			if (keyword.length() != 0) {
+				query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");
+			}
+
+			// 페이징 처리
+			String listUrl = cp + "/reviews/list.do";
+			String articleUrl = cp + "/reviews/article.do?page=" + current_page;
+			if (query.length() != 0) {
+				listUrl += "?" + query;
+				articleUrl += "&" + query;
+			}
+
+			String paging = util.paging(current_page, total_page, listUrl);
+
+			// 포워딩할 JSP에 전달할 속성
+			req.setAttribute("list", list);
+			req.setAttribute("page", current_page);
+			req.setAttribute("total_page", total_page);
+			req.setAttribute("dataCount", dataCount);
+			req.setAttribute("size", size);
+			req.setAttribute("articleUrl", articleUrl);
+			req.setAttribute("paging", paging);
+			req.setAttribute("condition", condition);
+			req.setAttribute("keyword", keyword);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		// JSP로 포워딩
 		forward(req, resp, "/WEB-INF/views/reviews/list.jsp");
 	}
 	
@@ -54,12 +142,90 @@ public class ReviewsServlet extends MyUploadServlet {
 	}
 	
 	protected void writeSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		ReviewsDAO dao = new ReviewsDAO();
 		
+		HttpSession session= req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
 		
+		String cp = req.getContextPath();
+		
+		if(req.getMethod().equalsIgnoreCase("GET")) {
+			resp.sendRedirect(cp + "/reviews/list.do");
+			return;
+		}
+		
+		try {
+			ReviewsDTO dto = new ReviewsDTO();
+			
+			dto.setUserId(info.getUserId()); 
+			dto.setCamRevsubject(req.getParameter("camRevsubject"));
+			dto.setCamRevcontent(req.getParameter("camRevcontent"));
+			
+			
+			
+			dao.insertReviews(dto);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp + "/reviews/list.do?");
 	}
 	
 	protected void article(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
+		// 글 보기
+				ReviewsDAO dao = new ReviewsDAO();
+				MyUtil util = new MyUtil();
+				
+				String cp = req.getContextPath();
+				
+				String page = req.getParameter("page");
+				String query = "page=" + page;
+
+				try {
+					long num = Long.parseLong(req.getParameter("num"));
+					String condition = req.getParameter("condition");
+					String keyword = req.getParameter("keyword");
+					if (condition == null) {
+						condition = "all";
+						keyword = "";
+					}
+					keyword = URLDecoder.decode(keyword, "utf-8");
+
+					if (keyword.length() != 0) {
+						query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
+					}
+
+					// 조회수 증가
+					// dao.updateHitCount(num);
+
+					// 게시물 가져오기
+					ReviewsDTO dto = dao.readReviews(num);
+					if (dto == null) { // 게시물이 없으면 다시 리스트로
+						resp.sendRedirect(cp + "/reviews/list.do?" + query);
+						return;
+					}
+					dto.setCamRevcontent(util.htmlSymbols(dto.getCamRevcontent()));
+
+					// 이전글 다음글
+					// ReviewsDTO preReadDto = dao.preReadBoard( dto.getNum(), condition, keyword);
+					// ReviewsDTO nextReadDto = dao.nextReadBoard( dto.getNum(), condition, keyword);
+
+					// JSP로 전달할 속성
+					req.setAttribute("dto", dto);
+					req.setAttribute("page", page);
+					req.setAttribute("query", query);
+					// req.setAttribute("preReadDto", preReadDto);
+					// req.setAttribute("nextReadDto", nextReadDto);
+
+					// 포워딩
+					forward(req, resp, "/WEB-INF/views/reviews/article.jsp");
+					return;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				resp.sendRedirect(cp + "/reviews/list.do?" + query);
 	}
 	
 	protected void updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
