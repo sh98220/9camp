@@ -23,21 +23,14 @@
 .table-list .chk { width: 40px; color: #787878; }
 .table-list .num { width: 60px; color: #787878; }
 .table-list .subject { color: #787878; }
-.table-list .name { width: 100px; color: #787878; }
+.table-list .thema { width: 100px; color: #787878; }
 .table-list .date { width: 100px; color: #787878; }
-.table-list .hit { width: 70px; color: #787878; }
+.table-list .addr { width: 150px; color: #787878; }
 
 .table-list input[type=checkbox] { vertical-align: middle; }
 </style>
 
 <script type="text/javascript">
-function changeList() {
-    const f = document.listForm;
-    f.page.value="1";
-    f.action="${pageContext.request.contextPath}/mypage/wish.do";
-    f.submit();
-}
-
 function searchList() {
 	const f = document.searchForm;
 	f.submit();
@@ -63,18 +56,11 @@ function searchList() {
 			
 			if(confirm("선택한 찜을 삭제 하시겠습니까 ?")) {
 				const f = document.listForm;
-				f.action="${pageContext.request.contextPath}/mypage/deleteList.do";
+				f.action="${pageContext.request.contextPath}/mypage/deleteWish.do";
 				f.submit();
 			}
 		});
 	});
-
-function allDelete(){
-	if(confirm("모든 찜을 삭제하시겠습니까 ?")){
-		
-	};
-	
-}
 </script>
 </head>
 <body>
@@ -93,9 +79,6 @@ function allDelete(){
 	        <form name="listForm" method="post">
 				<table class="table">
 					<tr>
-						<td width="50%">
-							<button type="button" class="btn" id="btnDeleteList">삭제</button>
-						</td>
 						<td align="right">
 							<input type="hidden" name="page" value="${page}">
 							<input type="hidden" name="condition" value="${condition}">
@@ -107,48 +90,29 @@ function allDelete(){
 				<table class="table table-border table-list">
 					<thead>
 						<tr>
-
 							<th class="num">번호</th>
 							<th class="subject">제목</th>
-							<th class="name">작성자</th>
 							<th class="date">작성일</th>
-							<th class="hit">조회수</th>
-							
-								<th class="chk">
-									<input type="checkbox" name="chkAll" id="chkAll">        
-								</th>
+							<th class="addr">주소</th>
+							<th class="thema">테마</th>
+							<th class="chk">
+								<input type="checkbox" name="chkAll" id="chkAll">        
+							</th>
 						</tr>
 					</thead>
 					
 					<tbody>
-						<c:forEach var="dto" items="${listWish}">
-							<tr>
-								<td>
-									<input type="checkbox" name="nums" value="${dto.num}">
-								</td>
-								<td><span class="wish">나의 찜 목록</span></td>
-								<td class="left">
-									<a href="${articleUrl}&num=${dto.num}">${dto.subject}</a>
-								</td>
-								<td>${dto.userName}</td>
-								<td>${dto.reg_date}</td>
-								<td>${dto.hitCount}</td>
-							</tr>
-						</c:forEach>
-						
 						<c:forEach var="dto" items="${list}" varStatus="status">
-							<tr>
-								<td>
-									<input type="checkbox" name="nums" value="${dto.num}">
-								</td>
-								<td>${dataCount - (page-1) * size - status.index}</td>
-								<td class="left">
-									<a href="${articleUrl}&num=${dto.num}">${dto.subject}</a>
-								</td>
-								<td>${dto.userName}</td>
-								<td>${dto.reg_date}</td>
-								<td>${dto.hitCount}</td>
-							</tr>
+						<tr>
+							<td>${dto.camInfoNum}</td>
+							<td>${dto.camInfoSubject}</td>
+							<td>${dto.camInfoRegDate}</td>
+							<td>${dto.camInfoAddr}</td>
+							<td>${dto.camThemaName}</td>
+							<td>
+								<input type="checkbox" name="nums" value="${dto.camInfoNum}">
+							</td>
+						</tr>
 						</c:forEach>
 					</tbody>
 				</table>
@@ -166,11 +130,13 @@ function allDelete(){
 					<td align="center">
 						<form name="searchForm" action="${pageContext.request.contextPath}/mypage/wish.do" method="post">
 							<select name="condition" class="form-select">
-								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
-								<option value="thema" ${condition=="thema"?"selected='selected'":"" }>테마</option>
-								<option value="reg_date"  ${condition=="reg_date"?"selected='selected'":"" }>등록일</option>
-								<option value="subject"  ${condition=="subject"?"selected='selected'":"" }>제목</option>
-								<option value="content"  ${condition=="content"?"selected='selected'":"" }>내용</option>
+								<!-- <option value="all" ${condition=="all"?"selected='selected'":"" }>제목+내용</option> -->
+								<option value="camThemaName" ${condition=="camThemaName"?"selected='selected'":"" }>테마</option>
+								<option value="campWish.camInfoNum" ${condition=="campWish.camInfoNum"?"selected='selected'":"" }>번호</option>
+								<!-- <option value="camInfoRegDate"  ${condition=="camInfoRegDate "?"selected='selected'":"" }>번호</option> -->
+								<option value="camInfoAddr"  ${condition=="camInfoAddr"?"selected='selected'":"" }>주소</option>
+								<option value="camInfoSubject"  ${condition=="camInfoSubject "?"selected='selected'":"" }>제목</option>
+								<option value="camInfoContent"  ${condition=="camInfoContent "?"selected='selected'":"" }>내용</option>
 							</select>
 							<input type="text" name="keyword" value="${keyword}" class="form-control">
 							<input type="hidden" name="size" value="${size}">
@@ -178,7 +144,7 @@ function allDelete(){
 						</form>
 					</td>
 					<td align="right" width="100">
-						<button type="button" class="btn" onclick="allDelete();">전체 삭제</button>
+						<button type="button" class="btn" onclick="btnDeleteList();">삭제 하기</button>
 					</td>
 				</tr>
 			</table>

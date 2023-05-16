@@ -1,6 +1,8 @@
 package com.mypage;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -38,16 +40,19 @@ public class MyPageServlet extends MyServlet {
 		//} else if (uri.indexOf("pwdCheck.do") != -1) {
 			//profileEditForm(req, resp);
 		} else if (uri.indexOf("profile.do") != -1) {
-			editProfile(req, resp);
+			profile(req, resp);
 		} else if (uri.indexOf("wish.do") != -1) {
-			wishList(req, resp);
+			wish(req, resp);
 		} else if (uri.indexOf("mate.do") != -1) {
 			campMateList(req, resp);
-		} 
+		} else if (uri.indexOf("deleteWish.do") != -1) {
+			deleteWish(req, resp);
+		}
 	}
 
-	
-	protected void editProfile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+
+	protected void profile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 프로필 수정
 		MyPageDAO dao = new MyPageDAO();
 		HttpSession session = req.getSession();
@@ -84,50 +89,8 @@ public class MyPageServlet extends MyServlet {
 		resp.sendRedirect(cp + "/");
 	}
 	
-	protected void updateProfile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 회원정보 수정 완료
-		MyPageDAO dao = new MyPageDAO();
-		HttpSession session = req.getSession();
 
-		String cp = req.getContextPath();
-		if (req.getMethod().equalsIgnoreCase("GET")) {
-			resp.sendRedirect(cp + "/");
-			return;
-		}
-
-		try {
-			SessionInfo info = (SessionInfo) session.getAttribute("member");
-			if (info == null) { // 로그아웃 된 경우
-				resp.sendRedirect(cp + "/member/member.do");
-				return;
-			}
-
-			MyPageDTO dto = new MyPageDTO();
-
-			dto.setUserId(req.getParameter("userId"));
-			dto.setUserPwd(req.getParameter("userPwd"));
-			dto.setUserName(req.getParameter("userName"));
-
-			String email1 = req.getParameter("email1");
-			String email2 = req.getParameter("email2");
-			dto.setUserEmail(email1 + "@" + email2);
-
-			String tel1 = req.getParameter("tel1");
-			String tel2 = req.getParameter("tel2");
-			String tel3 = req.getParameter("tel3");
-			dto.setUserTel(tel1 + "-" + tel2 + "-" + tel3);
-
-			//dao.updateMember(dto);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		resp.sendRedirect(cp + "/");
-	}
-	
-	
-	
-	protected void wishList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void wish(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 찜 리스트
 		MyPageDAO dao = new MyPageDAO();
 		MyUtil util = new MyUtil();
@@ -146,11 +109,28 @@ public class MyPageServlet extends MyServlet {
 				current_page = Integer.parseInt(page);
 			}
 
+			// 검색
+			String condition = req.getParameter("condition");
+			String keyword = req.getParameter("keyword");
+			if (condition == null) {
+				condition = "all";
+				keyword = "";
+			}
+			
+			if (req.getMethod().equalsIgnoreCase("GET")) {
+				keyword = URLDecoder.decode(keyword, "utf-8");
+			}
+			
 			// 전체데이터 개수
-			int dataCount = dao.dataCount(info.getUserId());
-
+			int dataCount;
+			if (keyword.length() == 0) {
+				dataCount = dao.dataCount(info.getUserId());
+			} else {
+				dataCount = dao.dataCount(condition, keyword, info.getUserId());
+			}
+			
 			// 전체페이지수
-			int size = 12;
+			int size = 5;
 			int total_page = util.pageCount(dataCount, size);
 			if (current_page > total_page) {
 				current_page = total_page;
@@ -160,20 +140,41 @@ public class MyPageServlet extends MyServlet {
 			int offset = (current_page - 1) * size;
 			if(offset < 0) offset = 0;
 			
-			List<MyPageDTO> list = dao.listMyPage(offset, size, info.getUserId());
+			
+			
+			List<MyPageDTO> list = null;
+			if (keyword.length() == 0) {
+				list = dao.listWish(offset, size, info.getUserId());
+			} else {
+				list = dao.listWish(offset, size, condition, keyword, info.getUserId());
+			}
 
+			String query = "";
+			if (keyword.length() != 0) {
+				query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");
+			}
+			
+			
+			
 			// 페이징 처리
 			String listUrl = cp + "/mypage/wish.do";
 			String articleUrl = cp + "/mypage/wish.do?page=" + current_page;
+			if (query.length() != 0) {
+				listUrl += "?" + query;
+				articleUrl += "&" + query;
+			}
 			String paging = util.paging(current_page, total_page, listUrl);
 
 			// 포워딩할 list.jsp에 넘길 값
 			req.setAttribute("list", list);
-			req.setAttribute("dataCount", dataCount);
-			req.setAttribute("articleUrl", articleUrl);
 			req.setAttribute("page", current_page);
 			req.setAttribute("total_page", total_page);
+			req.setAttribute("dataCount", dataCount);
+			req.setAttribute("size", size);
+			req.setAttribute("articleUrl", articleUrl);
 			req.setAttribute("paging", paging);
+			req.setAttribute("condition", condition);
+			req.setAttribute("keyword", keyword);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -187,6 +188,42 @@ public class MyPageServlet extends MyServlet {
 		// 캠핑 메이트 리스트
 		forward(req, resp, "/WEB-INF/views/mypage/mate.jsp");
 	}
+	
+	protected void deleteWish(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		String cp = req.getContextPath();
 
+		String page = req.getParameter("page");
+		String size = req.getParameter("size");
+		String query = "size=" + size + "&page=" + page;
+
+		String condition = req.getParameter("condition");
+		String keyword = req.getParameter("keyword");
+
+		try {
+			if (keyword != null && keyword.length() != 0) {
+				query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
+			}
+
+			String[] nn = req.getParameterValues("nums");
+			long nums[] = null;
+			nums = new long[nn.length];
+			for (int i = 0; i < nn.length; i++) {
+				nums[i] = Long.parseLong(nn[i]);
+			}
+
+			MyPageDAO dao = new MyPageDAO();
+
+
+			// 게시글 삭제
+			dao.deleteWish(nums, info.getUserId());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp + "/mypage/wish.do?" + query);
+	}
 
 }
