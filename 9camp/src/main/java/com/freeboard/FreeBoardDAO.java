@@ -33,11 +33,12 @@ public class FreeBoardDAO {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			if (pstmt != null)
+			if (pstmt != null) {
 				try {
 					pstmt.close();
-				} catch (SQLException e) {
+				} catch (SQLException e2) {
 				}
+			}
 		}
 	}
 	
@@ -254,7 +255,7 @@ public class FreeBoardDAO {
 
 		return list;
 	}
-	
+/*	
 	// 조회수 증가하기  (Board_256)  
 	public void updateHitCount(long num) throws SQLException {
 		PreparedStatement pstmt = null;
@@ -280,7 +281,7 @@ public class FreeBoardDAO {
 		}
 
 	}	
-	
+*/	
 	// 해당 게시물 보기  (Board_282)
 	public FreeBoardDTO readBoard(long num) {
 		FreeBoardDTO dto = null;
@@ -331,7 +332,7 @@ public class FreeBoardDAO {
 
 		return dto;
 	}	
-	
+/*	
 	// 게시물 수정
 	public void updateFreeBoard(FreeBoardDTO dto) throws SQLException {
 		PreparedStatement pstmt = null;
@@ -361,7 +362,8 @@ public class FreeBoardDAO {
 		}
 
 	}	
-
+*/
+/*
 	// 게시물 삭제
 	public void deleteFreeBoard(long num, String userId) throws SQLException {
 		PreparedStatement pstmt = null;
@@ -397,7 +399,7 @@ public class FreeBoardDAO {
 			}
 		}
 	}
-	
+*/	
 	
 	
 	
