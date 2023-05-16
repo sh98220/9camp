@@ -119,7 +119,7 @@
 							<a href="#">내 글보기</a>
 						</li>
 						<li>
-							<a href="#">정보수정</a>
+							<a href="${pageContext.request.contextPath}/member/pwd.do">정보수정</a>
 						</li>
 					</ul>
 				</li>
