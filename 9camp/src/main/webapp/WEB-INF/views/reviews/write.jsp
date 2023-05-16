@@ -222,14 +222,14 @@ function sendOk() {
     }
 
     
-    f.action = "${pageContext.request.contextPath}/reviews/write_ok.do";
+    f.action = "${pageContext.request.contextPath}/reviews/${mode}_ok.do";
     f.submit();
 }
 
 <c:if test="${mode == 'update'}">
-	function deleteFile(num) {
+	function deleteFile(camRevphotonum) {
 		if(confirm('이미지를 삭제하시겠습니까 ?')){
-			let query = "category=${category}&num="+num+"&page=${page}";
+			let query = "camRevnum=${dto.camRevnum}&camRevphotonum=" + camRevphotonum + "&page=${page}";
 			let url = "${pageContext.request.contextPath}/reviews/deleteFile.do";
 			location.href = url + "?" + query;
 		}
@@ -302,7 +302,8 @@ function sendOk() {
 							<button type="reset" class="btn">다시입력</button>
 							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/reviews/list.do';">${mode=="update"?"수정취소":"등록취소"}</button>
 							<c:if test="${mode=='update' }">
-								<input type="hidden" name="num" value="${dto.getRevnum}">
+								<input type="hidden" name="camRevnum" value="${dto.camRevnum}">
+								<input type="hidden" name="page" value="${page}">
 							</c:if>							
 						</td>
 					</tr>

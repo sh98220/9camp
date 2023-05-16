@@ -213,7 +213,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 </style>
 <script type="text/javascript">
 <c:if test="${sessionScope.member.userId==dto.userId || sessionScope.member.userId=='admin'}">
-	function deleteReview() {
+	function deleteReviews() {
 	    if(confirm("게시글을 삭제 하시 겠습니까 ? ")) {
 		    let query = "num=${dto.camRevnum}&${query}";
 		    let url = "${pageContext.request.contextPath}/reviews/delete.do?" + query;
@@ -291,7 +291,7 @@ function imageViewer(img) {
 						<td colspan="2">
 							이전글 :
 							<c:if test="${not empty preReadDto}">
-								<a href="${pageContext.request.contextPath}/reviews/article.do?${query}&num=${preReadDto.num}">${preReadDto.subject}</a>
+								<a href="${pageContext.request.contextPath}/reviews/article.do?${query}&num=${preReadDto.camRevnum}">${preReadDto.camRevsubject}</a>
 							</c:if>
 						</td>
 					</tr>
@@ -299,7 +299,7 @@ function imageViewer(img) {
 						<td colspan="2">
 							다음글 :
 							<c:if test="${not empty nextReadDto}">
-								<a href="${pageContext.request.contextPath}/reviews/article.do?${query}&num=${nextReadDto.num}">${nextReadDto.subject}</a>
+								<a href="${pageContext.request.contextPath}/reviews/article.do?${query}&num=${nextReadDto.camRevnum}">${nextReadDto.camRevsubject}</a>
 							</c:if>
 						</td>
 					</tr>
@@ -311,7 +311,7 @@ function imageViewer(img) {
 					<td width="50%">
 						<c:choose>
 							<c:when test="${sessionScope.member.userId==dto.userId}">
-								<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/reviews/update.do?num=${dto.camRevnum}&category=${category}&page=${page}';">수정</button>
+								<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/reviews/update.do?num=${dto.camRevnum}&page=${page}';">수정</button>
 							</c:when>
 							<c:otherwise>
 								<button type="button" class="btn" disabled="disabled">수정</button>
@@ -320,7 +320,7 @@ function imageViewer(img) {
 				    	
 						<c:choose>
 				    		<c:when test="${sessionScope.member.userId==dto.userId || sessionScope.member.userId=='admin'}">
-				    			<button type="button" class="btn" onclick="deleteBoard();">삭제</button>
+				    			<button type="button" class="btn" onclick="deleteReviews();">삭제</button>
 				    		</c:when>
 				    		<c:otherwise>
 				    			<button type="button" class="btn" disabled="disabled">삭제</button>

@@ -124,10 +124,10 @@ public class ReviewsDAO {
 				sql = "SELECT NVL(COUNT(*), 0) FROM campreviews b "
 						+ " JOIN member m ON b.userId = m.userId ";
 				if (condition.equals("all")) {
-					sql += "  WHERE INSTR(subject, ?) >= 1 OR INSTR(content, ?) >= 1 ";
+					sql += "  WHERE INSTR(camRevsubject, ?) >= 1 OR INSTR(camRevcontent, ?) >= 1 ";
 				} else if (condition.equals("camRevregdate")) {
 					keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
-					sql += "  WHERE TO_CHAR(reg_date, 'YYYYMMDD') = ? ";
+					sql += "  WHERE TO_CHAR(camRevregdate, 'YYYYMMDD') = ? ";
 				} else {
 					sql += "  WHERE INSTR(" + condition + ", ?) >= 1 ";
 				}
@@ -231,7 +231,7 @@ public class ReviewsDAO {
 				sb.append(" FROM campreviews b ");
 				sb.append(" JOIN member m ON b.userId = m.userId ");
 				if (condition.equals("all")) {
-					sb.append(" WHERE INSTR(subject, ?) >= 1 OR INSTR(content, ?) >= 1 ");
+					sb.append(" WHERE INSTR(camRevsubject, ?) >= 1 OR INSTR(camRevcontent, ?) >= 1 ");
 				} else if (condition.equals("camRevregdate")) {
 					keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
 					sb.append(" WHERE TO_CHAR(camRevregdate, 'YYYYMMDD') = ?");
@@ -380,5 +380,338 @@ public class ReviewsDAO {
 
 			return list;
 		}
+		
+		public void deleteReviews(long num) throws SQLException {
+			PreparedStatement pstmt = null;
+			String sql;
 
+			try {
+				sql = "DELETE FROM CAMPREVIEWS WHERE camRevnum=?";
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setLong(1, num);
+				
+				pstmt.executeUpdate();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e) {
+					}
+				}
+			}
+		}
+		
+		public void deleteReviewsFile(String mode, long num) throws SQLException {
+			PreparedStatement pstmt = null;
+			String sql;
+
+			try {
+				if (mode.equals("all")) {
+					sql = "DELETE FROM CAMPREVIEWSPHOTO WHERE camRevnum = ?";
+				} else {
+					sql = "DELETE FROM CAMPREVIEWSPHOTO WHERE camRevphotonum = ?";
+				}
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setLong(1, num);
+
+				pstmt.executeUpdate();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e2) {
+					}
+				}
+			}
+		}
+		
+		public void updateReviews(ReviewsDTO dto) throws SQLException {
+			PreparedStatement pstmt = null;
+			String sql;
+
+			try {
+				sql = "UPDATE campReviews SET camRevsubject=?, camRevcontent=? WHERE camRevnum=?";
+				pstmt = conn.prepareStatement(sql);
+
+				pstmt.setString(1, dto.getCamRevsubject());
+				pstmt.setString(2, dto.getCamRevcontent());
+				pstmt.setLong(3, dto.getCamRevnum());
+
+				pstmt.executeUpdate();
+				
+				pstmt.close();
+				pstmt = null;
+
+				if (dto.getImageFiles() != null) {
+					sql = "INSERT INTO campReviewsphoto(camRevphotonum, camRevnum, camRevphotoname) VALUES "
+							+ " (CAMPREVIEWSPHOTO_seq.NEXTVAL, ?, ?)";
+					pstmt = conn.prepareStatement(sql);
+					
+					for (int i = 0; i < dto.getImageFiles().length; i++) {
+						pstmt.setLong(1, dto.getCamRevnum());
+						pstmt.setString(2, dto.getImageFiles()[i]);
+						
+						pstmt.executeUpdate();
+					}
+				}
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e) {
+					}
+				}
+			}
+		}
+			
+			public ReviewsDTO readReviewsFile(int camRevphotonum) {
+				ReviewsDTO dto = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String sql;
+
+				try {
+					sql = "SELECT camRevphotonum, camRevnum, camRevphotoname FROM campreviewsphoto WHERE camRevphotonum = ?";
+					pstmt = conn.prepareStatement(sql);
+					
+					pstmt.setLong(1, camRevphotonum);
+					
+					rs = pstmt.executeQuery();
+
+					if (rs.next()) {
+						dto = new ReviewsDTO();
+
+						dto.setCamRevphotonum(rs.getInt("camRevphotonum"));
+						dto.setCamRevnum(rs.getInt("camRevnum"));
+						dto.setCamRevphotoname(rs.getString("camRevphotoname"));
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					if (rs != null) {
+						try {
+							rs.close();
+						} catch (SQLException e) {
+						}
+					}
+
+					if (pstmt != null) {
+						try {
+							pstmt.close();
+						} catch (SQLException e) {
+						}
+					}
+				}
+
+				return dto;
+		}
+
+			public ReviewsDTO preReadReviews(long camRevnum, String condition, String keyword) {
+				ReviewsDTO dto = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				StringBuilder sb = new StringBuilder();
+
+				try {
+					if (keyword != null && keyword.length() != 0) {
+						sb.append(" SELECT camRevnum, camRevsubject ");
+						sb.append(" FROM campreviews b ");
+						sb.append(" JOIN member m ON b.userId = m.userId ");
+						sb.append(" WHERE camRevnum > ? ");
+						if (condition.equals("all")) {
+							sb.append("   AND ( INSTR(camRevsubject, ?) >= 1 OR INSTR(camRevcontent, ?) >= 1 ) ");
+						} else if (condition.equals("camRevregdate")) {
+							keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
+							sb.append("   AND TO_CHAR(camRevregdate, 'YYYYMMDD') = ? ");
+						} else {
+							sb.append("   AND INSTR(" + condition + ", ?) >= 1 ");
+						}
+						sb.append(" ORDER BY camRevnum ASC ");
+						sb.append(" FETCH FIRST 1 ROWS ONLY ");
+
+						pstmt = conn.prepareStatement(sb.toString());
+						
+						pstmt.setLong(1, camRevnum);
+						pstmt.setString(2, keyword);
+						if (condition.equals("all")) {
+							pstmt.setString(3, keyword);
+						}
+					} else {
+						sb.append(" SELECT camRevnum, camRevsubject FROM campreviews ");
+						sb.append(" WHERE camRevnum > ? ");
+						sb.append(" ORDER BY camRevnum ASC ");
+						sb.append(" FETCH FIRST 1 ROWS ONLY ");
+
+						pstmt = conn.prepareStatement(sb.toString());
+						
+						pstmt.setLong(1, camRevnum);
+					}
+
+					rs = pstmt.executeQuery();
+
+					if (rs.next()) {
+						dto = new ReviewsDTO();
+						
+						dto.setCamRevnum(rs.getInt("camRevnum"));
+						dto.setCamRevsubject(rs.getString("camRevsubject"));
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					if (rs != null) {
+						try {
+							rs.close();
+						} catch (SQLException e) {
+						}
+					}
+
+					if (pstmt != null) {
+						try {
+							pstmt.close();
+						} catch (SQLException e) {
+						}
+					}
+				}
+
+				return dto;
+			}
+
+			// 다음글
+			public ReviewsDTO nextReadReviews(long camRevnum, String condition, String keyword) {
+				ReviewsDTO dto = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				StringBuilder sb = new StringBuilder();
+
+				try {
+					if (keyword != null && keyword.length() != 0) {
+						sb.append(" SELECT camRevnum, camRevsubject ");
+						sb.append(" FROM campreviews b ");
+						sb.append(" JOIN member m ON b.userId = m.userId ");
+						sb.append(" WHERE camRevnum < ? ");
+						if (condition.equals("all")) {
+							sb.append("   AND ( INSTR(camRevsubject, ?) >= 1 OR INSTR(camRevcontent, ?) >= 1 ) ");
+						} else if (condition.equals("camRevregdate")) {
+							keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
+							sb.append("   AND TO_CHAR(camRevregdate, 'YYYYMMDD') = ? ");
+						} else {
+							sb.append("   AND INSTR(" + condition + ", ?) >= 1 ");
+						}
+						sb.append(" ORDER BY camRevnum DESC ");
+						sb.append(" FETCH FIRST 1 ROWS ONLY ");
+
+						pstmt = conn.prepareStatement(sb.toString());
+						
+						pstmt.setLong(1, camRevnum);
+						pstmt.setString(2, keyword);
+						if (condition.equals("all")) {
+							pstmt.setString(3, keyword);
+						}
+					} else {
+						sb.append(" SELECT camRevnum, camRevsubject FROM campreviews ");
+						sb.append(" WHERE camRevnum < ? ");
+						sb.append(" ORDER BY camRevnum DESC ");
+						sb.append(" FETCH FIRST 1 ROWS ONLY ");
+
+						pstmt = conn.prepareStatement(sb.toString());
+						
+						pstmt.setLong(1, camRevnum);
+					}
+
+					rs = pstmt.executeQuery();
+
+					if (rs.next()) {
+						dto = new ReviewsDTO();
+						
+						dto.setCamRevnum(rs.getInt("camRevnum"));
+						dto.setCamRevsubject(rs.getString("camRevsubject"));
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					if (rs != null) {
+						try {
+							rs.close();
+						} catch (SQLException e) {
+						}
+					}
+
+					if (pstmt != null) {
+						try {
+							pstmt.close();
+						} catch (SQLException e) {
+						}
+					}
+				}
+
+				return dto;
+			}
+			
+
+			public void deletePhotoFile(String mode, long num) throws SQLException {
+				PreparedStatement pstmt = null;
+				String sql;
+
+				try {
+					if (mode.equals("all")) {
+						sql = "DELETE FROM sphotoFile WHERE num = ?";
+					} else {
+						sql = "DELETE FROM sphotoFile WHERE fileNum = ?";
+					}
+					pstmt = conn.prepareStatement(sql);
+					
+					pstmt.setLong(1, num);
+
+					pstmt.executeUpdate();
+
+				} catch (SQLException e) {
+					e.printStackTrace();
+					throw e;
+				} finally {
+					if (pstmt != null) {
+						try {
+							pstmt.close();
+						} catch (SQLException e2) {
+						}
+					}
+				}
+			}
+			
+			public void updateHitCount(long camRevnum) throws SQLException {
+				PreparedStatement pstmt = null;
+				String sql;
+
+				try {
+					sql = "UPDATE campreviews SET camRevhitCount=camRevhitCount+1 WHERE camRevnum=?";
+					
+					pstmt = conn.prepareStatement(sql);
+					
+					pstmt.setLong(1, camRevnum);
+					
+					pstmt.executeUpdate();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					throw e;
+				} finally {
+					if (pstmt != null) {
+						try {
+							pstmt.close();
+						} catch (SQLException e2) {
+						}
+					}
+				}
+			}
 }

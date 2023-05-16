@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.member.SessionInfo;
+import com.util.FileManager;
 import com.util.MyUploadServlet;
 import com.util.MyUtil;
 
@@ -58,8 +59,6 @@ public class ReviewsServlet extends MyUploadServlet {
 			deleteFile(req, resp);
 		} else if(uri.indexOf("delete.do") != -1) {
 			delete(req, resp);
-		} else if(uri.indexOf("download.do") != -1) {
-			download(req, resp);
 		}
 		
 		
@@ -225,19 +224,19 @@ public class ReviewsServlet extends MyUploadServlet {
 					}
 
 					// 조회수 증가
-					// dao.updateHitCount(num);
+					dao.updateHitCount(num);
 
 					// 게시물 가져오기
 					ReviewsDTO dto = dao.readReviews(num);
-					if (dto == null || !dto.getUserId().equals(info.getUserId())) { // 게시물이 없으면 다시 리스트로
+					if (dto == null ) { // 게시물이 없으면 다시 리스트로
 						resp.sendRedirect(cp + "/reviews/list.do?" + query);
 						return;
 					}
 					dto.setCamRevcontent(util.htmlSymbols(dto.getCamRevcontent()));
 
 					// 이전글 다음글
-					// ReviewsDTO preReadDto = dao.preReadBoard( dto.getNum(), condition, keyword);
-					// ReviewsDTO nextReadDto = dao.nextReadBoard( dto.getNum(), condition, keyword);
+					 ReviewsDTO preReadDto = dao.preReadReviews( dto.getCamRevnum(), condition, keyword);
+					 ReviewsDTO nextReadDto = dao.nextReadReviews( dto.getCamRevnum(), condition, keyword);
 
 					List<ReviewsDTO> listFile = dao.listPhotoFile(num);
 					
@@ -246,8 +245,8 @@ public class ReviewsServlet extends MyUploadServlet {
 					req.setAttribute("page", page);
 					req.setAttribute("query", query);
 					req.setAttribute("listFile", listFile);
-					// req.setAttribute("preReadDto", preReadDto);
-					// req.setAttribute("nextReadDto", nextReadDto);
+					req.setAttribute("preReadDto", preReadDto);
+					req.setAttribute("nextReadDto", nextReadDto);
 					
 
 					// 포워딩
@@ -261,22 +260,155 @@ public class ReviewsServlet extends MyUploadServlet {
 	}
 	
 	protected void updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		ReviewsDAO dao = new ReviewsDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+
+		String cp = req.getContextPath();
+
+		String page = req.getParameter("page");
+
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+			ReviewsDTO dto = dao.readReviews(num);
+
+			if (dto == null) {
+				resp.sendRedirect(cp + "/reviews/list.do?page=" + page);
+				return;
 			}
+
+			// 게시물을 올린 사용자가 아니면
+			if (!dto.getUserId().equals(info.getUserId())) {
+				resp.sendRedirect(cp + "/reviews/list.do?page=" + page);
+				return;
+			}
+
+			List<ReviewsDTO> listFile = dao.listPhotoFile(num);
+
+			req.setAttribute("dto", dto);
+			req.setAttribute("page", page);
+			req.setAttribute("listFile", listFile);
+
+			req.setAttribute("mode", "update");
+
+			forward(req, resp, "/WEB-INF/views/reviews/write.jsp");
+			return;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp + "/reviews/list.do?page=" + page);
+	}
 	
 	protected void updateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
+		ReviewsDAO dao = new ReviewsDAO();
+
+		String cp = req.getContextPath();
+		if (req.getMethod().equalsIgnoreCase("GET")) {
+			resp.sendRedirect(cp + "/reviews/list.do");
+			return;
+		}
+
+		String page = req.getParameter("page");
+
+		try {
+			ReviewsDTO dto = new ReviewsDTO();
+			dto.setCamRevnum(Integer.parseInt(req.getParameter("camRevnum")));
+			dto.setCamRevsubject(req.getParameter("camRevsubject"));
+			dto.setCamRevcontent(req.getParameter("camRevcontent"));
+
+			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);
+			if (map != null) {
+				String[] saveFiles = map.get("saveFilenames");
+				dto.setImageFiles(saveFiles);
+			}
+
+			dao.updateReviews(dto);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp + "/reviews/list.do?page=" + page);
 	}
 	
 	protected void deleteFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-	
+		ReviewsDAO dao = new ReviewsDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+
+		String cp = req.getContextPath();
+
+		String page = req.getParameter("page");
+
+		try {
+			int camRevnum = Integer.parseInt(req.getParameter("camRevnum"));
+			int camRevphotonum = Integer.parseInt(req.getParameter("camRevphotonum"));
+			
+			ReviewsDTO dto = dao.readReviews(camRevnum);
+
+			if (dto == null) {
+				resp.sendRedirect(cp + "/reviews/list.do?page=" + page);
+				return;
+			}
+
+			if (!info.getUserId().equals(dto.getUserId())) {
+				resp.sendRedirect(cp + "/reviews/list.do?page=" + page);
+				return;
+			}
+			
+			ReviewsDTO vo = dao.readReviewsFile(camRevphotonum);
+			if(vo != null) {
+				FileManager.doFiledelete(pathname, vo.getCamRevphotoname());
+				
+				dao.deleteReviewsFile("one", camRevphotonum);
+			}
+
+			resp.sendRedirect(cp + "/reviews/update.do?num=" + camRevnum + "&page=" + page);
+			return;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp + "/reviews/list.do?page=" + page);
 	}
 	
 	protected void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		ReviewsDAO dao = new ReviewsDAO();
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+
+		String cp = req.getContextPath();
 		
-	}
-	
-	protected void download(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 파일 다운로드
+		String page = req.getParameter("page");
+
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+
+			ReviewsDTO dto = dao.readReviews(num);
+			if (dto == null) {
+				resp.sendRedirect(cp + "/reviews/list.do?page=" + page);
+				return;
+			}
+
+			if (!dto.getUserId().equals(info.getUserId())) {
+				resp.sendRedirect(cp + "/reviews/list.do?page=" + page);
+				return;
+			}
+
+			List<ReviewsDTO> listFile = dao.listPhotoFile(num);
+			for (ReviewsDTO vo : listFile) {
+				FileManager.doFiledelete(pathname, vo.getCamRevphotoname());
+			}
+			dao.deleteReviewsFile("all", num);
+
+			dao.deleteReviews(num);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp + "/reviews/list.do?page=" + page);
 	}
 	
 	protected void insertLikeBoard(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
