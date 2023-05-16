@@ -15,18 +15,53 @@ public class ReviewsDAO {
 	public void insertReviews(ReviewsDTO dto) throws SQLException{
 		PreparedStatement pstmt = null;
 		String sql;
+		ResultSet rs = null;
+		int seq;
 		
-		try {
+		try {		
+			sql = "SELECT campreviews_seq.NEXTVAL FROM dual";
+			pstmt = conn.prepareStatement(sql);
+			
+			rs = pstmt.executeQuery();
+			
+			seq = 0;
+			if (rs.next()) {
+				seq = rs.getInt(1);
+			}
+			dto.setCamRevnum(seq);
+	
+			rs.close();
+			pstmt.close();
+			rs = null;
+			pstmt = null;
+			
 			sql = "INSERT INTO CAMPREVIEWS(camRevnum, camInfonum, userId, camRevsubject, camRevcontent, camRevhitcount, camRevregdate) "
-					+ " VALUES (campreviews_seq.NEXTVAL, 1, ?, ?, ?, 0, SYSDATE)";
+					+ " VALUES (?, 1, ?, ?, ?, 0, SYSDATE)";
 			
 			pstmt = conn.prepareStatement(sql);
 			
-			pstmt.setString(1, dto.getUserId());
-			pstmt.setString(2, dto.getCamRevsubject());
-			pstmt.setString(3, dto.getCamRevcontent());
+			pstmt.setLong(1, dto.getCamRevnum());
+			pstmt.setString(2, dto.getUserId());
+			pstmt.setString(3, dto.getCamRevsubject());
+			pstmt.setString(4, dto.getCamRevcontent());
 			
 			pstmt.executeUpdate();
+			
+			pstmt.close();
+			pstmt = null;
+
+			if (dto.getImageFiles() != null) {
+				sql = "INSERT INTO CAMPREVIEWSPHOTO(CAMREVPHOTONUM, camRevnum, CAMREVPHOTONAME) VALUES "
+						+ " (CAMPREVIEWSPHOTO_SEQ.NEXTVAL, ?, ?)";
+				pstmt = conn.prepareStatement(sql);
+				
+				for (int i = 0; i < dto.getImageFiles().length; i++) {
+					pstmt.setLong(1, dto.getCamRevnum());
+					pstmt.setString(2, dto.getImageFiles()[i]);
+					
+					pstmt.executeUpdate();
+				}
+			}
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -87,7 +122,7 @@ public class ReviewsDAO {
 
 			try {
 				sql = "SELECT NVL(COUNT(*), 0) FROM campreviews b "
-						+ " JOIN member1 m ON b.userId = m.userId ";
+						+ " JOIN member m ON b.userId = m.userId ";
 				if (condition.equals("all")) {
 					sql += "  WHERE INSTR(subject, ?) >= 1 OR INSTR(content, ?) >= 1 ";
 				} else if (condition.equals("camRevregdate")) {
@@ -192,14 +227,14 @@ public class ReviewsDAO {
 
 			try {
 				sb.append(" SELECT camRevnum, username, camRevsubject, camRevhitcount, ");
-				sb.append("      TO_CHAR(camRevregdate, 'YYYY-MM-DD') reg_date ");
+				sb.append("      TO_CHAR(camRevregdate, 'YYYY-MM-DD') camRevregdate ");
 				sb.append(" FROM campreviews b ");
 				sb.append(" JOIN member m ON b.userId = m.userId ");
 				if (condition.equals("all")) {
 					sb.append(" WHERE INSTR(subject, ?) >= 1 OR INSTR(content, ?) >= 1 ");
-				} else if (condition.equals("reg_date")) {
+				} else if (condition.equals("camRevregdate")) {
 					keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
-					sb.append(" WHERE TO_CHAR(reg_date, 'YYYYMMDD') = ?");
+					sb.append(" WHERE TO_CHAR(camRevregdate, 'YYYYMMDD') = ?");
 				} else {
 					sb.append(" WHERE INSTR(" + condition + ", ?) >= 1 ");
 				}
@@ -302,5 +337,48 @@ public class ReviewsDAO {
 			return dto;
 		}
 
+		public List<ReviewsDTO> listPhotoFile(long num) {
+			List<ReviewsDTO> list = new ArrayList<>();
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+
+			try {
+				sql = "SELECT camRevphotonum, camRevnum, camRevphotoname FROM campreviewsphoto WHERE camRevnum = ?";
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setLong(1, num);
+				
+				rs = pstmt.executeQuery();
+
+				while (rs.next()) {
+					ReviewsDTO dto = new ReviewsDTO();
+
+					dto.setCamRevphotonum(rs.getInt("camRevphotonum"));
+					dto.setCamRevnum(rs.getInt("camRevnum"));
+					dto.setCamRevphotoname(rs.getString("camRevphotoname"));
+					
+					list.add(dto);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException e) {
+					}
+				}
+
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e) {
+					}
+				}
+			}
+
+			return list;
+		}
 
 }

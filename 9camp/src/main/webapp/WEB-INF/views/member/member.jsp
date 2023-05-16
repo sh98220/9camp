@@ -530,10 +530,11 @@ function changeEmail() {
 							</div>
 							<button type="button" onclick="sendLogin();">Sign in</button>
 							<p>
-								<b> 비밀번호를 잊으셨나요? </b>
+								<b><a href="${pageContext.request.contextPath}/member/userIdForm.do">비밀번호를 잊으셨나요?</a></b>
 							</p>
 							<p>
-								<span> 계정이 없으신가요? </span> <b onclick="toggle()" class="pointer">
+								<span> 계정이 없으신가요? </span> 
+								<b onclick="toggle()" class="pointer">
 									Sign up here </b>
 							</p>
 						</form>

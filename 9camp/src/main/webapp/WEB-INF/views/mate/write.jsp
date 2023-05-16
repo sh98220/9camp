@@ -7,6 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <title>캠핑메이트</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 <style type="text/css">
@@ -140,6 +141,8 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	margin: 3px;
 }
 
+
+
 .table-list thead > tr:first-child { background: skyblue; }
 .table-list th, .table-list td { text-align: center; }
 .table-list .left { text-align: left; padding-left: 5px; }
@@ -181,6 +184,77 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	.container {
 	    max-width: 750px;
 	}
+}
+
+
+.modal-btn-box { width:30%;  text-align:left; }
+.modal-btn-box button {
+	display: inline-block;
+	width: 134px;
+	height: 28px;
+	background-color: #ffffff;
+	border: 1px solid #e1e1e1;
+	cursor: pointer;
+}
+
+.popup-wrap {
+	background-color: rgba(0,0,0,.3);
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: none;
+	padding: 15px;
+}
+.popup {
+	width: 100%;
+	max-width: 400px;
+	background-color: #ffffff;
+	border-radius: 10px;
+	overflow: hidden;
+	background-color: #264db5;
+	box-shadow: 5px 10px 10px 1px rgba(0,0,0,.3);
+}
+.popup-head {
+	width: 100%;
+	height: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.head-title {
+	font-size: 33px;
+	font-weight: 700;
+    text-align: center;
+}
+.popup-body {
+	width:100%;
+	background-color:#ffffff;
+}
+.popup-content{
+  width:100%;
+  padding:30px;
+}
+
+.popup-foot{
+	width: 100%;
+	height: 50px;
+}
+.pop-btn{
+	display:inline-flex;
+	width:50%;
+	height:100%;
+	float:left;
+	justify-content:center;
+	align-items:center;
+	color:#ffffff;
+	cursor:pointer;
+}
+.pop-btn.confirm {
+	border-right:1px solid #3b5fbf;
 }
 	
 </style>
@@ -247,6 +321,39 @@ function sendOk() {
 							 <p>${sessionScope.member.userName}</p> 
 						</td>
 					</tr>
+						
+					<tr>
+						<td> 캠핑장 검색 </td>
+						<td><!-- 검색 버튼 -->
+						    <div class="container">
+								<div class="modal-btn-box">
+									<input type="text" readonly="readonly" style= "float: left;" >
+									<button type="button" id="modal-open" style= "float: left;">검색</button>  
+								</div>
+							  
+								<div class="popup-wrap" id="popup">
+									<div class="popup">
+										<div class="popup-head">
+											<span class="head-title">제목</span>
+							      		</div>
+										<div class="popup-body">
+											<div class="popup-content">
+												<input type="text" >
+											</div>
+										</div>
+										<div class="popup-foot">
+											<span class="pop-btn confirm" id="modal-confirm">확인</span>
+											<span class="pop-btn close" id="modal-close">창 닫기</span>
+										</div>			
+									</div>
+								</div>
+							
+							</div>   				
+   						</td>	
+						
+					</tr>
+					
+					
 					
 					<tr> 
 						<td valign="top">내&nbsp;&nbsp;&nbsp;&nbsp;용</td>
@@ -294,15 +401,22 @@ function sendOk() {
 						</td>					
 					</tr>
 					
-					<tr> 
-						<td>기&nbsp;&nbsp;&nbsp;&nbsp;간</td>
-						<td> 
-							<textarea name="content" class="form-control">${dto.content}</textarea>
+					<tr>
+					    <td>기&nbsp;&nbsp;&nbsp;&nbsp;간</td>
+					    <td>
+					        <p style="display: inline-block;">출발날짜&nbsp;&nbsp;</p><input type="date" name="depdate" id="dep">&nbsp;&nbsp;
+					        <p  style="display: inline-block;">도착날짜&nbsp;&nbsp;</p><input type="date" name="aridate" id="ari">&nbsp;&nbsp;
+					   		<p id="result" style="display: inline-block;"></p>
+					    </td>					   
+					</tr>
+					<tr>
+						<td>회&nbsp;&nbsp;&nbsp;&nbsp;비</td>
+						<td>
+							<input type="text" placeholder="ex) 50,000원"> 
 						</td>
 					</tr>
-					
 				</table>
-					
+	
 				<table class="table">
 					<tr> 
 						<td align="center">
@@ -330,5 +444,65 @@ function sendOk() {
 	<jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
 </footer>
 
+<script>
+//날짜 사이의 기간을 계산하는 함수
+function calculateDuration() {
+    var depDate = new Date(document.getElementById("dep").value);
+    var ariDate = new Date(document.getElementById("ari").value);
+
+    // 출발날짜와 도착날짜를 모두 선택한 경우에만 기간을 계산하고 표시
+    if (depDate && ariDate) {
+        var duration = ariDate - depDate;
+        var days = Math.floor(duration / (1000 * 60 * 60 * 24)); // 밀리초를 일로 변환
+
+        // NaN이거나 음수인 경우 0으로 설정
+        if (isNaN(days) || days < 0) {
+            days = 0;
+        }
+
+        document.getElementById("result").innerHTML = "기간 : " + days + "박" + (days + 1) + "일";
+	    } else {
+	        document.getElementById("result").innerHTML = ""; // 선택하지 않은 경우, 기간을 표시하지 않음
+	    }
+	}
+
+	// 출발날짜 입력값이 변경될 때마다 기간 계산 함수 호출
+	document.getElementById("dep").addEventListener("change", function() {
+	    if (document.getElementById("ari").value) {
+	        calculateDuration();
+	    }
+	});
+	
+	// 도착날짜 입력값이 변경될 때마다 기간 계산 함수 호출
+	document.getElementById("ari").addEventListener("change", function() {
+	    if (document.getElementById("dep").value) {
+	        calculateDuration();
+	    }
+	});
+ 
+	$(function(){
+		$("#modal-confirm").click(function(){
+			modalClose();
+		});
+		
+		$("#modal-open").click(function(){
+			$("#popup").css('display','flex').hide().fadeIn();
+		});
+		
+		$("#modal-close").click(function(){
+			modalClose();
+		});
+		
+		function modalClose(){
+			$("#popup").fadeOut();
+		}
+	});
+
+
+
+
+</script>
+
+  
 </body>
 </html>

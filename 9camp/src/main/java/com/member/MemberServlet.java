@@ -41,6 +41,8 @@ public class MemberServlet extends MyServlet {
 			updateSubmit(req, resp);
 		} else if (uri.indexOf("userIdCheck.do") != -1) {
 			userIdCheck(req, resp);
+		} else if (uri.indexOf("userIdForm.do") != -1) {
+			userIdForm(req, resp);
 		} else if (uri.indexOf("delete.do") != -1) {
 			deleteSubmit(req, resp);
 		}
@@ -303,10 +305,54 @@ public class MemberServlet extends MyServlet {
 		
 		resp.sendRedirect(cp+"/");
 	}
+	
+	protected void userIdForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String path = "/WEB-INF/views/member/idcheck.jsp";
+		forward(req, resp, path);
+	}
+
 
 	protected void userIdCheck(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		MemberDAO dao = new MemberDAO();
+		String cp = req.getContextPath();
 
+		if (!req.getMethod().equalsIgnoreCase("POST")) {
+			resp.sendRedirect(cp + "/");
+			return;
+		}
+
+		try {
+		
+			MemberDTO dto = dao.readMember(req.getParameter("userId"));
+			
+			
+			if (dto == null) {
+				req.setAttribute("message", "존재하지 않는 아이디입니다.");
+				resp.sendRedirect(cp + "/");
+				return;
+			} else if(dto != null) {
+				String userName = req.getParameter("userName");
+				if(!userName.equals(dto.getUserName())) {
+					req.setAttribute("message", "회원 정보에 등록된 이름과 다릅니다.");
+					resp.sendRedirect(cp + "/");
+					return;
+				}
+			}
+
+			// 회원정보수정 - 회원수정폼으로 이동
+			req.setAttribute("title", "비밀번호 인증");
+			req.setAttribute("dto", dto);
+			req.setAttribute("mode", "submit");
+			forward(req, resp, "/WEB-INF/views/member/idcheck_ok.jsp");
+			return;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp + "/");
 	}
+
 
 
 }

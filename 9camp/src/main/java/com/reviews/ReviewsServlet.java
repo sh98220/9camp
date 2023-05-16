@@ -1,9 +1,11 @@
 package com.reviews;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -21,13 +23,25 @@ import com.util.MyUtil;
 public class ReviewsServlet extends MyUploadServlet {
 	private static final long serialVersionUID = 1L;
 	
+	private String pathname;
 
 	@Override
 	protected void execute(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("utf-8");
 		
 		String uri = req.getRequestURI();
-				
+		String cp = req.getContextPath();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		if (info == null) { // 로그인되지 않은 경우
+			resp.sendRedirect(cp + "/member/login.do");
+			return;
+		}
+		
+		String root = session.getServletContext().getRealPath("/");
+		pathname = root + "uploads" + File.separator + "reviews";
+		
 		if(uri.indexOf("list.do") != -1) {
 			list(req, resp);
 		} else if(uri.indexOf("write.do") != -1) {
@@ -138,6 +152,7 @@ public class ReviewsServlet extends MyUploadServlet {
 	}
 	
 	protected void writeForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		req.setAttribute("mode", "write");
 		forward(req, resp, "/WEB-INF/views/reviews/write.jsp");
 	}
 	
@@ -154,6 +169,7 @@ public class ReviewsServlet extends MyUploadServlet {
 			return;
 		}
 		
+		
 		try {
 			ReviewsDTO dto = new ReviewsDTO();
 			
@@ -161,7 +177,13 @@ public class ReviewsServlet extends MyUploadServlet {
 			dto.setCamRevsubject(req.getParameter("camRevsubject"));
 			dto.setCamRevcontent(req.getParameter("camRevcontent"));
 			
-			
+
+			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);
+			if (map != null) {
+				String[] saveFiles = map.get("saveFilenames");
+				dto.setImageFiles(saveFiles);
+				
+			}
 			
 			dao.insertReviews(dto);
 			
@@ -173,8 +195,12 @@ public class ReviewsServlet extends MyUploadServlet {
 	}
 	
 	protected void article(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 글 보기
+				// 글 보기
 				ReviewsDAO dao = new ReviewsDAO();
+				
+				HttpSession session = req.getSession();
+				SessionInfo info = (SessionInfo) session.getAttribute("member");
+				
 				MyUtil util = new MyUtil();
 				
 				String cp = req.getContextPath();
@@ -189,8 +215,10 @@ public class ReviewsServlet extends MyUploadServlet {
 					if (condition == null) {
 						condition = "all";
 						keyword = "";
+						
 					}
 					keyword = URLDecoder.decode(keyword, "utf-8");
+
 
 					if (keyword.length() != 0) {
 						query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
@@ -201,7 +229,7 @@ public class ReviewsServlet extends MyUploadServlet {
 
 					// 게시물 가져오기
 					ReviewsDTO dto = dao.readReviews(num);
-					if (dto == null) { // 게시물이 없으면 다시 리스트로
+					if (dto == null || !dto.getUserId().equals(info.getUserId())) { // 게시물이 없으면 다시 리스트로
 						resp.sendRedirect(cp + "/reviews/list.do?" + query);
 						return;
 					}
@@ -211,12 +239,16 @@ public class ReviewsServlet extends MyUploadServlet {
 					// ReviewsDTO preReadDto = dao.preReadBoard( dto.getNum(), condition, keyword);
 					// ReviewsDTO nextReadDto = dao.nextReadBoard( dto.getNum(), condition, keyword);
 
+					List<ReviewsDTO> listFile = dao.listPhotoFile(num);
+					
 					// JSP로 전달할 속성
 					req.setAttribute("dto", dto);
 					req.setAttribute("page", page);
 					req.setAttribute("query", query);
+					req.setAttribute("listFile", listFile);
 					// req.setAttribute("preReadDto", preReadDto);
 					// req.setAttribute("nextReadDto", nextReadDto);
+					
 
 					// 포워딩
 					forward(req, resp, "/WEB-INF/views/reviews/article.jsp");
