@@ -173,10 +173,47 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	    max-width: 750px;
 	}
 }
+
+/* 모달대화상자 */
+.ui-widget-header { /* 타이틀바 */
+	background: none;
+	border: none;
+	border-bottom: 1px solid #ccc;
+	border-radius: 0;
+}
+.ui-dialog .ui-dialog-title {
+	padding-top: 5px; padding-bottom: 5px;
+}
+.ui-widget-content { /* 내용 */
+   /* border: none; */
+   border-color: #ccc; 
+}
+
+.table-article tr > td { padding-left: 5px; padding-right: 5px; }
+
+.img-box {
+	max-width: 700px;
+	padding: 5px;
+	box-sizing: border-box;
+	border: 1px solid #ccc;
+	display: flex; /* 자손요소를 flexbox로 변경 */
+	flex-direction: row; /* 정방향 수평나열 */
+	flex-wrap: nowrap;
+	overflow-x: auto;
+}
+.img-box img {
+	width: 100px; height: 100px;
+	margin-right: 5px;
+	flex: 0 0 auto;
+	cursor: pointer;
+}
+
+.photo-layout img { width: 570px; height: 450px; }
+
 </style>
 <script type="text/javascript">
 <c:if test="${sessionScope.member.userId==dto.userId || sessionScope.member.userId=='admin'}">
-	function deleteBoard() {
+	function deleteReview() {
 	    if(confirm("게시글을 삭제 하시 겠습니까 ? ")) {
 		    let query = "num=${dto.camRevnum}&${query}";
 		    let url = "${pageContext.request.contextPath}/reviews/delete.do?" + query;
@@ -184,6 +221,19 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	    }
 	}
 </c:if>
+
+function imageViewer(img) {
+	const viewer = $(".photo-layout");
+	let s="<img src='"+img+"'>";
+	viewer.html(s);
+	
+	$(".dialog-photo").dialog({
+		title:"이미지",
+		width: 600,
+		height: 530,
+		modal: true
+	});
+}
 </script>
 
 </head>
@@ -226,8 +276,14 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 					</tr>
 		
 					<tr>
-						<td colspan="2">
+						<td colspan="2" height="110">
 							파&nbsp;&nbsp;일 :
+							<div class="img-box">
+								<c:forEach var="vo" items="${listFile}">
+									<img src="${pageContext.request.contextPath}/uploads/reviews/${vo.camRevphotoname}"
+										onclick="imageViewer('${pageContext.request.contextPath}/uploads/reviews/${vo.camRevphotoname}');">
+								</c:forEach>
+							</div>
 						</td>
 					</tr>
 		

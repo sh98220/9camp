@@ -177,11 +177,27 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	}
 }
 	
+.img-box {
+	max-width: 600px;
+	padding: 5px;
+	box-sizing: border-box;
+	display: flex; /* 자손요소를 flexbox로 변경 */
+	flex-direction: row; /* 정방향 수평나열 */
+	flex-wrap: nowrap;
+	overflow-x: auto;
+}
+.img-box img {
+	width: 37px; height: 37px;
+	margin-right: 5px;
+	flex: 0 0 auto;
+	cursor: pointer;
+}
+
 </style>
 
 <script type="text/javascript">
 function sendOk() {
-    const f = document.boardForm;
+    const f = document.reviewForm;
 	let str;
 	
     str = f.camRevsubject.value.trim();
@@ -198,13 +214,21 @@ function sendOk() {
         return;
     }
 
+    let mode = "${mode}";
+    if( (mode === "write") && (!f.selectFile.value) ) {
+        alert("이미지 파일을 추가 하세요. ");
+        f.selectFile.focus();
+        return;
+    }
+
+    
     f.action = "${pageContext.request.contextPath}/reviews/write_ok.do";
     f.submit();
 }
 
 <c:if test="${mode == 'update'}">
 	function deleteFile(num) {
-		if(confirm('파일을 삭제하시겠습니까 ?')){
+		if(confirm('이미지를 삭제하시겠습니까 ?')){
 			let query = "category=${category}&num="+num+"&page=${page}";
 			let url = "${pageContext.request.contextPath}/reviews/deleteFile.do";
 			location.href = url + "?" + query;
@@ -226,7 +250,7 @@ function sendOk() {
 	    </div>
 	    
 	    <div class="body-main mx-auto">
-			<form name="boardForm" method="post" enctype="multipart/form-data">
+			<form name="reviewForm" method="post" enctype="multipart/form-data">
 				<table class="table table-border table-form">
 					<tr> 
 						<td>제&nbsp;&nbsp;&nbsp;&nbsp;목</td>
@@ -252,20 +276,20 @@ function sendOk() {
 					<tr>
 						<td>첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
 						<td> 
-							<input type="file" name="selectFile" class="form-control">
+							<input type="file" name="selectFile" accept="image/*" multiple="multiple" class="form-control">
 						</td>
 					</tr>
 					
 					<c:if test="${mode == 'update' }">
 						<tr>
-							<td>첨부된파일</td>
+							<td>등록이미지</td>
 							<td>
-								<p>
-									<c:if test="${not empty dto.saveFilename}">	
-										<a href="javascript:deleteFile('${dto.camRevnum}')"><i class="far fa-trash-alt"></i></a>
-										${dto.originalFilename}
-									</c:if>
-								</p>
+								<div class="img-box">
+									<c:forEach var="vo" items="${listFile}">
+										<img src="${pageContext.request.contextPath}/uploads/reviews/${vo.camRevphotoname}"
+											onclick="deleteFile('${vo.camRevphotonum}');">
+									</c:forEach>
+								</div>
 							</td>
 						</tr>
 					</c:if>

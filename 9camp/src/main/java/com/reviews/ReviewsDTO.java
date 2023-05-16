@@ -10,8 +10,9 @@ public class ReviewsDTO {
 	private int camRevhitcount;
 	private String camRevregdate;
 	
-	private long camInfoPhotonum;
-	private String camInfoPhotoname;
+	private int camRevphotonum;
+	private String camRevphotoname;
+	private String[] imageFiles;
 	
 	public long getCamRevnum() {
 		return camRevnum;
@@ -61,17 +62,24 @@ public class ReviewsDTO {
 	public void setCamRevregdate(String camRevregdate) {
 		this.camRevregdate = camRevregdate;
 	}
-	public long getCamInfoPhotonum() {
-		return camInfoPhotonum;
+
+	public String[] getImageFiles() {
+		return imageFiles;
 	}
-	public void setCamInfoPhotonum(long camInfoPhotonum) {
-		this.camInfoPhotonum = camInfoPhotonum;
+	public void setImageFiles(String[] imageFiles) {
+		this.imageFiles = imageFiles;
 	}
-	public String getCamInfoPhotoname() {
-		return camInfoPhotoname;
+	public long getCamRevphotonum() {
+		return camRevphotonum;
 	}
-	public void setCamInfoPhotoname(String camInfoPhotoname) {
-		this.camInfoPhotoname = camInfoPhotoname;
+	public void setCamRevphotonum(int camRevphotonum) {
+		this.camRevphotonum = camRevphotonum;
+	}
+	public String getCamRevphotoname() {
+		return camRevphotoname;
+	}
+	public void setCamRevphotoname(String camRevphotoname) {
+		this.camRevphotoname = camRevphotoname;
 	}
 	
 }
