@@ -20,7 +20,7 @@ public class FreeBoardDAO {
 		try {
 			sql = "INSERT INTO CampChat(camChatNum, userId, camChatSubject, "
 					+ " camChatContent, camChatHitCount, camChatRegDate) "
-					+ " VALUES (camChat_seq.NEXTVAL, ?, ?, ?, 0, SYSDATE)";
+					+ " VALUES (campChat_seq.NEXTVAL, ?, ?, ?, 0, SYSDATE)";
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString(1, dto.getUserId());

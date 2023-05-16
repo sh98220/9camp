@@ -184,17 +184,17 @@ function sendOk() {
     const f = document.boardForm;
 	let str;
 	
-    str = f.subject.value.trim();
+    str = f.camChatsubject.value.trim();
     if(!str) {
         alert("제목을 입력하세요. ");
-        f.subject.focus();
+        f.camChatsubject.focus();
         return;
     }
 
-    str = f.content.value.trim();
+    str = f.camChatcontent.value.trim();
     if(!str) {
         alert("내용을 입력하세요. ");
-        f.content.focus();
+        f.camChatcontent.focus();
         return;
     }
 
@@ -231,7 +231,7 @@ function sendOk() {
 					<tr> 
 						<td>제&nbsp;&nbsp;&nbsp;&nbsp;목</td>
 						<td> 
-							<input type="text" name="subject" maxlength="100" class="form-control" value="${dto.subject}">
+							<input type="text" name="camChatsubject" maxlength="100" class="form-control" value="${dto.camChatsubject}">
 						</td>
 					</tr>
 					
@@ -245,30 +245,10 @@ function sendOk() {
 					<tr> 
 						<td valign="top">내&nbsp;&nbsp;&nbsp;&nbsp;용</td>
 						<td> 
-							<textarea name="content" class="form-control">${dto.camChatcontent}</textarea>
+							<textarea name="camChatcontent" class="form-control">${dto.camChatcontent}</textarea>
 						</td>
 					</tr>
 					
-					<tr>
-						<td>첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
-						<td> 
-							<input type="file" name="selectFile" class="form-control">
-						</td>
-					</tr>
-					
-					<c:if test="${mode == 'update' }">
-						<tr>
-							<td>첨부된파일</td>
-							<td>
-								<p>
-									<c:if test="${not empty dto.saveFilename}">	
-										<a href="javascript:deleteFile('${dto.camChatnum}')"><i class="far fa-trash-alt"></i></a>
-										${dto.originalFilename}
-									</c:if>
-								</p>
-							</td>
-						</tr>
-					</c:if>
 				</table>
 					
 				<table class="table">
@@ -279,9 +259,6 @@ function sendOk() {
 							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/freeboard/list.do';">${mode=="update"?"수정취소":"등록취소"}</button>
 							<c:if test="${mode=='update' }">
 								<input type="hidden" name="num" value="${dto.getChatnum}">
-								<input type="hidden" name="saveFilename" value="${dto.saveFilename}">
-								<input type="hidden" name="originalFilename" value="${dto.originalFilename}">
-								<input type="hidden" name="fileSize" value="${dto.fileSize}">
 								<input type="hidden" name="page" value="${page}">
 							</c:if>							
 						</td>

@@ -220,13 +220,13 @@ public class FreeBoardServlet extends MyUploadServlet {
 			// req.setAttribute("nextReadDto", nextReadDto);
 
 			// 포워딩
-			forward(req, resp, "/WEB-INF/views/reviews/article.jsp");
+			forward(req, resp, "/WEB-INF/views/freeboard/article.jsp");
 			return;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		resp.sendRedirect(cp + "/reviews/list.do?" + query);
+		resp.sendRedirect(cp + "/freeboard/list.do?" + query);
 }
 	
 	protected void updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
