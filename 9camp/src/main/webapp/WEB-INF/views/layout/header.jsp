@@ -78,10 +78,10 @@
 					<ul class="sub-menu">
 						<li>
 						<!-- 김성훈 수정 -->
-							<a href="${pageContext.request.contextPath}/mapsearch/map.html">캠핑장 검색</a>
+							<a href="#">캠핑장 검색</a>
 						</li>
 						<li>
-							<a href="#">지도 검색</a>
+							<a href="${pageContext.request.contextPath}/mapsearch/map.html">지도 검색</a>
 						</li>
 					</ul>
 				</li>
