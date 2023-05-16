@@ -19,8 +19,7 @@ public class MemberServlet extends MyServlet {
 	protected void execute(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("utf-8");
 
-		
-		
+
 		String uri = req.getRequestURI();
 
 		// uri에 따른 작업 구분
@@ -42,43 +41,45 @@ public class MemberServlet extends MyServlet {
 			updateSubmit(req, resp);
 		} else if (uri.indexOf("userIdCheck.do") != -1) {
 			userIdCheck(req, resp);
+		} else if (uri.indexOf("delete.do") != -1) {
+			deleteSubmit(req, resp);
 		}
 	}
 
 	protected void loginForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 로그인 폼
 		String path = "/WEB-INF/views/member/login.jsp";
-        forward(req, resp, path);		
+		forward(req, resp, path);		
 	}
 
 	protected void loginSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 로그인 처리
 		// 세션객체. 세션 정보는 서버에 저장(로그인 정보, 권한등을 저장)
 		HttpSession session = req.getSession();
-		
+
 		MemberDAO dao = new MemberDAO();
 		String cp = req.getContextPath();
-		
+
 		if(!req.getMethod().equalsIgnoreCase("POST")) {
 			resp.sendRedirect(cp+"/");
 			return;
 		}
-		
+
 		String userId = req.getParameter("userId");
 		String userPwd = req.getParameter("userPwd");
-		
+
 		MemberDTO dto = dao.loginMember(userId, userPwd);
-		
+
 		if(dto != null) {
 			session.setMaxInactiveInterval(60*60);
-			
+
 			SessionInfo info = new SessionInfo();
-			
+
 			info.setUserId(dto.getUserId());
 			info.setUserName(dto.getUserName());
-			
+
 			session.setAttribute("member", info);
-			
+
 			resp.sendRedirect(cp + "/");
 			return;
 		}
@@ -87,7 +88,7 @@ public class MemberServlet extends MyServlet {
 
 		forward(req, resp, "/WEB-INF/views/member/member.jsp");
 	}
-	
+
 
 	protected void logout(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 로그아웃
@@ -95,18 +96,18 @@ public class MemberServlet extends MyServlet {
 		String cp = req.getContextPath();
 
 		session.removeAttribute("member");
-	
+
 		session.invalidate();
 
 		resp.sendRedirect(cp + "/");
-	
+
 	}
 
 	protected void memberForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 회원가입 폼
 		req.setAttribute("title", "회원 가입");
 		req.setAttribute("mode", "member");
-		
+
 		forward(req, resp, "/WEB-INF/views/member/member.jsp");
 	}
 
@@ -118,33 +119,32 @@ public class MemberServlet extends MyServlet {
 			resp.sendRedirect(cp+"/");
 			return;
 		}
-		
+
 		String message = "";
 		try {
 			MemberDTO dto = new MemberDTO();
-			
+
 			dto.setUserId(req.getParameter("userId"));
 			dto.setUserName(req.getParameter("userName"));
 			dto.setUserPwd(req.getParameter("userPwd"));
-			
+
 			String tel1 = req.getParameter("tel1");
 			String tel2 = req.getParameter("tel2");
 			String tel3 = req.getParameter("tel3");
-			
+
 			dto.setUserTel(tel1+"-"+tel2+"-"+tel3);
-			
+
 			dto.setUserBirth(req.getParameter("userBirth"));
 			dto.setUserNickName(req.getParameter("userNickName"));
-			
+
 			String email1 = req.getParameter("email1");
 			String email2 = req.getParameter("email2");
 			dto.setUserEmail(email1 + "@" + email2);
-			
-			
+
 			dao.insertMember(dto);
 			resp.sendRedirect(cp+"/");
 			return;
-			
+
 		} catch (SQLException e) {
 			if (e.getErrorCode() == 1)
 				message = "아이디 중복으로 회원 가입이 실패 했습니다.";
@@ -158,34 +158,155 @@ public class MemberServlet extends MyServlet {
 			message = "회원 가입이 실패 했습니다.";
 			e.printStackTrace();
 		}
-		
+
 		req.setAttribute("title", "회원 가입");
 		req.setAttribute("mode", "member");
 		req.setAttribute("message", message);
-		
+
 		forward(req, resp, "/WEB-INF/views/member/member.jsp");
-		
+
 	}
 
 	protected void pwdForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 패스워드 확인 폼
-		
-		
-	}
-	
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+
+		String cp = req.getContextPath();
+		if (info == null) {
+			// 로그 아웃 상태이면
+			resp.sendRedirect(cp + "/member/member.do");
+			return;
+		}
+
+		forward(req, resp, "/WEB-INF/views/member/pwd.jsp");
+
+	}	
+
+
 	protected void pwdSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
+		// 패스워드 확인 제출
+
+		MemberDAO dao = new MemberDAO();
+		HttpSession session = req.getSession();
+
+		String cp = req.getContextPath();
+
+		if (req.getMethod().equalsIgnoreCase("GET")) {
+			resp.sendRedirect(cp + "/");
+			return;
+		}
+
+		try {
+			SessionInfo info = (SessionInfo) session.getAttribute("member");
+			if (info == null) { // 로그아웃 된 경우
+				resp.sendRedirect(cp + "/member/login.do");
+				return;
+			}
+
+			MemberDTO dto = dao.readMember(info.getUserId());
+			if (dto == null) {
+				session.invalidate();
+				resp.sendRedirect(cp + "/");
+				return;
+			}
+
+			String userPwd = req.getParameter("userPwd");
+			
+			if (!dto.getUserPwd().equals(userPwd)) {
+				req.setAttribute("message", "패스워드가 일치하지 않습니다.");
+				forward(req, resp, "/WEB-INF/views/member/pwd.jsp");
+				return;
+			}
+
+			// 회원정보수정 - 회원수정폼으로 이동
+			req.setAttribute("title", "회원 정보 수정");
+			req.setAttribute("dto", dto);
+			req.setAttribute("mode", "update");
+			forward(req, resp, "/WEB-INF/views/mypage/profileEdit.jsp");
+			return;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp + "/");
 	}
-	
 
 	protected void updateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 회원정보 수정 완료
+		MemberDAO dao = new MemberDAO();
+		HttpSession session = req.getSession();
+		String cp = req.getContextPath();
+		if(!req.getMethod().equalsIgnoreCase("POST")) {
+			resp.sendRedirect(cp+"/");
+			return;
+		}
 		
+		try {
+			SessionInfo info = (SessionInfo)session.getAttribute("member");
+			if(info==null) {
+				resp.sendRedirect(cp+"/member/memeber.do");
+				return;
+			}
+			
+			MemberDTO dto = new MemberDTO();
+			
+			dto.setUserId(req.getParameter("userId"));
+			dto.setUserName(req.getParameter("userName"));
+			dto.setUserPwd(req.getParameter("userPwd"));
+
+			String email1 = req.getParameter("email1");
+			String email2 = req.getParameter("email2");
+			dto.setUserEmail(email1 + "@" + email2);
+
+			String tel1 = req.getParameter("tel1");
+			String tel2 = req.getParameter("tel2");
+			String tel3 = req.getParameter("tel3");
+			dto.setUserTel(tel1 + "-" + tel2 + "-" + tel3);
+
+			dto.setUserBirth(req.getParameter("userBirth"));
+			dto.setUserNickName(req.getParameter("userNickName"));
+
+			
+			dao.updateMember(dto);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		resp.sendRedirect(cp+"/");
+
+	}
+	
+	protected void deleteSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		MemberDAO dao = new MemberDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info= (SessionInfo)session.getAttribute("member");
+		
+		String cp = req.getContextPath();
+		
+		try {
+			String userId = info.getUserId();
+			
+			MemberDTO dto = dao.readMember(userId);
+			if(dto == null) {
+				resp.sendRedirect(cp+"/");
+				return;
+			}
+			
+			dao.deleteMember(userId);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp+"/");
 	}
 
 	protected void userIdCheck(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 	}
-	
-	
+
+
 }
