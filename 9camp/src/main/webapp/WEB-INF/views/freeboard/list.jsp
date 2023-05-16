@@ -9,6 +9,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>자유게시판</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resource/css/paginate.css" type="text/css">
+
+
 <style type="text/css">
 
 .body-main {
@@ -215,16 +218,11 @@ function searchList() {
 						<tr>
 							<td>${dataCount - (page-1) * size - status.index}</td>
 							<td class="left">
-								<a href="${articleUrl}&num=${dto.num}">${dto.subject}</a>
+								<a href="${articleUrl}&num=${dto.camChatnum}">${dto.camChatsubject}</a>
 							</td>
 							<td>${dto.userName}</td>
-							<td>${dto.reg_date}</td>
-							<td>${dto.hitCount}</td>
-							<td>
-								<c:if test="${not empty dto.saveFilename}">
-									<a href="${pageContext.request.contextPath}/sbbs/download.do?num=${dto.num}"><i class="far fa-file"></i></a>
-								</c:if>
-							</td>
+							<td>${dto.camChatregdate}</td>
+							<td>${dto.camChathitCount}</td>
 						</tr>
 					</c:forEach>
 				</tbody>

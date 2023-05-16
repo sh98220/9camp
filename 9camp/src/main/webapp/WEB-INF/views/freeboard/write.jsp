@@ -198,7 +198,7 @@ function sendOk() {
         return;
     }
 
-    f.action = "${pageContext.request.contextPath}/reviews/${mode}_ok.do";
+    f.action = "${pageContext.request.contextPath}/freeboard/write_ok.do";
     f.submit();
 }
 
@@ -206,7 +206,7 @@ function sendOk() {
 	function deleteFile(num) {
 		if(confirm('파일을 삭제하시겠습니까 ?')){
 			let query = "category=${category}&num="+num+"&page=${page}";
-			let url = "${pageContext.request.contextPath}/reviews/deleteFile.do";
+			let url = "${pageContext.request.contextPath}/freeboard/deleteFile.do";
 			location.href = url + "?" + query;
 		}
 	}
@@ -238,14 +238,14 @@ function sendOk() {
 					<tr> 
 						<td>작성자</td>
 						<td> 
-							<!--  <p>${sessionScope.member.userName}</p>  -->
+							<p>${sessionScope.member.userName}</p>
 						</td>
 					</tr>
 					
 					<tr> 
 						<td valign="top">내&nbsp;&nbsp;&nbsp;&nbsp;용</td>
 						<td> 
-							<textarea name="content" class="form-control">${dto.content}</textarea>
+							<textarea name="content" class="form-control">${dto.camChatcontent}</textarea>
 						</td>
 					</tr>
 					
@@ -262,7 +262,7 @@ function sendOk() {
 							<td>
 								<p>
 									<c:if test="${not empty dto.saveFilename}">	
-										<a href="javascript:deleteFile('${dto.num}')"><i class="far fa-trash-alt"></i></a>
+										<a href="javascript:deleteFile('${dto.camChatnum}')"><i class="far fa-trash-alt"></i></a>
 										${dto.originalFilename}
 									</c:if>
 								</p>
@@ -278,7 +278,7 @@ function sendOk() {
 							<button type="reset" class="btn">다시입력</button>
 							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/freeboard/list.do';">${mode=="update"?"수정취소":"등록취소"}</button>
 							<c:if test="${mode=='update' }">
-								<input type="hidden" name="num" value="${dto.num}">
+								<input type="hidden" name="num" value="${dto.getChatnum}">
 								<input type="hidden" name="saveFilename" value="${dto.saveFilename}">
 								<input type="hidden" name="originalFilename" value="${dto.originalFilename}">
 								<input type="hidden" name="fileSize" value="${dto.fileSize}">
