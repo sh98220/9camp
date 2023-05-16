@@ -187,7 +187,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 }
 
 
-.modal-btn-box { width:30%;  text-align:left; }
+.modal-btn-box { text-align:left; }
 .modal-btn-box button {
 	display: inline-block;
 	width: 134px;
@@ -327,18 +327,19 @@ function sendOk() {
 						<td><!-- 검색 버튼 -->
 						    <div class="container">
 								<div class="modal-btn-box">
-									<input type="text" readonly="readonly" style= "float: left;" >
-									<button type="button" id="modal-open" style= "float: left;">검색</button>  
+									<input type="text" readonly="readonly" style="width: 30%;">
+									<button type="button" id="modal-open" >검색</button>  
 								</div>
 							  
 								<div class="popup-wrap" id="popup">
 									<div class="popup">
 										<div class="popup-head">
-											<span class="head-title">제목</span>
+											<span class="head-title">캠핑장 검색</span>
 							      		</div>
 										<div class="popup-body">
 											<div class="popup-content">
-												<input type="text" >
+												<input type="text" style="width: 90%" >
+												<button type="button" id="modal-open" >검색</button>  
 											</div>
 										</div>
 										<div class="popup-foot">
