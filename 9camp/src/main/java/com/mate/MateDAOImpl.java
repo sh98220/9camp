@@ -24,34 +24,139 @@ public class MateDAOImpl implements MateDAO {
 		
 	}
 
-	@Override
-	public void deleteMate(long num, String userId) throws SQLException {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void deleteMate(long[] nums, String[] userId) throws SQLException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int dataCount(String condition, String keyword, String userId) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int dataCount(String userId) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public int dataCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+
+		try {
+			sql = "SELECT NVL(COUNT(*), 0) FROM campMate";
+			pstmt = conn.prepareStatement(sql);
+			
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				result = rs.getInt(1);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		return result;
+	}
+	
+	//아이디를 이용하여 개수 구하기
+	public int dataCount(String userId) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+
+		try {
+			sql = "SELECT NVL(COUNT(*), 0) "
+					+ " FROM campMate, member, campInfo "
+					+ " WHERE campMate.userId = member.userId AND campInfo.camInfoNum = campMate.camInfoNum AND "
+					+ " campMate.userId = ?";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, userId);
+			
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				result = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		return result;
+	}
+	
+
+	public int dataCount(String condition, String keyword, String userId) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+
+		try {
+			sql = "SELECT NVL(COUNT(*), 0) "
+					+ " FROM campMate, member, campInfo "
+					+ " WHERE campMate.userId = member.userId AND campInfo.camInfoNum = campMate.camInfoNum AND "
+					+ " campMate.userId = ? AND ";
+			
+			if (condition.equals("all")) {
+				sql += " INSTR(campMate.camMateSubject, ?) >= 1 OR INSTR(campMate.camMateContent, ?) >= 1 ";
+			} else if (condition.equals("reg_date")) {
+				keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
+				sql += " TO_CHAR(campInfo.camInfoRegDate, 'YYYYMMDD') = ? ";
+			} else {
+				sql += " INSTR(" + condition + ", ?) >= 1 ";
+			}
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, userId);
+			pstmt.setString(2, keyword);
+			if (condition.equals("all")) {
+				pstmt.setString(3, keyword);
+			}
+
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				result = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		return result;
 	}
 	//캠핑 메이트 리스트
 	@Override
@@ -128,11 +233,8 @@ public class MateDAOImpl implements MateDAO {
 			sb.append(" FROM campMate, campInfo, member "); 
 			sb.append(" WHERE campMate.camInfoNum = campInfo.camInfoNum AND "); 
 			sb.append(" campMate.userId = member.userId AND ");   
-			sb.append(" campMate.userId = ? ");
-			sb.append(" ORDER BY campMate.camMateNum DESC ");
-			sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
-			
-			
+			sb.append(" campMate.userId = ? AND ");
+
 			if (condition.equals("all")) {
 				sb.append(" INSTR(campMate.camMateSubject, ?) >= 1 OR INSTR(campMate.camMateContent, ?) >= 1 ");
 			} //else if (condition.equals("reg_date")) {
@@ -198,6 +300,21 @@ public class MateDAOImpl implements MateDAO {
 
 		return list;
 	}
+	
+	
+	
+	@Override
+	public void deleteMate(long num, String userId) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteMate(long[] nums, String[] userId) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 	@Override
 	public void deleteMate(long[] nums, String userId) throws SQLException {
@@ -246,5 +363,6 @@ public class MateDAOImpl implements MateDAO {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 }

@@ -7,10 +7,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>자유게시판</title>
+<title>렌트</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resource/css/paginate.css" type="text/css">
-
 
 <style type="text/css">
 
@@ -126,10 +125,6 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     border-bottom: 3px solid #ff5522;
 }
 
-.body-title h2 i {
-	
-}
-
 .body-main {
 	display: block;
 	padding-bottom: 15px;
@@ -188,7 +183,7 @@ function searchList() {
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 자유게시판 </h2>
+			<h2><i class="fas fa-graduation-cap"></i> 렌탈 </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
@@ -209,6 +204,7 @@ function searchList() {
 						<th class="name">작성자</th>
 						<th class="date">작성일</th>
 						<th class="hit">조회수</th>
+						<th class="file">첨부</th>
 					</tr>
 				</thead>
 				
@@ -217,11 +213,11 @@ function searchList() {
 						<tr>
 							<td>${dataCount - (page-1) * size - status.index}</td>
 							<td class="left">
-								<a href="${articleUrl}&num=${dto.camChatNum}">${dto.camChatSubject}</a>
+								<a href="${articleUrl}&num=${dto.rentNum}">${dto.rentSubject}</a>
 							</td>
-							<td>${dto.userName}</td>
-							<td>${dto.camChatRegDate}</td>
-							<td>${dto.camChatHitCount}</td>
+							<td>${dto.hostId}</td>
+							<td>${dto.rentRegDate}</td>
+							<td>${dto.rentHitCount}</td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -234,24 +230,24 @@ function searchList() {
 			<table class="table">
 				<tr>
 					<td width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/freeboard/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/rent/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
 					</td>
 					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/freeboard/list.do" method="post">
+						<form name="searchForm" action="${pageContext.request.contextPath}/rent/list.do" method="post">
 							<select name="condition" class="form-select">
 								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
 								<option value="userName" ${condition=="userName"?"selected='selected'":"" }>작성자</option>
-								<option value="reg_date"  ${condition=="reg_date"?"selected='selected'":"" }>등록일</option>
+								<option value="reg_date" ${condition=="reg_date"?"selected='selected'":"" }>등록일</option>
 								<option value="subject"  ${condition=="subject"?"selected='selected'":"" }>제목</option>
+								<option value="object"  ${condition=="object"?"selected='selected'":"" }>품목</option>
 								<option value="content"  ${condition=="content"?"selected='selected'":"" }>내용</option>
 							</select>
 							<input type="text" name="keyword" value="${keyword}" class="form-control">
-							<input type="hidden" name="category" value="${category}">
 							<button type="button" class="btn" onclick="searchList();">검색</button>
 						</form>
 					</td>
 					<td align="right" width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/freeboard/write.do';">글올리기</button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/rent/write.do';">글올리기</button>
 					</td>
 				</tr>
 			</table>
