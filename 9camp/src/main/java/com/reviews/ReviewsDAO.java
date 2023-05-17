@@ -294,11 +294,15 @@ public class ReviewsDAO {
 			String sql;
 
 			try {
-				sql = "SELECT camRevnum, b.userId, userName, camRevsubject, camRevcontent, "
-						+ " camRevregdate, camRevhitCount "
+				sql = "SELECT b.camRevnum, b.userId, userName, camRevsubject, camRevcontent, "
+						+ " camRevregdate, camRevhitCount, NVL(reviewsLikeCount, 0) reviewsLikeCount "
 						+ " FROM campreviews b "
 						+ " JOIN member m ON b.userId=m.userId "
-						+ " WHERE camRevnum = ? ";
+						+ " LEFT OUTER JOIN ("
+						+ " 	 SELECT camRevnum, COUNT(*) reviewsLikeCount FROM campreviewslike"
+						+ "		 GROUP BY camRevnum"
+						+ " ) bc ON b.camRevnum = bc.camRevnum"
+						+ " WHERE b.camRevnum = ? ";
 				pstmt = conn.prepareStatement(sql);
 				
 				pstmt.setLong(1, num);
@@ -315,6 +319,8 @@ public class ReviewsDAO {
 					dto.setCamRevcontent(rs.getString("camRevcontent"));
 					dto.setCamRevhitcount(rs.getInt("camRevhitCount"));
 					dto.setCamRevregdate(rs.getString("camRevregdate"));
+					
+					dto.setReviewsLikeCount(rs.getInt("reviewsLikeCount"));
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();

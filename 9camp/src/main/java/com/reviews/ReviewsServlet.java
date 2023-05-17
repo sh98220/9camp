@@ -246,6 +246,11 @@ public class ReviewsServlet extends MyUploadServlet {
 						return;
 					}
 					dto.setCamRevcontent(util.htmlSymbols(dto.getCamRevcontent()));
+					
+					// 로그인 유저의 게시글 공감 여부
+					HttpSession session = req.getSession();
+					SessionInfo info = (SessionInfo)session.getAttribute("member");
+					boolean isUserLike = dao.isUserReviewsLike(num, info.getUserId());
 
 					// 이전글 다음글
 					 ReviewsDTO preReadDto = dao.preReadReviews( dto.getCamRevnum(), condition, keyword);
@@ -260,6 +265,8 @@ public class ReviewsServlet extends MyUploadServlet {
 					req.setAttribute("listFile", listFile);
 					req.setAttribute("preReadDto", preReadDto);
 					req.setAttribute("nextReadDto", nextReadDto);
+					
+					req.setAttribute("isUserLike", isUserLike);
 					
 
 					// 포워딩
