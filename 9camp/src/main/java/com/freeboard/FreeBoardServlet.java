@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -13,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.member.SessionInfo;
+import com.reviews.ReviewsDAO;
+import com.reviews.ReviewsDTO;
 import com.util.MyUploadServlet;
 import com.util.MyUtil;
 
@@ -138,6 +141,7 @@ public class FreeBoardServlet extends MyUploadServlet {
 	}
 	
 	protected void writeForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		req.setAttribute("mode", "write");
 		forward(req, resp, "/WEB-INF/views/freeboard/write.jsp");
 	}
 	
@@ -198,7 +202,7 @@ public class FreeBoardServlet extends MyUploadServlet {
 			}
 
 			// 조회수 증가
-			// dao.updateHitCount(num);
+			dao.updateHitCount(num);
 
 			// 게시물 가져오기
 			FreeBoardDTO dto = dao.readBoard(num);
@@ -220,20 +224,78 @@ public class FreeBoardServlet extends MyUploadServlet {
 			// req.setAttribute("nextReadDto", nextReadDto);
 
 			// 포워딩
-			forward(req, resp, "/WEB-INF/views/reviews/article.jsp");
+			forward(req, resp, "/WEB-INF/views/freeboard/article.jsp");
 			return;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		resp.sendRedirect(cp + "/reviews/list.do?" + query);
-}
+		resp.sendRedirect(cp + "/freeboard/list.do?" + query);
+	}
 	
 	protected void updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// 수정폼
+		FreeBoardDAO dao = new FreeBoardDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+
+		String cp = req.getContextPath();
+
+		String page = req.getParameter("page");
+
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+			FreeBoardDTO dto = dao.readBoard(num);
+
+			if (dto == null) {
+				resp.sendRedirect(cp + "/freeboard/list.do?page=" + page);
+				return;
 			}
+
+			// 게시물을 올린 사용자가 아니면
+			if (!dto.getUserId().equals(info.getUserId())) {
+				resp.sendRedirect(cp + "/freeboard/list.do?page=" + page);
+				return;
+			}
+
+			req.setAttribute("dto", dto);
+			req.setAttribute("page", page);
+			req.setAttribute("mode", "update");
+
+			forward(req, resp, "/WEB-INF/views/freeboard/write.jsp");
+			return;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp + "/freeboard/list.do?page=" + page);
+	}
 	
 	protected void updateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
+		// 수정완료
+		FreeBoardDAO dao = new FreeBoardDAO();
+
+		String cp = req.getContextPath();
+		if (req.getMethod().equalsIgnoreCase("GET")) {
+			resp.sendRedirect(cp + "/freeboard/list.do");
+			return;
+		}
+
+		String page = req.getParameter("page");
+
+		try {
+			FreeBoardDTO dto = new FreeBoardDTO();
+			dto.setcamChatNum(Integer.parseInt(req.getParameter("camChatNum")));
+			dto.setcamChatSubject(req.getParameter("camChatSubject"));
+			dto.setcamChatContent(req.getParameter("camChatContent"));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp + "/freeboard/list.do?page=" + page);
+	
 	}
 	
 	protected void deleteFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -241,7 +303,35 @@ public class FreeBoardServlet extends MyUploadServlet {
 	}
 	
 	protected void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		FreeBoardDAO dao = new FreeBoardDAO();
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+
+		String cp = req.getContextPath();
 		
+		String page = req.getParameter("page");
+
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+
+			FreeBoardDTO dto = dao.readBoard(num);
+			if (dto == null) {
+				resp.sendRedirect(cp + "/freeboard/list.do?page=" + page);
+				return;
+			}
+
+			if (!dto.getUserId().equals(info.getUserId())) {
+				resp.sendRedirect(cp + "/freeboard/list.do?page=" + page);
+				return;
+			}
+			
+			dao.deleteFreeBoard(num);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp + "/freeboard/list.do?page=" + page);
+	
 	}
 	
 	protected void download(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
