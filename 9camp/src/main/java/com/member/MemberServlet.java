@@ -69,8 +69,14 @@ public class MemberServlet extends MyServlet {
 
 		String userId = req.getParameter("userId");
 		String userPwd = req.getParameter("userPwd");
+		String mode = req.getParameter("loginmode");
 
-		MemberDTO dto = dao.loginMember(userId, userPwd);
+		MemberDTO dto = null;
+		if(mode.equals("1")) {
+			dto = dao.loginMember(userId, userPwd);
+		} else if (mode.equals("2")) {
+			dto = dao.loginAdmin(userId, userPwd);
+		}
 
 		if(dto != null) {
 			session.setMaxInactiveInterval(60*60);

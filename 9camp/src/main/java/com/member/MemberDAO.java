@@ -69,7 +69,53 @@ public class MemberDAO {
 
 		return dto;
 	}
+	
+	public MemberDTO loginAdmin(String adminId, String adminPwd) {
+		MemberDTO dto = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		ResultSet rs = null;
 
+		try {
+			sql = "SELECT adminId, adminNickName, adminPwd, adminRegDate "
+					+ "FROM admin WHERE adminId= ? AND adminPwd=? ";
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setString(1, adminId);
+			pstmt.setString(2, adminPwd);
+
+			rs = pstmt.executeQuery();
+
+			if(rs.next()) {
+				dto = new MemberDTO();
+
+				dto.setUserId(rs.getString("adminId"));
+				dto.setUserNickName (rs.getString("adminNickName"));
+				
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+				}
+
+			}
+		}
+
+		return dto;
+	}
+	
 	public void insertMember(MemberDTO dto) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;

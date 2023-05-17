@@ -47,19 +47,6 @@ function searchList() {
 			}
 		});
 		
-		$("#btnDeleteList").click(function(){
-			let cnt = $("input[name=nums]:checked").length;
-			if(cnt === 0) {
-				alert("삭제할 찜을 먼저 선택하세요.");
-				return false;
-			}
-			
-			if(confirm("선택한 찜을 삭제 하시겠습니까 ?")) {
-				const f = document.listForm;
-				f.action="${pageContext.request.contextPath}/mypage/deleteWish.do";
-				f.submit();
-			}
-		});
 	});
 </script>
 </head>
@@ -145,6 +132,22 @@ function searchList() {
 					</td>
 					<td align="right" width="100">
 						<button type="button" class="btn" onclick="btnDeleteList();">삭제 하기</button>
+						<script type="text/javascript">
+						function btnDeleteList() {
+							let cnt = $("input[name=nums]:checked").length;
+							if(cnt === 0) {
+								alert("삭제할 찜을 먼저 선택하세요.");
+								return false;
+							}
+
+							if(confirm("선택한 찜을 삭제 하시겠습니까 ?")) {
+								const f = document.listForm;
+								f.action="${pageContext.request.contextPath}/mypage/deleteWish.do";
+								f.submit();
+							}
+						}
+							
+						</script>
 					</td>
 				</tr>
 			</table>

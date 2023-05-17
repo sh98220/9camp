@@ -178,7 +178,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 <c:if test="${sessionScope.member.userId==dto.userId || sessionScope.member.userId=='admin'}">
 	function deleteBoard() {
 	    if(confirm("게시글을 삭제 하시겠습니까 ? ")) {
-		    let query = "num=${dto.camChatnum}&${query}";
+		    let query = "num=${dto.camChatNum}&${query}";
 		    let url = "${pageContext.request.contextPath}/freeboard/delete.do?" + query;
 	    	location.href = url;
 	    }
@@ -204,7 +204,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 				<thead>
 					<tr>
 						<td colspan="2" align="center">
-							${dto.camChatsubject}
+							${dto.camChatSubject}
 						</td>
 					</tr>
 				</thead>
@@ -215,19 +215,13 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 							이름 : ${dto.userName}
 						</td>
 						<td align="right">
-							${dto.camChatregdate} | 조회 ${dto.camChathitcount}
+							${dto.camChatRegDate} | 조회 ${dto.camChatHitCount}
 						</td>
 					</tr>
 					
 					<tr>
 						<td colspan="2" valign="top" height="200">
-							${dto.camChatcontent}
-						</td>
-					</tr>
-		
-					<tr>
-						<td colspan="2">
-							파&nbsp;&nbsp;일 :
+							${dto.camChatContent}
 						</td>
 					</tr>
 		
@@ -255,7 +249,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 					<td width="50%">
 						<c:choose>
 							<c:when test="${sessionScope.member.userId==dto.userId}">
-								<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/freeboard/update.do?num=${dto.camChatnum}&category=${category}&page=${page}';">수정</button>
+								<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/freeboard/update.do?num=${dto.camChatNum}&category=${category}&page=${page}';">수정</button>
 							</c:when>
 							<c:otherwise>
 								<button type="button" class="btn" disabled="disabled">수정</button>

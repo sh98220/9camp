@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -7,7 +7,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>자유게시판</title>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<title>캠핑메이트</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 <style type="text/css">
 .body-main {
@@ -134,6 +135,14 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	padding-top: 35px;
 }
 
+/* 캠핑스타일  */
+#keyword-cont .keyword-ul > li {
+	display: inline-block;
+	margin: 3px;
+}
+
+
+
 .table-list thead > tr:first-child { background: skyblue; }
 .table-list th, .table-list td { text-align: center; }
 .table-list .left { text-align: left; padding-left: 5px; }
@@ -176,6 +185,77 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	    max-width: 750px;
 	}
 }
+
+
+.modal-btn-box { width:30%;  text-align:left; }
+.modal-btn-box button {
+	display: inline-block;
+	width: 134px;
+	height: 28px;
+	background-color: #ffffff;
+	border: 1px solid #e1e1e1;
+	cursor: pointer;
+}
+
+.popup-wrap {
+	background-color: rgba(0,0,0,.3);
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: none;
+	padding: 15px;
+}
+.popup {
+	width: 100%;
+	max-width: 400px;
+	background-color: #ffffff;
+	border-radius: 10px;
+	overflow: hidden;
+	background-color: #264db5;
+	box-shadow: 5px 10px 10px 1px rgba(0,0,0,.3);
+}
+.popup-head {
+	width: 100%;
+	height: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.head-title {
+	font-size: 33px;
+	font-weight: 700;
+    text-align: center;
+}
+.popup-body {
+	width:100%;
+	background-color:#ffffff;
+}
+.popup-content{
+  width:100%;
+  padding:30px;
+}
+
+.popup-foot{
+	width: 100%;
+	height: 50px;
+}
+.pop-btn{
+	display:inline-flex;
+	width:50%;
+	height:100%;
+	float:left;
+	justify-content:center;
+	align-items:center;
+	color:#ffffff;
+	cursor:pointer;
+}
+.pop-btn.confirm {
+	border-right:1px solid #3b5fbf;
+}
 	
 </style>
 
@@ -184,21 +264,21 @@ function sendOk() {
     const f = document.boardForm;
 	let str;
 	
-    str = f.camChatsubject.value.trim();
+    str = f.subject.value.trim();
     if(!str) {
         alert("제목을 입력하세요. ");
-        f.camChatsubject.focus();
+        f.subject.focus();
         return;
     }
 
-    str = f.camChatcontent.value.trim();
+    str = f.content.value.trim();
     if(!str) {
         alert("내용을 입력하세요. ");
-        f.camChatcontent.focus();
+        f.content.focus();
         return;
     }
 
-    f.action = "${pageContext.request.contextPath}/freeboard/write_ok.do";
+    f.action = "${pageContext.request.contextPath}/rent/${mode}_ok.do";
     f.submit();
 }
 
@@ -206,7 +286,7 @@ function sendOk() {
 	function deleteFile(num) {
 		if(confirm('파일을 삭제하시겠습니까 ?')){
 			let query = "category=${category}&num="+num+"&page=${page}";
-			let url = "${pageContext.request.contextPath}/freeboard/deleteFile.do";
+			let url = "${pageContext.request.contextPath}/reviews/deleteFile.do";
 			location.href = url + "?" + query;
 		}
 	}
@@ -222,7 +302,7 @@ function sendOk() {
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 자유게시판 </h2>
+			<h2><i class="fas fa-graduation-cap"></i> 렌트 합니다 </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
@@ -231,34 +311,89 @@ function sendOk() {
 					<tr> 
 						<td>제&nbsp;&nbsp;&nbsp;&nbsp;목</td>
 						<td> 
-							<input type="text" name="camChatsubject" maxlength="100" class="form-control" value="${dto.camChatSubject}">
+							<input type="text" name="subject" maxlength="100" class="form-control" value="${dto.subject}">
 						</td>
 					</tr>
 					
 					<tr> 
 						<td>작성자</td>
 						<td> 
-							<p>${sessionScope.member.userName}</p>
+							 <p>${sessionScope.member.userName}</p> 
 						</td>
 					</tr>
-					
+						
+					<tr>
+						<td> 품목 검색 </td>
+						<td><!-- 검색 버튼 -->
+						    <div class="container">
+								<div class="modal-btn-box">
+								<select>
+								     <option>텐트</option>
+								     <option>침낭/이불</option>
+								     <option>조리기구</option>
+								     <option>난방기구</option>
+								     <option>냉방기구</option>
+								     <option>캠핑카</option>
+								     <option>기타</option>
+								</select>
+								</div>
+							</div>   				
+   						</td>	
+					</tr>
 					<tr> 
 						<td valign="top">내&nbsp;&nbsp;&nbsp;&nbsp;용</td>
 						<td> 
-							<textarea name="camChatcontent" class="form-control">${dto.camChatContent}</textarea>
+							<textarea name="content" class="form-control">${dto.content}</textarea>
 						</td>
 					</tr>
 					
-				</table>
+					<tr>
+					    <td>기&nbsp;&nbsp;&nbsp;&nbsp;간</td>
+					    <td>
+					        <p style="display: inline-block;">출발날짜&nbsp;&nbsp;</p><input type="date" name="depdate" id="dep">&nbsp;&nbsp;
+					        <p  style="display: inline-block;">도착날짜&nbsp;&nbsp;</p><input type="date" name="aridate" id="ari">&nbsp;&nbsp;
+					   		<p id="result" style="display: inline-block;"></p>
+					    </td>					   
+					</tr>
+					<tr>
+						<td>첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
+						<td> 
+							<input type="file" name="selectFile" accept="image/*" multiple="multiple" class="form-control">
+						</td>
+					</tr>
 					
+					<c:if test="${mode == 'update' }">
+						<tr>
+							<td>등록이미지</td>
+							<td>
+								<div class="img-box">
+									<c:forEach var="vo" items="${listFile}">
+										<img src="${pageContext.request.contextPath}/uploads/rentPhoto/${vo.rentPhotoName}"
+											onclick="deleteFile('${vo.rentPhotoName}');">
+									</c:forEach>
+								</div>
+							</td>
+						</tr>
+					</c:if>
+				    <tr>
+						<td>가격&nbsp;&nbsp;&nbsp;&nbsp;격</td>
+						<td>
+							<input type="text" placeholder="ex) 50,000원"> 
+						</td>
+					</tr>
+				</table>
+	
 				<table class="table">
 					<tr> 
 						<td align="center">
 							<button type="button" class="btn" onclick="sendOk();">${mode=="update"?"수정완료":"등록완료"}</button>
 							<button type="reset" class="btn">다시입력</button>
-							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/freeboard/list.do';">${mode=="update"?"수정취소":"등록취소"}</button>
+							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/rent/list.do';">${mode=="update"?"수정취소":"등록취소"}</button>
 							<c:if test="${mode=='update' }">
-								<input type="hidden" name="num" value="${dto.camChatNum}">
+								<input type="hidden" name="num" value="${dto.num}">
+								<input type="hidden" name="saveFilename" value="${dto.saveFilename}">
+								<input type="hidden" name="originalFilename" value="${dto.originalFilename}">
+								<input type="hidden" name="fileSize" value="${dto.fileSize}">
 								<input type="hidden" name="page" value="${page}">
 							</c:if>							
 						</td>
@@ -275,5 +410,10 @@ function sendOk() {
 	<jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
 </footer>
 
+<script>
+
+</script>
+
+  
 </body>
 </html>
