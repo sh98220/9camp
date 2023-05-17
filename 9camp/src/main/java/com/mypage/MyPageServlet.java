@@ -191,8 +191,6 @@ public class MyPageServlet extends MyServlet {
 	protected void mateList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 캠핑 메이트 관리 리스트
 		
-		
-		// 찜 리스트
 		MateDAO dao = new MateDAOImpl();
 		MyUtil util = new MyUtil();
 				
@@ -351,6 +349,7 @@ public class MyPageServlet extends MyServlet {
 
 			// 메이트 삭제
 			dao.deleteMate(nums, info.getUserId());
+			//dao.deleteWish(nums, info.getUserId());
 
 		} catch (Exception e) {
 			e.printStackTrace();

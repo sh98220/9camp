@@ -17,7 +17,7 @@
 .table-list thead > tr:first-child { background: #f8f8f8; }
 .table-list th, .table-list td { text-align: center; }
 
-.table-list .wish { display: inline-block; padding:1px 3px; background: #ed4c00; color: #fff; }
+.table-list .mateList { display: inline-block; padding:1px 3px; background: #ed4c00; color: #fff; }
 .table-list .left { text-align: left; padding-left: 5px; }
 
 .table-list .chk { width: 40px; color: #787878; }
