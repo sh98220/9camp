@@ -229,7 +229,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 						<td colspan="2">
 							이전글 :
 							<c:if test="${not empty preReadDto}">
-								<a href="${pageContext.request.contextPath}/freeboard/article.do?${query}&num=${preReadDto.num}">${preReadDto.subject}</a>
+								<a href="${pageContext.request.contextPath}/freeboard/article.do?${query}&camChatNum=${preReadDto.camChatNum}">${preReadDto.camChatSubject}</a>
 							</c:if>
 						</td>
 					</tr>
@@ -237,7 +237,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 						<td colspan="2">
 							다음글 :
 							<c:if test="${not empty nextReadDto}">
-								<a href="${pageContext.request.contextPath}/freeboard/article.do?${query}&num=${nextReadDto.num}">${nextReadDto.subject}</a>
+								<a href="${pageContext.request.contextPath}/freeboard/article.do?${query}&camChatNum=${nextReadDto.camChatNum}">${nextReadDto.camChatSubject}</a>
 							</c:if>
 						</td>
 					</tr>

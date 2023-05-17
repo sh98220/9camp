@@ -68,13 +68,6 @@ public class RentBoardServlet extends MyUploadServlet{
 		RentBoardDAO dao = new RentBoardDAO();
 		MyUtil util = new MyUtil();
 
-		HttpSession session = req.getSession();
-		SessionInfo info = (SessionInfo)session.getAttribute("member");
-		
-		if(info == null) {
-			
-		}
-		
 		String cp = req.getContextPath();
 		
 		try {
@@ -91,15 +84,15 @@ public class RentBoardServlet extends MyUploadServlet{
 				keyword = "";
 			}
 			
-			if (req.getMethod().equalsIgnoreCase("GET")) {
-				keyword = URLDecoder.decode(keyword, "utf-8");
-			}
-			
 			int dataCount;
 			if (keyword.length() == 0) {
 				dataCount = dao.dataCount();
 			} else {
 				dataCount = dao.dataCount(condition, keyword);
+			}
+			
+			if (req.getMethod().equalsIgnoreCase("GET")) {
+				keyword = URLDecoder.decode(keyword, "utf-8");
 			}
 			
 			// 전체 페이지 수
@@ -124,7 +117,7 @@ public class RentBoardServlet extends MyUploadServlet{
 			if (keyword.length() != 0) {
 				query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");
 			}
-
+			
 			// 페이징 처리
 			String listUrl = cp + "/rent/list.do";
 			String articleUrl = cp + "/rent/article.do?page=" + current_page;
@@ -175,10 +168,10 @@ public class RentBoardServlet extends MyUploadServlet{
 			RentBoardDTO dto = new RentBoardDTO();
 			
 			dto.setHostId(info.getUserId());
-			dto.setRentNum(Long.parseLong(req.getParameter("rentNum")));
 			dto.setRentObject(req.getParameter("rentObject"));
 			dto.setRentContent(req.getParameter("rentContent"));
 			dto.setRentFee(Long.parseLong(req.getParameter("rentFee")));
+			dto.setRentSubject(req.getParameter("rentSubject"));
 			dto.setRentStartDate(req.getParameter("rentStartDate"));
 			dto.setRentEndDate(req.getParameter("rentEndDate"));
 			

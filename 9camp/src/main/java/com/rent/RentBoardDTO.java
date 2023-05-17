@@ -9,7 +9,7 @@ public class RentBoardDTO {
 	private long rentFee;
 	private String rentStartDate;
 	private String rentEndDate;
-	private String rentRegData;
+	private String rentRegDate;
 	private int rentHitCount;
 	
 	private long rentPhotoNum;
@@ -25,11 +25,11 @@ public class RentBoardDTO {
 	public void setRentHitCount(int rentHitCount) {
 		this.rentHitCount = rentHitCount;
 	}
-	public String getRentRegData() {
-		return rentRegData;
+	public String getRentRegDate() {
+		return rentRegDate;
 	}
-	public void setRentRegData(String rentRegData) {
-		this.rentRegData = rentRegData;
+	public void setRentRegDate(String rentRegDate) {
+		this.rentRegDate = rentRegDate;
 	}
 	public String getRentSubject() {
 		return rentSubject;

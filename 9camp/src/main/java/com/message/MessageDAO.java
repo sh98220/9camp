@@ -63,8 +63,8 @@ public class MessageDAO {
 		String sql;
 		
 		try {
-			sql = "INSERT INTO message(msgNum, msgWriterId, msgSenderId, msgContent, msgRegDate, msgWriEnabled, msgSenEnabled ) "
-					+ " VALUES (message_seq.NEXTVAL, ?, ?, ?, SYSDATE, 1, 1)";
+			sql = "INSERT INTO message(msgNum, msgWriterId, msgSenderId, msgContent, msgRegDate, msgReadDate, msgRead, msgWriEnabled, msgSenEnabled) "
+					+ " VALUES (message_seq.NEXTVAL, ?, ?, ?, SYSDATE, SYSDATE, 0, 1, 1)";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -137,7 +137,6 @@ public class MessageDAO {
 		try {
 			sql = "SELECT NVL(COUNT(*),0) "
 					+ " FROM message msg "
-					+ " JOIN member mb ON msg.msgSenderId = mb.userId "
 					+ " WHERE msg.msgSenderId = ? AND msgSenEnabled=1";
 			
 			pstmt = conn.prepareStatement(sql);
@@ -180,7 +179,7 @@ public class MessageDAO {
 			sb.append(" WHERE msgWriterId = ? AND msgWriEnabled=1 ");
 			
 			if(condition.equals("content")) {
-				sb.append(" AND INSTR(\" + msgContent + \", ?) >= 1 ");
+				sb.append(" AND INSTR(msgContent, ?) >= 1 ");
 			}
 			
 			pstmt = conn.prepareStatement(sb.toString());
@@ -223,13 +222,13 @@ public class MessageDAO {
 		try {
 			sb.append("SELECT NVL(COUNT(*),0) ");
 			sb.append(" FROM message msg ");
-			sb.append(" JOIN member mb ON msg.msgSenderId = mb.userId ");
+			sb.append(" JOIN member mb ON msg.msgWriterId = mb.userId ");
 			sb.append(" WHERE msg.msgSenderId = ? AND msgSenEnabled=1 ");
 			
 			if(condition.equals("content")) {
-				sb.append(" AND INSTR(\" + msgContent + \", ?) >= 1 ");
-			} else if(condition.equals("userName")) {
-				sb.append(" AND INSTR(\" + msgWriterId + \", ?) >= 1 ");
+				sb.append(" AND INSTR(msgContent, ?) >= 1 ");
+			} else if(condition.equals("userNickName")) {
+				sb.append(" AND INSTR(userNickName, ?) >= 1 ");
 			}
 			
 			pstmt = conn.prepareStatement(sb.toString());
@@ -270,9 +269,9 @@ public class MessageDAO {
 		String sql;
 
 		try {
-			sql = "SELECT msgNum, msgContent, msgRegDate "
+			sql = "SELECT msgNum, msgContent, msgRegDate, msgReadDate, msgRead, msgSenderId, userNickName "
 					+ " FROM message msg "
-					+ " JOIN member mb ON msg.msgWriterId = mb.userId "
+					+ " JOIN member mb ON msg.msgSenderId = mb.userId "
 					+ " WHERE msg.msgWriterId = ? AND msgWriEnabled=1 "
 					+ " ORDER BY msgNum DESC "
 					+ " OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ";
@@ -290,6 +289,10 @@ public class MessageDAO {
 				dto.setMsgNum(rs.getLong("msgNum"));
 				dto.setMsgContent(rs.getString("msgContent"));
 				dto.setMsgRegDate(rs.getString("msgRegDate"));
+				dto.setMsgReadDate(rs.getString("msgReadDate"));
+				dto.setMsgRead(rs.getInt("msgRead"));
+				dto.setMsgSenderId(rs.getString("msgSenderId"));
+				dto.setUserNickName(rs.getString("userNickName"));
 
 				list.add(dto);
 			}
@@ -323,9 +326,9 @@ public class MessageDAO {
 		String sql;
 		
 		try {
-			sql = "SELECT msgNum, msgContent, msgRegDate "
+			sql = "SELECT msgNum, msgContent, msgRegDate, msgWriterId, userNickName "
 					+ " FROM message msg "
-					+ " JOIN member mb ON msg.msgSenderId = mb.userId "
+					+ " JOIN member mb ON msg.msgWriterId = mb.userId "
 					+ " WHERE msg.msgSenderId = ? AND msgSenEnabled=1 "
 					+ " ORDER BY msgNum DESC "
 					+ " OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ";
@@ -343,6 +346,8 @@ public class MessageDAO {
 				dto.setMsgNum(rs.getLong("msgNum"));
 				dto.setMsgContent(rs.getString("msgContent"));
 				dto.setMsgRegDate(rs.getString("msgRegDate"));
+				dto.setMsgWriterId(rs.getString("msgWriterId"));
+				dto.setUserNickName(rs.getString("userNickName"));
 
 				list.add(dto);
 			}
@@ -373,9 +378,45 @@ public class MessageDAO {
 		List<MessageDTO> list = new ArrayList<>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String sql;
+		StringBuilder sb = new StringBuilder();
 		
 		try {
+			sb.append("SELECT msgNum, msgContent, msgRegDate, msgReadDate, msgRead, msgSenderId, userNickName ");
+			sb.append(" FROM message msg ");
+			sb.append(" JOIN member mb ON msg.msgSenderId = mb.userId ");
+			sb.append(" WHERE msg.msgWriterId = ? AND msgWriEnabled=1 ");
+			
+			if(condition.equals("content")) {
+				sb.append(" AND INSTR(msgContent, ?) >= 1 ");
+			}
+			
+			sb.append(" ORDER BY msgNum DESC ");
+			sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
+			
+			pstmt = conn.prepareStatement(sb.toString());
+			
+			pstmt.setString(1, userId);
+			
+			if(condition.equals("content")) {
+				pstmt.setString(2, keyword);
+				pstmt.setInt(3, offset);
+				pstmt.setInt(4, size);
+			}
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				MessageDTO dto = new MessageDTO();
+
+				dto.setMsgNum(rs.getLong("msgNum"));
+				dto.setMsgContent(rs.getString("msgContent"));
+				dto.setMsgRegDate(rs.getString("msgRegDate"));
+				dto.setMsgReadDate(rs.getString("msgReadDate"));
+				dto.setMsgRead(rs.getInt("msgRead"));
+				dto.setMsgSenderId(rs.getString("msgSenderId"));
+				dto.setUserNickName(rs.getString("userNickName"));
+				
+				list.add(dto);
+			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -403,10 +444,47 @@ public class MessageDAO {
 		List<MessageDTO> list = new ArrayList<>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String sql;
+		StringBuilder sb = new StringBuilder();
 
 		try {
+			sb.append("SELECT msgNum, msgContent, msgRegDate, msgRead, msgWriterId, userNickName ");
+			sb.append(" FROM message msg ");
+			sb.append(" JOIN member mb ON msg.msgWriterId = mb.userId ");
+			sb.append(" WHERE msg.msgSenderId = ? AND msgSenEnabled=1 ");
+			
+			if(condition.equals("content")) {
+				sb.append(" AND INSTR(msgContent, ?) >= 1 ");
+			} else if(condition.equals("userNickName")) {
+				sb.append(" AND INSTR(userNickName, ?) >= 1 ");
+			}
+			
+			sb.append(" ORDER BY msgNum DESC ");
+			sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
+			
+			pstmt = conn.prepareStatement(sb.toString());
+			
+			pstmt.setString(1, userId);
+			
+			if(condition.equals("content") || condition.equals("userNickName")) {
+				pstmt.setString(2, keyword);
+				pstmt.setInt(3, offset);
+				pstmt.setInt(4, size);
+			}
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				MessageDTO dto = new MessageDTO();
 
+				dto.setMsgNum(rs.getLong("msgNum"));
+				dto.setMsgContent(rs.getString("msgContent"));
+				dto.setMsgRegDate(rs.getString("msgRegDate"));
+				dto.setMsgRead(rs.getInt("msgRead"));
+				dto.setMsgSenderId(rs.getString("msgWriterId"));
+				dto.setUserNickName(rs.getString("userNickName"));
+				
+				list.add(dto);
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
