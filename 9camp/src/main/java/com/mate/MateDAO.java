@@ -17,4 +17,5 @@ public interface MateDAO {
 	public List<MateDTO> listMate(int offset, int size, String condition, String keyword, String userId);
 	public List<MateDTO> listMate(int offset, int size, String userId);
 	public MateDTO readMate(String userId, Long fileName);
+	
 }
