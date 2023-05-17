@@ -144,7 +144,7 @@ function searchList() {
 						</form>
 					</td>
 					<td align="right" width="100">
-						<button type="button" class="btn" onclick="btnDeleteList();">삭제 하기</button>
+
 					</td>
 				</tr>
 			</table>
