@@ -227,12 +227,6 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 		
 					<tr>
 						<td colspan="2">
-							파&nbsp;&nbsp;일 :
-						</td>
-					</tr>
-		
-					<tr>
-						<td colspan="2">
 							이전글 :
 							<c:if test="${not empty preReadDto}">
 								<a href="${pageContext.request.contextPath}/freeboard/article.do?${query}&num=${preReadDto.num}">${preReadDto.subject}</a>

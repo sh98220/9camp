@@ -255,17 +255,17 @@ public class FreeBoardDAO {
 
 		return list;
 	}
-/*	
-	// 조회수 증가하기  (Board_256)  
-	public void updateHitCount(long num) throws SQLException {
+
+	// 조회수 증가하기 
+	public void updateHitCount(long camChatnum) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
 
 		try {
-			sql = "UPDATE campChat SET hitCount=hitCount+1 WHERE num=?";
+			sql = "UPDATE campChat SET camChathitCount=camChathitCount+1 WHERE camChatnum=?";
 			pstmt = conn.prepareStatement(sql);
 			
-			pstmt.setLong(1, num);
+			pstmt.setLong(1, camChatnum);
 			
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -281,8 +281,8 @@ public class FreeBoardDAO {
 		}
 
 	}	
-*/	
-	// 해당 게시물 보기  (Board_282)
+
+	// 해당 게시물 보기
 	public FreeBoardDTO readBoard(long num) {
 		FreeBoardDTO dto = null;
 		PreparedStatement pstmt = null;
@@ -332,20 +332,19 @@ public class FreeBoardDAO {
 
 		return dto;
 	}	
-/*	
+	
 	// 게시물 수정
 	public void updateFreeBoard(FreeBoardDTO dto) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
 
 		try {
-			sql = "UPDATE camChat SET subject=?, content=? WHERE num=? AND userId=?";
+			sql = "UPDATE campChat SET camChatsubject=?, camChatcontent=? WHERE camChatnum=?";
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString(1, dto.getcamChatSubject());
 			pstmt.setString(2, dto.getcamChatContent());
 			pstmt.setLong(3, dto.getcamChatNum());
-			pstmt.setString(4, dto.getUserId());
 			
 			pstmt.executeUpdate();
 
@@ -362,31 +361,21 @@ public class FreeBoardDAO {
 		}
 
 	}	
-*/
-/*
+
+
 	// 게시물 삭제
-	public void deleteFreeBoard(long num, String userId) throws SQLException {
+	public void deleteFreeBoard(long num) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
 
 		try {
-			if (userId.equals("admin")) {
-				sql = "DELETE FROM campChat WHERE num=?";
-				pstmt = conn.prepareStatement(sql);
-				
-				pstmt.setLong(1, num);
-				
-				pstmt.executeUpdate();
-			} else {
-				sql = "DELETE FROM campChat WHERE num=? AND userId=?";
-				
-				pstmt = conn.prepareStatement(sql);
-				
-				pstmt.setLong(1, num);
-				pstmt.setString(2, userId);
-				
-				pstmt.executeUpdate();
-			}
+			sql = "DELETE FROM campChat WHERE camChatnum=?";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			
+			pstmt.executeUpdate();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;
@@ -399,7 +388,7 @@ public class FreeBoardDAO {
 			}
 		}
 	}
-*/	
+
 	
 	
 	
