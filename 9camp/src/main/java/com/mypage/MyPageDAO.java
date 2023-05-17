@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mate.MateDTO;
+
 import com.util.DBConn;
 
 public class MyPageDAO {
@@ -725,15 +726,103 @@ public class MyPageDAO {
 			
 		}
 
-
-		public MateDTO readMate(String userId, Long fileName) {
+	public List<MateDTO> listMate() {
 			// TODO Auto-generated method stub
-			return null;
+		return null;
+	}
+
+
+	public MyPageDTO readMateApply(long num) {
+		MyPageDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+
+		try {
+			sql = "SELECT campMateApply.camMateNum, campMateApply.userid, campMateApply.camMateAppContent,  "
+					+ " campMateApply.camMateAppDate, campMateApply.camMateAppGender, campMateApply.camMateAppAge, "
+					+ " campMateApply.camMateAppConfirm, member.userNickname " +
+					" FROM campMate, campMateApply, member " +
+					" WHERE campMate.camMateNum = campMateApply.camMateNum  AND " +
+					" member.userId = campMateApply.userid AND " +
+					" campMateApply.camMateNum= ? " ;
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				dto = new MyPageDTO();
+
+				dto.setCamMateNum(rs.getLong("camMateNum"));
+				dto.setUserId(rs.getString("userId"));
+				dto.setCamMateAppContent(rs.getString("camMateAppContent"));
+				dto.setCamMateAppDate(rs.getString("camMateAppDate"));
+				dto.setCamMateAppGender(rs.getString("camMateAppGender"));
+				dto.setCamMateAppAge(rs.getInt("camMateAppAge"));
+				dto.setCamMateAppConfirm(rs.getString("camMateAppConfirm"));
+				dto.setUserNickName(rs.getString("userNickname"));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
 		}
 
+		return dto;
+	}
+	
+	
+	
+	public void deleteMateApply(long[] nums, String userId) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		
+		try {
+				sql = "DELETE FROM campMateApply WHERE userId = ? AND"
+						+ " camMateNum IN (";
+				for (int i = 0; i < nums.length; i++) {
+					sql += "?,";
+				}
+				sql = sql.substring(0, sql.length() - 1) + ")";
 
-		public List<MateDTO> listMate() {
-			// TODO Auto-generated method stub
-			return null;
-		}	
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setString(1, userId);
+				for (int i = 0; i < nums.length; i++) {
+					pstmt.setLong(i + 2, nums[i]);
+				}
+
+				pstmt.executeUpdate();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e2) {
+					}
+				}
+			}
+		
+	}
+
+
 }

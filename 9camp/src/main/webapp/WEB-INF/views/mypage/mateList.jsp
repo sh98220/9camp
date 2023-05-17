@@ -97,7 +97,7 @@ function searchList() {
 							<td>${mateList.camMateStartDate}</td>
 							<td>${mateList.camMateEndDate}</td>
 							<td>${mateList.camMateDues}</td>
-							<td><button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mypage/myMateList.do?';">멤버 보기</button></td>
+							<td><button type="button" class="btn" onclick="location.href='${AdminUrl}&num=${mateList.camMateNum}'">멤버 보기</button></td>
 							<td>
 								<input type="checkbox" name="nums" value="${mateList.camMateNum}">
 							</td>

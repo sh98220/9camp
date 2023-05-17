@@ -75,7 +75,6 @@ function searchList() {
 				<table class="table table-border table-list">
 					<thead>
 						<tr>
-							<th></th>
 							<th class="num">닉네임</th>
 							<th class="content">내용</th>
 							<th class="gender">성별</th>
@@ -87,19 +86,20 @@ function searchList() {
 					</thead>
 					
 					<tbody>
-						<c:forEach var="mate" items="${list}" varStatus="status">
-						<tr>
-							<td>${mate.userNickName}</td>
-							<td>${mate.camMateAppContent}</td>
-							<td>${mate.camMateAppGender}</td>
-							<td>${mate.camMateAppAge}</td>
-							<td><button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mypage/myMateList.do?';">멤버 보기</button></td>
+
+						<tr>				
+	
+							
+							<td>${dto.userNickName}</td>
+							<td>${dto.camMateAppContent}</td>
+							<td>${dto.camMateAppGender}</td>
+							<td>${dto.camMateAppAge}</td>
 							<td>
-								<input type="checkbox" name="nums" value="${mate.camMateNum}">
+								<input type="checkbox" name="nums" value="${dto.userId}">
 							</td>
 							
 						</tr>
-						</c:forEach>
+
 					</tbody>
 				</table>
 			</form>
@@ -111,10 +111,10 @@ function searchList() {
 			<table class="table">
 				<tr>
 					<td width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mypage/mateList.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mypage/mateApplyAdmin.do?page=${page}&num=${num}';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
 					</td>
 					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/mypage/mateList.do" method="post">
+						<form name="searchForm" action="${pageContext.request.contextPath}/mypage/mateApplyAdmin.do?page=${page}&num=${num}" method="post">
 							<select name="condition" class="form-select">
 								<!-- <option value="all" ${condition=="all"?"selected='selected'":"" }>제목+내용</option> -->
 								<option value="userNickName" ${condition=="userNickName"?"selected='selected'":"" }>닉네임</option>
@@ -139,7 +139,7 @@ function searchList() {
 
 							if(confirm("선택한 멤버를 삭제 하시겠습니까 ?")) {
 								const f = document.listForm;
-								f.action="${pageContext.request.contextPath}/mypage/deleteMyMate.do";
+								f.action="${pageContext.request.contextPath}/mypage/deleteMateApply.do?page=${page}&num=${num}";
 								f.submit();
 							}
 						}
