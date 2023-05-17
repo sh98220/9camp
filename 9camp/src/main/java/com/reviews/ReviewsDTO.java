@@ -14,6 +14,9 @@ public class ReviewsDTO {
 	private String camRevphotoname;
 	private String[] imageFiles;
 	
+	private int reviewsLikeCount;
+	
+	
 	public long getCamRevnum() {
 		return camRevnum;
 	}
@@ -81,5 +84,10 @@ public class ReviewsDTO {
 	public void setCamRevphotoname(String camRevphotoname) {
 		this.camRevphotoname = camRevphotoname;
 	}
-	
+	public int getReviewsLikeCount() {
+		return reviewsLikeCount;
+	}
+	public void setReviewsLikeCount(int boardLikeCount) {
+		this.reviewsLikeCount = boardLikeCount;
+	}
 }
