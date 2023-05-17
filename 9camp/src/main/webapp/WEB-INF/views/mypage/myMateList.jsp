@@ -17,7 +17,7 @@
 .table-list thead > tr:first-child { background: #f8f8f8; }
 .table-list th, .table-list td { text-align: center; }
 
-.table-list .wish { display: inline-block; padding:1px 3px; background: #ed4c00; color: #fff; }
+.table-list .mateList { display: inline-block; padding:1px 3px; background: #ed4c00; color: #fff; }
 .table-list .left { text-align: left; padding-left: 5px; }
 
 .table-list .chk { width: 40px; color: #787878; }
@@ -35,9 +35,6 @@ function searchList() {
 	const f = document.searchForm;
 	f.submit();
 }
-
-
-
 	$(function(){  
 		$("#chkAll").click(function(){
 			if($(this).is(":checked")) {
@@ -46,21 +43,9 @@ function searchList() {
 				$("input[name=nums]").prop("checked", false);
 			}
 		});
-		
-		$("#btnDeleteList").click(function(){
-			let cnt = $("input[name=nums]:checked").length;
-			if(cnt === 0) {
-				alert("삭제할 찜을 먼저 선택하세요.");
-				return false;
-			}
-			
-			if(confirm("선택한 찜을 삭제 하시겠습니까 ?")) {
-				const f = document.listForm;
-				f.action="${pageContext.request.contextPath}/mypage/deleteWish.do";
-				f.submit();
-			}
-		});
 	});
+
+	
 </script>
 </head>
 <body>
@@ -72,7 +57,7 @@ function searchList() {
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-clipboard-list"></i> 나의 찜 목록 </h2>
+			<h2><i class="fas fa-clipboard-list"></i> 나의 메이트 멤버 </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
@@ -90,11 +75,11 @@ function searchList() {
 				<table class="table table-border table-list">
 					<thead>
 						<tr>
-							<th class="num">번호</th>
-							<th class="subject">제목</th>
-							<th class="date">작성일</th>
-							<th class="addr">주소</th>
-							<th class="thema">테마</th>
+							<th></th>
+							<th class="num">닉네임</th>
+							<th class="content">내용</th>
+							<th class="gender">성별</th>
+							<th class="age">나이</th>
 							<th class="chk">
 								<input type="checkbox" name="chkAll" id="chkAll">        
 							</th>
@@ -102,16 +87,17 @@ function searchList() {
 					</thead>
 					
 					<tbody>
-						<c:forEach var="dto" items="${list}" varStatus="status">
+						<c:forEach var="mate" items="${list}" varStatus="status">
 						<tr>
-							<td>${dto.camInfoNum}</td>
-							<td>${dto.camInfoSubject}</td>
-							<td>${dto.camInfoRegDate}</td>
-							<td>${dto.camInfoAddr}</td>
-							<td>${dto.camThemaName}</td>
+							<td>${mate.userNickName}</td>
+							<td>${mate.camMateAppContent}</td>
+							<td>${mate.camMateAppGender}</td>
+							<td>${mate.camMateAppAge}</td>
+							<td><button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mypage/myMateList.do?';">멤버 보기</button></td>
 							<td>
-								<input type="checkbox" name="nums" value="${dto.camInfoNum}">
+								<input type="checkbox" name="nums" value="${mate.camMateNum}">
 							</td>
+							
 						</tr>
 						</c:forEach>
 					</tbody>
@@ -125,26 +111,40 @@ function searchList() {
 			<table class="table">
 				<tr>
 					<td width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mypage/wish.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mypage/mateList.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
 					</td>
 					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/mypage/wish.do" method="post">
+						<form name="searchForm" action="${pageContext.request.contextPath}/mypage/mateList.do" method="post">
 							<select name="condition" class="form-select">
 								<!-- <option value="all" ${condition=="all"?"selected='selected'":"" }>제목+내용</option> -->
-								<option value="camThemaName" ${condition=="camThemaName"?"selected='selected'":"" }>테마</option>
-								<option value="campWish.camInfoNum" ${condition=="campWish.camInfoNum"?"selected='selected'":"" }>번호</option>
-								<!-- <option value="camInfoRegDate"  ${condition=="camInfoRegDate "?"selected='selected'":"" }>번호</option> -->
-								<option value="camInfoAddr"  ${condition=="camInfoAddr"?"selected='selected'":"" }>주소</option>
-								<option value="camInfoSubject"  ${condition=="camInfoSubject "?"selected='selected'":"" }>제목</option>
-								<option value="camInfoContent"  ${condition=="camInfoContent "?"selected='selected'":"" }>내용</option>
+								<option value="userNickName" ${condition=="userNickName"?"selected='selected'":"" }>닉네임</option>
+								<option value="camMateAppContent"  ${condition=="camMateAppContent "?"selected='selected'":"" }>내용</option>
+								<option value="camMateAppGender"  ${condition=="camMateAppGender "?"selected='selected'":"" }>성별</option>
+								<option value="camMateAppAge"  ${condition=="camMateAppAge "?"selected='selected'":"" }>나이</option>
 							</select>
 							<input type="text" name="keyword" value="${keyword}" class="form-control">
-							<input type="hidden" name="size" value="${size}">
+
 							<button type="button" class="btn" onclick="searchList();">검색</button>
 						</form>
 					</td>
 					<td align="right" width="100">
+						<button type="button" class="btn" onclick="btnDeleteMate();">삭제 하기</button>
+						<script type="text/javascript">
+						function btnDeleteMate() {
+							let cnt = $("input[name=nums]:checked").length;
+							if(cnt === 0) {
+								alert("삭제할 멤버를 먼저 선택하세요.");
+								return false;
+							}
 
+							if(confirm("선택한 멤버를 삭제 하시겠습니까 ?")) {
+								const f = document.listForm;
+								f.action="${pageContext.request.contextPath}/mypage/deleteMyMate.do";
+								f.submit();
+							}
+						}
+							
+						</script>
 					</td>
 				</tr>
 			</table>

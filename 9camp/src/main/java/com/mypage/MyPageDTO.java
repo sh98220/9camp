@@ -1,5 +1,9 @@
 package com.mypage;
 
+/**
+ * @author hanjeongsu
+ *
+ */
 public class MyPageDTO {
 	//member
 	private String userId;
@@ -24,7 +28,24 @@ public class MyPageDTO {
 	private String camInfoRegDate;
 	private String camThemaName;
 	
-
+	//campMate
+	private String camMateSubject;
+	private String camMateContent;
+	private int camMateHitCount;
+	private String camMateStartDate;
+	private String camMateEndDate;
+	private String camMateRegDate;
+	private int camMateDues;
+	
+	
+	
+	//campMateApply
+	private long camMateNum;
+	private String camMateAppContent;
+	private String camMateAppDate;
+	private String camMateAppGender;
+	private int camMateAppAge;
+	private String camMateAppConfirm; 
 	
 	
 	public String getUserId() {
@@ -171,5 +192,83 @@ public class MyPageDTO {
 	public void setCamThemaName(String camThemaName) {
 		this.camThemaName = camThemaName;
 	}
-
+	public String getCamMateSubject() {
+		return camMateSubject;
+	}
+	public void setCamMateSubject(String camMateSubject) {
+		this.camMateSubject = camMateSubject;
+	}
+	public String getCamMateContent() {
+		return camMateContent;
+	}
+	public void setCamMateContent(String camMateContent) {
+		this.camMateContent = camMateContent;
+	}
+	public int getCamMateHitCount() {
+		return camMateHitCount;
+	}
+	public void setCamMateHitCount(int camMateHitCount) {
+		this.camMateHitCount = camMateHitCount;
+	}
+	public String getCamMateStartDate() {
+		return camMateStartDate;
+	}
+	public void setCamMateStartDate(String camMateStartDate) {
+		this.camMateStartDate = camMateStartDate;
+	}
+	public String getCamMateEndDate() {
+		return camMateEndDate;
+	}
+	public void setCamMateEndDate(String camMateEndDate) {
+		this.camMateEndDate = camMateEndDate;
+	}
+	public String getCamMateRegDate() {
+		return camMateRegDate;
+	}
+	public void setCamMateRegDate(String camMateRegDate) {
+		this.camMateRegDate = camMateRegDate;
+	}
+	public int getCamMateDues() {
+		return camMateDues;
+	}
+	public void setCamMateDues(int camMateDues) {
+		this.camMateDues = camMateDues;
+	}
+	public long getCamMateNum() {
+		return camMateNum;
+	}
+	public void setCamMateNum(long camMateNum) {
+		this.camMateNum = camMateNum;
+	}
+	public String getCamMateAppContent() {
+		return camMateAppContent;
+	}
+	public void setCamMateAppContent(String camMateAppContent) {
+		this.camMateAppContent = camMateAppContent;
+	}
+	public String getCamMateAppDate() {
+		return camMateAppDate;
+	}
+	public void setCamMateAppDate(String camMateAppDate) {
+		this.camMateAppDate = camMateAppDate;
+	}
+	public String getCamMateAppGender() {
+		return camMateAppGender;
+	}
+	public void setCamMateAppGender(String camMateAppGender) {
+		this.camMateAppGender = camMateAppGender;
+	}
+	public int getCamMateAppAge() {
+		return camMateAppAge;
+	}
+	public void setCamMateAppAge(int camMateAppAge) {
+		this.camMateAppAge = camMateAppAge;
+	}
+	public String getCamMateAppConfirm() {
+		return camMateAppConfirm;
+	}
+	public void setCamMateAppConfirm(String camMateAppConfirm) {
+		this.camMateAppConfirm = camMateAppConfirm;
+	}
+	
 }

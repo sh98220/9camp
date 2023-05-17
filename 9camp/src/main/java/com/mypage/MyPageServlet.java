@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.member.SessionInfo;
-import com.mate.*;
 
 import com.util.MyServlet;
 import com.util.MyUtil;
@@ -47,12 +46,17 @@ public class MyPageServlet extends MyServlet {
 			wish(req, resp);
 		} else if (uri.indexOf("mateList.do") != -1) {
 			mateList(req, resp); //내가 관리 중인 캠핑 메이트 리스트
+		} else if (uri.indexOf("myMateList.do") != -1) {
+			myMateList(req, resp);
 		} else if (uri.indexOf("deleteWish.do") != -1) {
 			deleteWish(req, resp);
 		} else if (uri.indexOf("deleteMate.do") != -1) {
 			deleteMate(req, resp);
 		}
 	}
+
+
+
 
 
 
@@ -128,9 +132,9 @@ public class MyPageServlet extends MyServlet {
 			// 전체데이터 개수
 			int dataCount;
 			if (keyword.length() == 0) {
-				dataCount = dao.dataCount(info.getUserId());
+				dataCount = dao.dataCountWish(info.getUserId());
 			} else {
-				dataCount = dao.dataCount(condition, keyword, info.getUserId());
+				dataCount = dao.dataCountWish(condition, keyword, info.getUserId());
 			}
 			
 			// 전체페이지수
@@ -191,7 +195,7 @@ public class MyPageServlet extends MyServlet {
 	protected void mateList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 캠핑 메이트 관리 리스트
 		
-		MateDAO dao = new MateDAOImpl();
+		MyPageDAO dao = new MyPageDAO();
 		MyUtil util = new MyUtil();
 				
 		String cp = req.getContextPath();
@@ -222,9 +226,9 @@ public class MyPageServlet extends MyServlet {
 					// 전체데이터 개수
 					int dataCount;
 					if (keyword.length() == 0) {
-						dataCount = dao.dataCount(info.getUserId());
+						dataCount = dao.dataCountMate(info.getUserId());
 					} else {
-						dataCount = dao.dataCount(condition, keyword, info.getUserId());
+						dataCount = dao.dataCountMate(condition, keyword, info.getUserId());
 					}
 					
 					// 전체페이지수
@@ -240,7 +244,7 @@ public class MyPageServlet extends MyServlet {
 					
 					
 					
-					List<MateDTO> list = null;
+					List<MyPageDTO> list = null;
 					if (keyword.length() == 0) {
 						list = dao.listMate(offset, size, info.getUserId());
 					} else {
@@ -282,14 +286,66 @@ public class MyPageServlet extends MyServlet {
 		forward(req, resp, "/WEB-INF/views/mypage/mateList.jsp");
 	}
 	
+	private void myMateList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String cp = req.getContextPath();
+
+		String page = req.getParameter("page");
+		String size = req.getParameter("size");
+		String query = "page=" + page + "&size=" + size;
+
+		MyPageDAO dao = new MyPageDAO();
+
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+
+			String condition = req.getParameter("condition");
+			String keyword = req.getParameter("keyword");
+			if (condition == null) {
+				condition = "all";
+				keyword = "";
+			}
+			keyword = URLDecoder.decode(keyword, "utf-8");
+
+			if (keyword.length() != 0) {
+				query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
+			}
+
+			// 게시물 가져오기
+			//MateDTO dto = dao.readMyMateList(num);
+			//if (dto == null) {
+				resp.sendRedirect(cp + "/notice/list.do?" + query);
+				return;
+			//}
+
+			//dto.setContent(dto.getContent().replaceAll("\n", "<br>"));
+
+			
+			//req.setAttribute("dto", dto);
+			//req.setAttribute("query", query);
+			//req.setAttribute("page", page);
+			//req.setAttribute("size", size);
+
+			//forward(req, resp, "/WEB-INF/views/notice/article.jsp");
+			//return;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//forward(req, resp, "/WEB-INF/views/mypage/myMateList.jsp");
+		resp.sendRedirect(cp + "/notice/list.do?" + query);
+	}
+		
+	
+
+	
+	
+	
 	protected void deleteWish(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
 		String cp = req.getContextPath();
 
 		String page = req.getParameter("page");
-		String size = req.getParameter("size");
-		String query = "size=" + size + "&page=" + page;
+		String query = "page=" + page;
 
 		String condition = req.getParameter("condition");
 		String keyword = req.getParameter("keyword");
@@ -326,8 +382,7 @@ public class MyPageServlet extends MyServlet {
 		String cp = req.getContextPath();
 
 		String page = req.getParameter("page");
-		String size = req.getParameter("size");
-		String query = "size=" + size + "&page=" + page;
+		String query = "page=" + page;
 
 		String condition = req.getParameter("condition");
 		String keyword = req.getParameter("keyword");
@@ -344,12 +399,11 @@ public class MyPageServlet extends MyServlet {
 				nums[i] = Long.parseLong(nn[i]);
 			}
 
-			MateDAO dao = new MateDAOImpl();
+			MyPageDAO dao = new MyPageDAO();
 
 
 			// 메이트 삭제
 			dao.deleteMate(nums, info.getUserId());
-			//dao.deleteWish(nums, info.getUserId());
 
 		} catch (Exception e) {
 			e.printStackTrace();
