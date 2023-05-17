@@ -10,6 +10,8 @@
 <title>spring</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 <style type="text/css">
+a {display: inline-block;}
+
 .body-main {
 	max-width: 700px;
 	padding-top: 15px;
@@ -210,6 +212,28 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 
 .photo-layout img { width: 570px; height: 450px; }
 
+.table-article tr>td { padding-left: 5px; padding-right: 5px; }
+.reply { clear: both; padding: 20px 0 10px; }
+.reply .bold { font-weight: 600; }
+
+.reply .form-header { padding-bottom: 7px; }
+.reply-form  tr>td { padding: 2px 0 2px; }
+.reply-form textarea { width: 100%; height: 75px; }
+.reply-form button { padding: 8px 25px; }
+
+.reply .reply-info { padding-top: 25px; padding-bottom: 7px; }
+.reply .reply-info  .reply-count { color: #3EA9CD; font-weight: 700; }
+
+.reply .reply-list tr>td { padding: 7px 5px; }
+.reply .reply-list .bold { font-weight: 600; }
+
+.reply .deleteReply, .reply .deleteReplyAnswer { cursor: pointer; }
+.reply .notifyReply { cursor: pointer; }
+
+.reply-list .list-header { border: 1px solid #ccc; background: #f8f8f8; }
+.reply-list tr>td { padding-left: 7px; padding-right: 7px; }
+
+
 </style>
 <script type="text/javascript">
 <c:if test="${sessionScope.member.userId==dto.userId || sessionScope.member.userId=='admin'}">
@@ -234,6 +258,146 @@ function imageViewer(img) {
 		modal: true
 	});
 }
+</script>
+
+<script type="text/javascript">
+function login(){
+	location.href = "${pageContext.request.contextPath}/member/login.do";
+}
+
+function ajaxFun(url, method, query, dataType, fn) {
+	$.ajax({
+		type:method,		// 메소드(get, post, put, delete)
+		url:url,			// 요청 받을 서버주소
+		data:query,			// 서버에 전송할 파라미터
+		dataType:dataType,	// 서버에서 응답하는 형식(json, xml, text)
+		success:function(data) {
+			fn(data);
+		},
+		beforeSend:function(jqXHR) { 
+			jqXHR.setRequestHeader("AJAX", true); // 사용자 정의 헤더
+		},
+		error:function(jqXHR) {
+			if(jqXHR.status === 403) {
+				login();
+				return false;
+			} else if(jqXHR.status === 400) {
+				alert("요청 처리가 실패 했습니다.");
+				return false;
+			}
+			console.log(jqXHR.responseText);
+		}
+	});
+}
+
+// 게시글 공감 여부
+$(function(){
+	$(".btnSendReviewsLike").click(function(){
+		const $i = $(this).find("i");
+		let isNoLike = $i.css("color") == "rgb(0, 0, 0)";
+		let msg = isNoLike ? "게시글에 공감하십니까 ?" : "게시글 공감을 취소하시겠습니까 ?";		
+		
+		if(! confirm(msg)){
+			return false;
+		}
+		
+		let url = "${pageContext.request.contextPath}/reviews/insertReviewsLike.do";
+		let num = "${dto.camRevnum}";
+		let qs = "camRevnum=" + num + "&isNoLike=" + isNoLike;
+		
+		const fn = function(data){
+			let state = data.state;
+			if(state === "true"){
+				let color = "black";
+				if( isNoLike ){
+					color = "blue";
+				}
+				$i.css("color", color);
+				
+				let count = data.reviewsLikeCount;
+				$("#reviewsLikeCount").text(count);
+			} else if(state === "liked"){
+				alert("좋아요는 한번만 가능합니다.");				
+			}
+		};
+		
+		ajaxFun(url, "post", qs, "json", fn);
+	});
+});
+
+//댓글 리스트 및 페이징
+$(function(){
+	listPage(1);
+});
+
+function listPage(page) {
+	let url = "${pageContext.request.contextPath}/reviews/listReply.do";
+	let qs = "camRevnum=${dto.camRevnum}&pageNo="+page;
+	let selector = "#listReply";
+	
+	const fn = function(data){
+		$(selector).html(data);
+	}
+	
+	ajaxFun(url, "get", qs, "text", fn);
+	//	ajaxFun(url, "get", qs, "html", fn); // 가능
+	
+}
+
+// 댓글 등록
+$(function(){
+	$(".btnSendReply").click(function(){
+		let num = "${dto.camRevnum}";
+		const $tb = $(this).closest("table");
+		let content = $tb.find("textarea").val().trim();
+		
+		if(! content) {
+			$tb.find("textarea").focus();
+			return false;
+		}
+		content = encodeURIComponent(content);
+		
+		let url = "${pageContext.request.contextPath}/reviews/insertReply.do";
+		let qs = "camRevnum="+num+"&camRevRepcontent="+content;
+		
+		const fn = function(data){
+			$tb.find("textarea").val("");
+			
+			let state = data.state;
+			if(state === "true"){
+				listPage(1);
+			} else {
+				alert("댓글을 추가하지 못했습니다.");
+			}
+		}
+		
+		ajaxFun(url, "post", qs, "json", fn);
+		
+	});
+});
+
+//댓글 삭제
+$(function(){
+	$("#listReply").on("click", ".deleteReply", function(){
+		if(! confirm("게시글을 삭제하시겠습니까 ? ")){
+			return false;
+		}
+		
+		let camRevRepnum = $(this).attr("data-camRevRepnum");
+		let page = $(this).attr("data-pageNo");
+		
+		let url = "${pageContext.request.contextPath}/reviews/deleteReply.do";
+		let qs = "camRevRepnum="+camRevRepnum;
+		
+		const fn = function(data){
+			listPage(page);
+		};
+		
+		ajaxFun(url, "post", qs, "json", fn);
+	});
+});
+
+
 </script>
 
 </head>
@@ -288,6 +452,12 @@ function imageViewer(img) {
 					</tr>
 		
 					<tr>
+						<td colspan="2" align="center" style="border-bottom: 20px; ">
+							<button type="button" class="btn btnSendReviewsLike" title="좋아요"> <i class="fas fa-thumbs-up" style="color:${isUserLike?'blue':'black'}"></i>&nbsp;&nbsp;<span id="reviewsLikeCount">${dto.reviewsLikeCount}</span></button>
+						</td>
+					</tr>
+		
+					<tr>
 						<td colspan="2">
 							이전글 :
 							<c:if test="${not empty preReadDto}">
@@ -332,7 +502,28 @@ function imageViewer(img) {
 					</td>
 				</tr>
 			</table>
-	        
+	       <div class="reply">
+				<form name="replyForm" method="post">
+					<div class='form-header'>
+						<span class="bold">댓글쓰기</span><span> - 타인을 비방하거나 개인정보를 유출하는 글의 게시를 삼가해 주세요.</span>
+					</div>
+					
+					<table class="table reply-form">
+						<tr>
+							<td>
+								<textarea class='form-control' name="camRevRepcontent"></textarea>
+							</td>
+						</tr>
+						<tr>
+						   <td align='right'>
+								<button type='button' class='btn btnSendReply'>댓글 등록</button>
+							</td>
+						 </tr>
+					</table>
+				</form>
+				
+				<div id="listReply"></div>
+			</div>
 	    </div>
 	</div>
 </main>
