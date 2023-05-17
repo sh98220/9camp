@@ -215,7 +215,7 @@ function searchList() {
 							<td class="left">
 								<a href="${articleUrl}&num=${dto.rentNum}">${dto.rentSubject}</a>
 							</td>
-							<td>${dto.userNickName}</td>
+							<td>${dto.hostId}</td>
 							<td>${dto.rentRegDate}</td>
 							<td>${dto.rentHitCount}</td>
 						</tr>
@@ -237,8 +237,9 @@ function searchList() {
 							<select name="condition" class="form-select">
 								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
 								<option value="userName" ${condition=="userName"?"selected='selected'":"" }>작성자</option>
-								<option value="reg_date"  ${condition=="reg_date"?"selected='selected'":"" }>등록일</option>
+								<option value="reg_date" ${condition=="reg_date"?"selected='selected'":"" }>등록일</option>
 								<option value="subject"  ${condition=="subject"?"selected='selected'":"" }>제목</option>
+								<option value="object"  ${condition=="object"?"selected='selected'":"" }>품목</option>
 								<option value="content"  ${condition=="content"?"selected='selected'":"" }>내용</option>
 							</select>
 							<input type="text" name="keyword" value="${keyword}" class="form-control">
