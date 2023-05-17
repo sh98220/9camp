@@ -184,33 +184,24 @@ function sendOk() {
     const f = document.boardForm;
 	let str;
 	
-    str = f.camChatsubject.value.trim();
+    str = f.camChatSubject.value.trim();
     if(!str) {
         alert("제목을 입력하세요. ");
-        f.camChatsubject.focus();
+        f.camChatSubject.focus();
         return;
     }
 
-    str = f.camChatcontent.value.trim();
+    str = f.camChatContent.value.trim();
     if(!str) {
         alert("내용을 입력하세요. ");
-        f.camChatcontent.focus();
+        f.camChatContent.focus();
         return;
     }
 
-    f.action = "${pageContext.request.contextPath}/freeboard/write_ok.do";
+    f.action = "${pageContext.request.contextPath}/freeboard/${mode}_ok.do";
     f.submit();
 }
 
-<c:if test="${mode == 'update'}">
-	function deleteFile(num) {
-		if(confirm('파일을 삭제하시겠습니까 ?')){
-			let query = "category=${category}&num="+num+"&page=${page}";
-			let url = "${pageContext.request.contextPath}/freeboard/deleteFile.do";
-			location.href = url + "?" + query;
-		}
-	}
-</c:if>
 </script>
 </head>
 <body>
@@ -231,7 +222,7 @@ function sendOk() {
 					<tr> 
 						<td>제&nbsp;&nbsp;&nbsp;&nbsp;목</td>
 						<td> 
-							<input type="text" name="camChatsubject" maxlength="100" class="form-control" value="${dto.camChatSubject}">
+							<input type="text" name="camChatSubject" maxlength="100" class="form-control" value="${dto.camChatSubject}">
 						</td>
 					</tr>
 					
@@ -245,7 +236,7 @@ function sendOk() {
 					<tr> 
 						<td valign="top">내&nbsp;&nbsp;&nbsp;&nbsp;용</td>
 						<td> 
-							<textarea name="camChatcontent" class="form-control">${dto.camChatContent}</textarea>
+							<textarea name="camChatContent" class="form-control">${dto.camChatContent}</textarea>
 						</td>
 					</tr>
 					
@@ -257,8 +248,8 @@ function sendOk() {
 							<button type="button" class="btn" onclick="sendOk();">${mode=="update"?"수정완료":"등록완료"}</button>
 							<button type="reset" class="btn">다시입력</button>
 							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/freeboard/list.do';">${mode=="update"?"수정취소":"등록취소"}</button>
-							<c:if test="${mode=='update' }">
-								<input type="hidden" name="num" value="${dto.camChatNum}">
+							<c:if test="${mode=='update'}">
+								<input type="hidden" name="camChatNum" value="${dto.camChatNum}">
 								<input type="hidden" name="page" value="${page}">
 							</c:if>							
 						</td>

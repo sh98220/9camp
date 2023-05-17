@@ -347,6 +347,9 @@ public class FreeBoardDAO {
 			pstmt.setLong(3, dto.getcamChatNum());
 			
 			pstmt.executeUpdate();
+			
+			pstmt.close();
+			pstmt = null;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -361,6 +364,77 @@ public class FreeBoardDAO {
 		}
 
 	}	
+	
+	// 이전 글
+	public FreeBoardDTO preReadFreeBoard(long camChatnum, String condition, String keyword) {
+		FreeBoardDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StringBuilder sb = new StringBuilder();
+
+		try {
+			if (keyword != null && keyword.length() != 0) {
+				sb.append(" SELECT camChatnum, camChatsubject ");
+				sb.append(" FROM campChat b ");
+				sb.append(" JOIN member m ON b.userId = m.userId ");
+				sb.append(" WHERE camChatnum > ? ");
+				if (condition.equals("all")) {
+					sb.append("   AND ( INSTR(camChatsubject, ?) >= 1 OR INSTR(camChatcontent, ?) >= 1 ) ");
+				} else if (condition.equals("camChatregdate")) {
+					keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
+					sb.append("   AND TO_CHAR(camChatregdate, 'YYYYMMDD') = ? ");
+				} else {
+					sb.append("   AND INSTR(" + condition + ", ?) >= 1 ");
+				}
+				sb.append(" ORDER BY camChatnum ASC ");
+				sb.append(" FETCH FIRST 1 ROWS ONLY ");
+
+				pstmt = conn.prepareStatement(sb.toString());
+				
+				pstmt.setLong(1, camChatnum);
+				pstmt.setString(2, keyword);
+				if (condition.equals("all")) {
+					pstmt.setString(3, keyword);
+				}
+			} else {
+				sb.append(" SELECT camChatnum, camChatsubject FROM campChat ");
+				sb.append(" WHERE camChatnum > ? ");
+				sb.append(" ORDER BY camChatnum ASC ");
+				sb.append(" FETCH FIRST 1 ROWS ONLY ");
+
+				pstmt = conn.prepareStatement(sb.toString());
+				
+				pstmt.setLong(1, camChatnum);
+			}
+
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				dto = new FreeBoardDTO();
+				
+				dto.setcamChatNum(rs.getInt("camChatnum"));
+				dto.setcamChatSubject(rs.getString("camChatsubject"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		return dto;
+	}
 
 
 	// 게시물 삭제

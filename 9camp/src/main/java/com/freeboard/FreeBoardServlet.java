@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
-import java.util.Map;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -14,8 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.member.SessionInfo;
-import com.reviews.ReviewsDAO;
-import com.reviews.ReviewsDTO;
 import com.util.MyUploadServlet;
 import com.util.MyUtil;
 
@@ -47,8 +43,6 @@ public class FreeBoardServlet extends MyUploadServlet {
 			deleteFile(req, resp);
 		} else if(uri.indexOf("delete.do") != -1) {
 			delete(req, resp);
-		} else if(uri.indexOf("download.do") != -1) {
-			download(req, resp);
 		}
 		
 		
@@ -162,8 +156,8 @@ public class FreeBoardServlet extends MyUploadServlet {
 			FreeBoardDTO dto = new FreeBoardDTO();
 			
 			dto.setUserId(info.getUserId()); 
-			dto.setcamChatSubject(req.getParameter("camChatsubject"));
-			dto.setcamChatContent(req.getParameter("camChatcontent"));
+			dto.setcamChatSubject(req.getParameter("camChatSubject"));
+			dto.setcamChatContent(req.getParameter("camChatContent"));
 			
 			
 			
@@ -213,14 +207,14 @@ public class FreeBoardServlet extends MyUploadServlet {
 			dto.setcamChatContent(util.htmlSymbols(dto.getcamChatContent()));
 
 			// 이전글 다음글
-			// ReviewsDTO preReadDto = dao.preReadBoard( dto.getNum(), condition, keyword);
-			// ReviewsDTO nextReadDto = dao.nextReadBoard( dto.getNum(), condition, keyword);
+			FreeBoardDTO preReadDto = dao.preReadFreeBoard( dto.getcamChatNum(), condition, keyword);
+			// FreeBoardDTO nextReadDto = dao.nextReadFreeBoard( dto.getcamChatNum(), condition, keyword);
 
 			// JSP로 전달할 속성
 			req.setAttribute("dto", dto);
 			req.setAttribute("page", page);
 			req.setAttribute("query", query);
-			// req.setAttribute("preReadDto", preReadDto);
+			req.setAttribute("preReadDto", preReadDto);
 			// req.setAttribute("nextReadDto", nextReadDto);
 
 			// 포워딩
@@ -276,6 +270,9 @@ public class FreeBoardServlet extends MyUploadServlet {
 		// 수정완료
 		FreeBoardDAO dao = new FreeBoardDAO();
 
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
 		String cp = req.getContextPath();
 		if (req.getMethod().equalsIgnoreCase("GET")) {
 			resp.sendRedirect(cp + "/freeboard/list.do");
@@ -290,6 +287,10 @@ public class FreeBoardServlet extends MyUploadServlet {
 			dto.setcamChatSubject(req.getParameter("camChatSubject"));
 			dto.setcamChatContent(req.getParameter("camChatContent"));
 
+			dto.setUserId(info.getUserId());
+			
+			dao.updateFreeBoard(dto);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -334,9 +335,6 @@ public class FreeBoardServlet extends MyUploadServlet {
 	
 	}
 	
-	protected void download(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 파일 다운로드
-	}
 	
 	protected void insertLikeBoard(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 게시글 좋아요
@@ -350,21 +348,6 @@ public class FreeBoardServlet extends MyUploadServlet {
 		// 댓글 삭제
 	}
 
-	protected void insertReplyAnswer(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 댓글의 답글 추가
-	}
-	
-	protected void listReplyAnswer(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 댓글의 답글 리스트
-	}
-	
-	protected void deleteReplyAnswer(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 댓글의 답글 삭제
-	}
-	
-	protected void countReplyAnswer(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 댓글의 답글 개수
-	}
 	
 	
 }
