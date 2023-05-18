@@ -44,7 +44,7 @@
 }
 
 .body-main {
-	max-width: 900px;
+	width: 900px;
 	padding-bottom: 35px;
 }
 
