@@ -40,68 +40,26 @@ public class MyPageServlet extends MyServlet {
 			forward(req, resp, "/WEB-INF/views/mypage/main.jsp");
 		//} else if (uri.indexOf("pwdCheck.do") != -1) {
 			//profileEditForm(req, resp);
-		} else if (uri.indexOf("profile.do") != -1) {
-			profile(req, resp);
 		} else if (uri.indexOf("wish.do") != -1) {
 			wish(req, resp);
 		} else if (uri.indexOf("mateList.do") != -1) {
 			mateList(req, resp); //내가 관리 중인 캠핑 메이트 리스트
 		} else if (uri.indexOf("mateApplyAdmin.do") != -1) {
 			mateApplyAdmin(req, resp);
+		} else if (uri.indexOf("mateWait.do") != -1) {
+			mateWait(req, resp);
 		} else if (uri.indexOf("deleteWish.do") != -1) {
 			deleteWish(req, resp);
 		} else if (uri.indexOf("deleteMate.do") != -1) {
 			deleteMate(req, resp);
 		} else if (uri.indexOf("deleteMateApply.do") != -1) {
 			deleteMateApply(req, resp);
+		} else if (uri.indexOf("deleteMateWait.do") != -1) {
+			deleteMateWait(req, resp);
+		} else if (uri.indexOf("confirmMateApply.do") != -1) {
+			confirmMateApply(req, resp);
 		}
 	}
-
-
-
-
-
-
-
-
-
-	protected void profile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 프로필 수정
-		MyPageDAO dao = new MyPageDAO();
-		HttpSession session = req.getSession();
-		
-		String cp = req.getContextPath();
-
-		if (req.getMethod().equalsIgnoreCase("GET")) {
-			resp.sendRedirect(cp + "/");
-			return;
-		}
-
-		try {
-			SessionInfo info = (SessionInfo) session.getAttribute("member");
-			if (info == null) { // 로그아웃 된 경우
-				resp.sendRedirect(cp + "/member/member.do");
-				return;
-			}
-
-			// DB에서 해당 회원 정보 가져오기
-			MyPageDTO dto = dao.readMember(info.getUserId());
-			if (dto == null) {
-				session.invalidate();
-				resp.sendRedirect(cp + "/");
-				return;
-			}
-
-			forward(req, resp, "/WEB-INF/views/mypage/profile.jsp");
-			return;
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		resp.sendRedirect(cp + "/");
-	}
-	
 
 	protected void wish(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 찜 리스트
@@ -208,7 +166,7 @@ public class MyPageServlet extends MyServlet {
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
 
-
+		
 				
 		try {
 					String page = req.getParameter("page");
@@ -235,18 +193,18 @@ public class MyPageServlet extends MyServlet {
 					} else {
 						dataCount = dao.dataCountMate(condition, keyword, info.getUserId());
 					}
-					
+
 					// 전체페이지수
 					int size = 5;
 					int total_page = util.pageCount(dataCount, size);
 					if (current_page > total_page) {
 						current_page = total_page;
 					}
-
+	
+					
 					// 게시물 가져오기
 					int offset = (current_page - 1) * size;
 					if(offset < 0) offset = 0;
-					
 					
 					
 					List<MyPageDTO> list = null;
@@ -256,21 +214,27 @@ public class MyPageServlet extends MyServlet {
 						list = dao.listMate(offset, size, condition, keyword, info.getUserId());
 					}
 
+
 					String query = "";
 					if (keyword.length() != 0) {
 						query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");
 					}
 					
-					
+
 					
 					// 페이징 처리
 					String listUrl = cp + "/mypage/mateList.do";
 					String AdminUrl = cp + "/mypage/mateApplyAdmin.do?page=" + current_page;
+					String waitUrl = cp + "/mypage/mateWait.do?page=" + current_page;
 					if (query.length() != 0) {
 						listUrl += "?" + query;
 						AdminUrl += "&" + query;
+						waitUrl += "&" + query;
 					}
+					
+
 					String paging = util.paging(current_page, total_page, listUrl);
+
 
 					// 포워딩할 list.jsp에 넘길 값
 					req.setAttribute("list", list);
@@ -279,6 +243,7 @@ public class MyPageServlet extends MyServlet {
 					req.setAttribute("dataCount", dataCount);
 					req.setAttribute("size", size);
 					req.setAttribute("AdminUrl", AdminUrl);
+					req.setAttribute("waitUrl", waitUrl);
 					req.setAttribute("paging", paging);
 					req.setAttribute("condition", condition);
 					req.setAttribute("keyword", keyword);
@@ -297,7 +262,9 @@ public class MyPageServlet extends MyServlet {
 		String page = req.getParameter("page");
 		String query = "page=" + page;
 		MyPageDAO dao = new MyPageDAO();
-
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
 		try {
 			long num = Long.parseLong(req.getParameter("num"));
 
@@ -314,7 +281,7 @@ public class MyPageServlet extends MyServlet {
 			}
 
 			//메이트 멤버 가져오기
-			MyPageDTO dto = dao.readMateApply(num);
+			MyPageDTO dto = dao.readMateApply(num, info.getUserId());
 			if (dto == null) {
 				resp.sendRedirect(cp + "/mypage/mateList.do?" + query);
 	
@@ -339,6 +306,58 @@ public class MyPageServlet extends MyServlet {
 		resp.sendRedirect(cp + "/mypage/mateList.do?" + query);
 	}
 		
+	
+	
+	protected void mateWait(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String cp = req.getContextPath();
+
+		String page = req.getParameter("page");
+		String query = "page=" + page;
+		MyPageDAO dao = new MyPageDAO();
+
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+
+			String condition = req.getParameter("condition");
+			String keyword = req.getParameter("keyword");
+			if (condition == null) {
+				condition = "all";
+				keyword = "";
+			}
+			keyword = URLDecoder.decode(keyword, "utf-8");
+
+			if (keyword.length() != 0) {
+				query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
+			}
+
+			//메이트 멤버 가져오기
+			MyPageDTO dto = dao.readMateWait(num, info.getUserId());
+			if (dto == null) {
+				resp.sendRedirect(cp + "/mypage/mateList.do?" + query);
+	
+				return;
+			}
+
+			
+
+			dto.setCamMateAppContent(dto.getCamMateAppContent().replaceAll("\n", "<br>"));
+
+			req.setAttribute("dto", dto);
+			req.setAttribute("query", query);
+			req.setAttribute("page", page);
+			req.setAttribute("num", num);
+
+			forward(req, resp, "/WEB-INF/views/mypage/mateWait.jsp");
+			return;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp + "/mypage/mateList.do?" + query);
+	}
+	
 
 	protected void deleteWish(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HttpSession session = req.getSession();
@@ -416,6 +435,12 @@ public class MyPageServlet extends MyServlet {
 	protected void deleteMateApply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
+		if (info == null) {
+			forward(req, resp, "/WEB-INF/views/member/member.jsp");
+			return;
+		}
+		
 		String cp = req.getContextPath();
 
 		String page = req.getParameter("page");
@@ -445,4 +470,84 @@ public class MyPageServlet extends MyServlet {
 		resp.sendRedirect(cp + "/mypage/mateApplyAdmin.do?" + query);
 	}
 
+	protected void deleteMateWait(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
+		if (info == null) {
+			forward(req, resp, "/WEB-INF/views/member/member.jsp");
+			return;
+		}
+		
+		String cp = req.getContextPath();
+
+		String page = req.getParameter("page");
+		String num = req.getParameter("num");
+		String query = "page=" + page + "&num=" + num;
+
+		String condition = req.getParameter("condition");
+		String keyword = req.getParameter("keyword");
+
+		try {
+			if (keyword != null && keyword.length() != 0) {
+				query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
+			}
+
+			String[] nn = req.getParameterValues("nums");
+
+			MyPageDAO dao = new MyPageDAO();
+
+
+			// 신청서 삭제
+			dao.deleteMateApply(nn, num);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp + "/mypage/mateWait.do?" + query);
+		
+	}
+	
+
+
+	private void confirmMateApply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
+		if (info == null) {
+			forward(req, resp, "/WEB-INF/views/member/member.jsp");
+			return;
+		}
+		
+		String cp = req.getContextPath();
+
+		String page = req.getParameter("page");
+		String num = req.getParameter("num");
+		String query = "page=" + page + "&num=" + num;
+
+		String condition = req.getParameter("condition");
+		String keyword = req.getParameter("keyword");
+
+		try {
+			if (keyword != null && keyword.length() != 0) {
+				query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
+			}
+
+			String[] nn = req.getParameterValues("nums");
+
+			MyPageDAO dao = new MyPageDAO();
+
+
+			// 신청서 수락
+			dao.confirmMateApply(nn, num);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp + "/mypage/mateWait.do?" + query);
+		
+	}
+	
 }
