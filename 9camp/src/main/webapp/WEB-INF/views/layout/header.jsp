@@ -22,44 +22,44 @@
 		</div>
 		
 		<ul class="icon-cont">
+			<c:if test="${not empty sessionScope.member}">
 				<li class="point-li">
-					<c:if test="${not empty sessionScope.member}">
-						<a href="#"><span class="point-tit">보유 포인트</span> <span class="point-val">100,000</span> Point</a>
-					</c:if>
+					<a href="#"><span class="point-tit">보유 포인트</span> <span class="point-val">100,000</span> Point</a>
 				</li>
+			</c:if>
+			<c:if test="${not empty sessionScope.member}">	
 				<li class="point-li bar">
-					<c:if test="${not empty sessionScope.member}">	
-						|
-					</c:if>
+					|
 				</li>
-			<li>
-				<c:if test="${not empty sessionScope.member}">
+			</c:if>
+			<c:if test="${not empty sessionScope.member}">
+				<li>
 					<a href="#" class="top-icon ic_bell" title="알림">
 						<i class="fa-sharp fa-regular fa-bell"></i>
 					</a>
-				</c:if>
-			</li>
-			<li>
-				<c:if test="${not empty sessionScope.member}">
+				</li>
+			</c:if>
+			<c:if test="${not empty sessionScope.member}">
+				<li>
 					<a href="${pageContext.request.contextPath}/member/logout.do" class="top-icon ic_logout" title="로그아웃">
 						<i class="fa-solid fa-arrow-right-from-bracket"></i>
 					</a>
-				</c:if>
-			</li>
-			<li>
-				<c:if test="${not empty sessionScope.member}">
+				</li>
+			</c:if>
+			<c:if test="${not empty sessionScope.member}">
+				<li>
 					<a href="${pageContext.request.contextPath}/message/listRecMsg.do" class="top-icon ic_msg" title="쪽지">
 						<i class="fa-regular fa-envelope"></i>
 					</a>
-				</c:if>
-			</li>
-			<li>
-				<c:if test="${empty sessionScope.member}">
+				</li>
+			</c:if>
+			<c:if test="${empty sessionScope.member}">
+				<li>
 					<a href="${pageContext.request.contextPath}/member/member.do" class="top-icon ic_login" title="로그인">
 						<i class="fa-solid fa-arrow-right-from-bracket"></i>
 					</a>
-				</c:if>
-			</li>
+				</li>
+			</c:if>
 			<li>
 				<a href="#" class="top-icon ic_setting" title="설정">
 					<i class="fa-solid fa-gear"></i>
