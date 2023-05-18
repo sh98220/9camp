@@ -2,6 +2,9 @@ package com.auction;
 
 public class AuctionDTO {
 	private long auctionNum;
+	private String userId;
+	private String userName;
+	private String userNickName;
 	private String auctionSaleId;
 	private String auctionSubject;
 	private String auctionContent;
@@ -12,6 +15,8 @@ public class AuctionDTO {
 	private long auctionFinalamount;
 	private int auctionEnabled;
 	
+	private String AuctionStartamountFormatted;
+	
 	private long auctionPhotonum;
 	private String auctionPhotoname;
 	private String[] imageFiles;
@@ -20,11 +25,30 @@ public class AuctionDTO {
 	private long auctionRecamount;
 	private String auctionRecdate;
 	private int auctionConfirm;
+	
 	public long getAuctionNum() {
 		return auctionNum;
 	}
 	public void setAuctionNum(long auctionNum) {
 		this.auctionNum = auctionNum;
+	}
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getUserNickName() {
+		return userNickName;
+	}
+	public void setUserNickName(String userNickName) {
+		this.userNickName = userNickName;
 	}
 	public String getAuctionSaleId() {
 		return auctionSaleId;
@@ -79,6 +103,12 @@ public class AuctionDTO {
 	}
 	public void setAuctionEnabled(int auctionEnabled) {
 		this.auctionEnabled = auctionEnabled;
+	}
+	public String getAuctionStartamountFormatted() {
+		return AuctionStartamountFormatted;
+	}
+	public void setAuctionStartamountFormatted(String auctionStartamountFormatted) {
+		AuctionStartamountFormatted = auctionStartamountFormatted;
 	}
 	public long getAuctionPhotonum() {
 		return auctionPhotonum;

@@ -207,6 +207,13 @@ function sendOk() {
         return;
     }
 
+    str = f.auctionObject.value.trim();
+    if(!str) {
+        alert("경매물품을 입력하세요. ");
+        f.auctionObject.focus();
+        return;
+    }
+
     str = f.auctionContent.value.trim();
     if(!str) {
         alert("내용을 입력하세요. ");
@@ -303,7 +310,7 @@ function sendOk() {
 					<tr> 
 						<td>경매종료일</td>
 						<td> 
-							<input type="date" id="auctionEndDate" value="${dto.auctionEnddate}">
+							<input type="date" name="auctionEnddate" maxlength="100" class="form-control" value="${dto.auctionEnddate}">
 						</td>
 					</tr>
 					

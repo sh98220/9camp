@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -47,6 +48,8 @@ public class AuctionServlet extends MyUploadServlet {
 			writeForm(req, resp);
 		} else if(uri.indexOf("write_ok.do") != -1) {
 			writeSubmit(req, resp);
+		} else if(uri.indexOf("article.do") != -1) {
+			article(req, resp);
 		}
 		
 		
@@ -78,7 +81,7 @@ public class AuctionServlet extends MyUploadServlet {
 				keyword = URLDecoder.decode(keyword, "utf-8");
 			}
 
-			/*
+			
 			// 전체 데이터 개수
 			int dataCount;
 			if (keyword.length() == 0) {
@@ -98,16 +101,16 @@ public class AuctionServlet extends MyUploadServlet {
 			// 게시물 가져오기
 			int offset = (current_page - 1) * size;
 			if(offset < 0) offset = 0;
-			*/
 			
-			/*
-			List<ReviewsDTO> list = null;
+			
+			
+			List<AuctionDTO> list = null;
 			if (keyword.length() == 0) {
-				list = dao.listReviews(offset, size);
+				list = dao.listAuction(offset, size);
 			} else {
-				list = dao.listReviews(offset, size, condition, keyword);
+				list = dao.listAuction(offset, size, condition, keyword);
 			}
-			*/
+			
 			
 			String query = "";
 			if (keyword.length() != 0) {
@@ -122,16 +125,16 @@ public class AuctionServlet extends MyUploadServlet {
 				articleUrl += "&" + query;
 			}
 
-			// String paging = util.paging(current_page, total_page, listUrl);
+			String paging = util.paging(current_page, total_page, listUrl);
 
 			// 포워딩할 JSP에 전달할 속성
-			// req.setAttribute("list", list);
+			req.setAttribute("list", list);
 			req.setAttribute("page", current_page);
-			// req.setAttribute("total_page", total_page);
-			// req.setAttribute("dataCount", dataCount);
-			// req.setAttribute("size", size);
+			req.setAttribute("total_page", total_page);
+			 req.setAttribute("dataCount", dataCount);
+			 req.setAttribute("size", size);
 			req.setAttribute("articleUrl", articleUrl);
-			// req.setAttribute("paging", paging);
+			 req.setAttribute("paging", paging);
 			req.setAttribute("condition", condition);
 			req.setAttribute("keyword", keyword);
 			
@@ -164,10 +167,12 @@ public class AuctionServlet extends MyUploadServlet {
 		try {
 			AuctionDTO dto = new AuctionDTO();
 			
-			dto.setAuctionUserId(info.getUserId()); 
+			dto.setAuctionSaleId(info.getUserId()); 
 			dto.setAuctionSubject(req.getParameter("auctionSubject"));
 			dto.setAuctionContent(req.getParameter("auctionContent"));
-			
+			dto.setAuctionObject(req.getParameter("auctionObject"));
+			dto.setAuctionEnddate(req.getParameter("auctionEnddate"));
+			dto.setAuctionStartamount(Long.parseLong(req.getParameter("auctionStartamount")));			
 
 			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);
 			if (map != null) {
@@ -184,4 +189,59 @@ public class AuctionServlet extends MyUploadServlet {
 		
 		resp.sendRedirect(cp + "/auction/list.do?");
 	}
+	
+	protected void article(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// 글 보기
+		AuctionDAO dao = new AuctionDAO();
+		
+		
+		MyUtil util = new MyUtil();
+		
+		String cp = req.getContextPath();
+		
+		String page = req.getParameter("page");
+		String query = "page=" + page;
+
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+			String keyword = req.getParameter("keyword");
+
+			if (keyword != null) {
+			    keyword = URLDecoder.decode(keyword, "utf-8");
+			} else {
+			    keyword = "";
+			}
+
+
+			if (keyword.length() != 0) {
+				query += "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
+			}
+
+
+			// 게시물 가져오기
+			AuctionDTO dto = dao.readAuction(num);
+			if (dto == null ) { // 게시물이 없으면 다시 리스트로
+				resp.sendRedirect(cp + "/auction/list.do?" + query);
+				return;
+			}
+			dto.setAuctionContent(util.htmlSymbols(dto.getAuctionContent()));
+
+			List<AuctionDTO> listFile = dao.listPhotoFile(num);
+			
+			// JSP로 전달할 속성
+			req.setAttribute("dto", dto);
+			req.setAttribute("page", page);
+			req.setAttribute("query", query);
+			req.setAttribute("listFile", listFile);
+			
+
+			// 포워딩 
+			forward(req, resp, "/WEB-INF/views/auction/article.jsp");
+			return;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp + "/auction/list.do?" + query);
+}
 	}
