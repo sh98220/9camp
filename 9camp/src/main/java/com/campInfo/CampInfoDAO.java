@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.util.DBConn;
 
+
 public class CampInfoDAO {
 	private Connection conn = DBConn.getConnection();
 	
@@ -236,6 +237,143 @@ public class CampInfoDAO {
 		
 	}
 	
+	public CampInfoDTO readCampInfo(long num) {
+		CampInfoDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+
+		try {
+			sql = "SELECT c.camInfoNum, camInfoSubject, camInfoContent, camInfoAddr, "
+					+ " camInfoHitCount, TO_CHAR(camInfoRegDate, 'YYYY-MM-DD') camInfoRegDate, camThemaName, NVL(wishCount, 0) wishCount "
+					+ " FROM campInfo c "
+					+ " LEFT OUTER JOIN("
+					+ " SELECT camInfoNum, COUNT(*) wishCount"
+					+ " FROM campwish "
+					+ " GROUP BY camInfoNum ) "
+					+ " wc ON c.camInfoNum = wc.camInfoNum "
+					+ " WHERE c.camInfoNum = ? ";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				dto = new CampInfoDTO();
+				
+				dto.setCamInfoNum(rs.getLong("camInfoNum"));
+				dto.setCamInfoSubject(rs.getString("camInfoSubject"));
+				dto.setCamInfoContent(rs.getString("camInfoContent"));
+				dto.setCamInfoAddr(rs.getString("camInfoAddr"));
+				dto.setCamInfoHitCount(rs.getInt("camInfoHitCount"));
+				dto.setCamInfoRegDate(rs.getString("camInfoRegDate"));
+				dto.setCamThemaName(rs.getString("camThemaName"));
+				dto.setWishCount(rs.getInt("wishCount"));				
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		return dto;
+	}
+	
+	// 캠핑리스트 삭제
+	public void deleteCampInfo(long num) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "DELETE FROM campInfo WHERE camInfoNum=?";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+	}
+	
+	// 게시글 수정
+	public void updateCampInfo(CampInfoDTO dto) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "UPDATE campInfo SET camInfoSubject=?, camInfoContent=? WHERE camInfoNum=?";
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setString(1, dto.getCamInfoSubject());
+			pstmt.setString(2, dto.getCamInfoContent());
+			pstmt.setLong(3, dto.getCamInfoNum());
+
+			pstmt.executeUpdate();
+			
+			pstmt.close();
+			pstmt = null;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+	}
+	
+	// 조회수 증가
+	public void updateHitCount(long camInfoNum) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "UPDATE campInfo SET camInfoHitCount=camInfoHitCount+1 WHERE camInfoNum=?";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, camInfoNum);
+			
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e2) {
+				}
+			}
+		}
+		
+	}
 	
 	
 }

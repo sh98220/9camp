@@ -266,7 +266,7 @@ public class ReviewsServlet extends MyUploadServlet {
 					req.setAttribute("isUserLike", isUserLike);
 					
 
-					// 포워딩
+					// 포워딩 
 					forward(req, resp, "/WEB-INF/views/reviews/article.jsp");
 					return;
 				} catch (Exception e) {

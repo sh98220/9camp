@@ -136,6 +136,59 @@ public class CampInfoServlet extends MyUploadServlet {
 
 	
 	protected void article(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// 글보기
+		CampInfoDAO dao = new CampInfoDAO();
+		
+		MyUtil util = new MyUtil();
+		
+		String cp = req.getContextPath();
+		
+		String page = req.getParameter("page");
+		String query = "page=" + page;
+		
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+			String condition = req.getParameter("condition");
+			String keyword = req.getParameter("keyword");
+			if (condition == null) {
+				condition = "all";
+				keyword = "";
+				
+			}
+			keyword = URLDecoder.decode(keyword, "utf-8");
 
+
+			if (keyword.length() != 0) {
+				query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
+			}
+
+			// 조회수 증가시키기
+			dao.updateHitCount(num);
+			
+			// 게시물 가져오기
+			CampInfoDTO dto = dao.readCampInfo(num);
+			if(dto == null) {
+				resp.sendRedirect(cp + "/campInfo/list.do?" + query);
+				return;
+			}
+			
+			dto.setCamInfoContent(util.htmlSymbols(dto.getCamInfoContent()));
+			
+			// 로그인 유저의 찜 여부
+			
+			// JSP로 전달할 속성
+			req.setAttribute("dto", dto);
+			req.setAttribute("page", page);
+			req.setAttribute("query", query);
+			
+			// 포워딩
+			forward(req, resp, "/WEB-INF/views/campInfo/article.jsp");
+			return;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp + "/campInfo/list.do?" + query);
 	}
 }

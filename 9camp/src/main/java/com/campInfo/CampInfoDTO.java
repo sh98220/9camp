@@ -9,7 +9,20 @@ public class CampInfoDTO {
 	private int camInfoHitCount;
 	private String camInfoRegDate;
 	private String camThemaName;
+	private int wishCount;
 	
+	public String getCamThemaName() {
+		return camThemaName;
+	}
+	public void setCamThemaName(String camThemaName) {
+		this.camThemaName = camThemaName;
+	}
+	public int getWishCount() {
+		return wishCount;
+	}
+	public void setWishCount(int wishCount) {
+		this.wishCount = wishCount;
+	}
 	public long getCamInfoNum() {
 		return camInfoNum;
 	}
@@ -52,13 +65,7 @@ public class CampInfoDTO {
 	public void setCamInfoRegDate(String camInfoRegDate) {
 		this.camInfoRegDate = camInfoRegDate;
 	}
-	public String getCamhemaName() {
-		return camThemaName;
-	}
-	public void setCamThemaName(String camThemaName) {
-		this.camThemaName = camThemaName;
-	}
-	
+
 	
 	
 }
