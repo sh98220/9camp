@@ -512,7 +512,7 @@ public class MyPageDAO {
 				else if(condition.equals("camMateNum")) {
 					sb.append(" campMate.camMateNum = ? ");
 				} else if (condition.equals("userNickName")) {
-					sb.append(" member.userNickName = ? ");
+					sb.append(" lower(member.userNickName) = lower(?) ");
 				} else {
 					sb.append(" INSTR(" + condition + ", ?) >= 1 ");
 				}
@@ -669,6 +669,84 @@ public class MyPageDAO {
 		return dto;
 	}
 	
+	
+	public MyPageDTO readMateApply(long num, String condition, String keyword, String userId) {
+		MyPageDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StringBuilder sb = new StringBuilder();
+
+		try {	
+			sb.append("SELECT campMateApply.camMateNum, campMateApply.userid, campMateApply.camMateAppContent,  ");
+			sb.append(" campMateApply.camMateAppDate, campMateApply.camMateAppGender, campMateApply.camMateAppAge, ");
+			sb.append(" campMateApply.camMateAppConfirm, member.userNickname ");
+			sb.append("FROM campMate, campMateApply, member ");
+			sb.append(" WHERE campMate.camMateNum = campMateApply.camMateNum  AND ");
+			sb.append(" member.userId = campMateApply.userid AND ");
+			sb.append(" campMateApply.camMateAppConfirm = '1' AND ");
+			sb.append(" campMateApply.camMateNum= ? AND campMate.userId = ? AND ");
+			
+			if (condition.equals("userNickName")) {
+				sb.append(" lower(member.userNickName) = lower(?) ");
+			} else if(condition.equals("camMateAppContent")) {
+				sb.append(" INSTR(" + condition + ", ?) >= 1 ");
+			} else if (condition.equals("camMateAppGender")) {
+				sb.append(" lower(camMateApply.camMateAppGender) = lower(?) ");
+			} else {
+				sb.append(" camMateAppAge = ? ");
+			}
+			
+			
+		
+			sb.append(" ORDER BY campMate.camMateNum DESC ");
+
+			
+			pstmt = conn.prepareStatement(sb.toString());
+			
+			pstmt.setLong(1, num);
+			pstmt.setString(2, userId);
+			pstmt.setString(3, keyword);
+
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				dto = new MyPageDTO();
+
+				dto.setCamMateNum(rs.getLong("camMateNum"));
+				dto.setUserId(rs.getString("userId"));
+				dto.setCamMateAppContent(rs.getString("camMateAppContent"));
+				dto.setCamMateAppDate(rs.getString("camMateAppDate"));
+				dto.setCamMateAppGender(rs.getString("camMateAppGender"));
+				dto.setCamMateAppAge(rs.getInt("camMateAppAge"));
+				dto.setCamMateAppConfirm(rs.getString("camMateAppConfirm"));
+				dto.setUserNickName(rs.getString("userNickname"));
+			}
+			
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		return dto;
+	}
+	
+	
+
 	public void deleteMateApply(String[] nn, String num) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
@@ -766,6 +844,89 @@ public class MyPageDAO {
 		return dto;
 	}
 
+	
+	public List<MyPageDTO> readMateWait(int offset, int size, long num, String condition, String keyword, String userId) {
+		List<MyPageDTO> list = new ArrayList<MyPageDTO>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StringBuilder sb = new StringBuilder();
+
+		try {	
+			sb.append("SELECT campMateApply.camMateNum, campMateApply.userid, campMateApply.camMateAppContent,  ");
+			sb.append(" campMateApply.camMateAppDate, campMateApply.camMateAppGender, campMateApply.camMateAppAge, ");
+			sb.append(" campMateApply.camMateAppConfirm, member.userNickname ");
+			sb.append("FROM campMate, campMateApply, member ");
+			sb.append(" WHERE campMate.camMateNum = campMateApply.camMateNum  AND ");
+			sb.append(" member.userId = campMateApply.userid AND ");
+			sb.append(" campMateApply.camMateAppConfirm = '0' AND ");
+			sb.append(" campMateApply.camMateNum= ? AND campMate.userId = ? ");
+			
+			if (condition.equals("userNickName")) {
+				sb.append(" lower(member.userNickName) = lower(?) ");
+			} else if(condition.equals("camMateAppContent")) {
+				sb.append(" INSTR(" + condition + ", ?) >= 1 ");
+			} else if (condition.equals("camMateAppGender")) {
+				sb.append(" lower(camMateApply.camMateAppGender) = lower(?) ");
+			} else {
+				sb.append(" camMateAppAge = ? ");
+			}
+			
+			
+		
+			sb.append(" ORDER BY campMate.camMateNum DESC ");
+			sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
+			
+			pstmt = conn.prepareStatement(sb.toString());
+			
+			pstmt.setString(1, userId);
+			pstmt.setString(2, userId);
+			pstmt.setString(3, keyword);
+		
+			pstmt.setInt(4, offset);
+			pstmt.setInt(5, size);
+
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				MyPageDTO dto = new MyPageDTO();
+				
+				dto.setCamMateNum(rs.getLong("camMateNum"));
+				dto.setUserId(rs.getString("userId"));
+				dto.setCamMateAppContent(rs.getString("camMateAppContent"));
+				dto.setCamMateAppDate(rs.getString("camMateAppDate"));
+				dto.setCamMateAppGender(rs.getString("camMateAppGender"));
+				dto.setCamMateAppAge(rs.getInt("camMateAppAge"));
+				dto.setCamMateAppConfirm(rs.getString("camMateAppConfirm"));
+				dto.setUserNickName(rs.getString("userNickname"));
+				
+				list.add(dto);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		return list;
+	}
+	
+	
+	
+	
+	
+	
 	public void confirmMateApply(String[] nn, String num) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
@@ -773,7 +934,7 @@ public class MyPageDAO {
 		
 		try {
 				sql = "UPDATE campMateApply SET "
-						+ " "
+						+ " camMateAppConfirm = 1"
 						+ " WHERE camMateNum = ? AND "
 						+ " userId IN (";
 				for (int i = 0; i < nn.length; i++) {
@@ -801,7 +962,78 @@ public class MyPageDAO {
 					}
 				}
 			}
-		
 	}
+
+	public List<MyPageDTO> listMember(int offset, int size, String column, String order) {
+		List<MyPageDTO> list = new ArrayList<MyPageDTO>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StringBuilder sb = new StringBuilder();
+
+		try {	
+			sb.append(" SELECT userId, userName, userTel, TO_CHAR(userBirth, 'YYYY-MM-DD') userBirth, userNickName, userEmail, userPoint, TO_CHAR(userRegDate, 'YYYY-MM-DD') userRegDate, TO_CHAR(userUpdateDate, 'YYYY-MM-DD') userUpdateDate "); 
+			sb.append(" FROM member "); 
+			sb.append(" ORDER BY ? ? ");
+			sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
+			
+			pstmt = conn.prepareStatement(sb.toString());
+			
+			pstmt.setString(1, column);
+			pstmt.setString(2, order);
+			pstmt.setInt(3, offset);
+			pstmt.setInt(4, size);
+
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				MyPageDTO dto = new MyPageDTO();
+				
+				dto.setUserId(rs.getString("userId"));
+				dto.setUserName(rs.getString("userName"));
+				dto.setUserTel(rs.getString("userTel"));
+				dto.setUserBirth(rs.getString("userBirth"));
+				dto.setUserNickName(rs.getString("userNickName"));
+				dto.setUserEmail(rs.getString("userEmail"));
+				dto.setUserPoint(rs.getLong("userPoint"));
+				dto.setUserRegDate(rs.getString("userRegDate"));
+				dto.setUserUpdateDate(rs.getString("userUpdateDate"));
+				
+				list.add(dto);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		return list;
+	}
+
+	public int dataCountMember() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int dataCountMember(String condition, String keyword) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	/*public List<MyPageDTO> listMember(int offset, int size, String condition, String keyword) {
+		// TODO Auto-generated method stub
+		return null;
+	}*/
 
 }

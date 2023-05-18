@@ -58,6 +58,7 @@ function searchList() {
 	<div class="container body-container">
 	    <div class="body-title">
 			<h2><i class="fas fa-clipboard-list"></i> 나의 메이트 멤버 </h2>
+			<button type="button" onclick="location.href='${pageContext.request.contextPath}/mypage/mateList.do'">뒤로 가기</button>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
@@ -88,8 +89,6 @@ function searchList() {
 					<tbody>
 
 						<tr>				
-	
-							
 							<td>${dto.userNickName}</td>
 							<td>${dto.camMateAppContent}</td>
 							<td>${dto.camMateAppGender}</td>

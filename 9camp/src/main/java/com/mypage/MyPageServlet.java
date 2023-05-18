@@ -38,8 +38,6 @@ public class MyPageServlet extends MyServlet {
 		// uri에 따른 작업 구분
 		if (uri.indexOf("main.do") != -1) {
 			forward(req, resp, "/WEB-INF/views/mypage/main.jsp");
-		//} else if (uri.indexOf("pwdCheck.do") != -1) {
-			//profileEditForm(req, resp);
 		} else if (uri.indexOf("wish.do") != -1) {
 			wish(req, resp);
 		} else if (uri.indexOf("mateList.do") != -1) {
@@ -58,6 +56,8 @@ public class MyPageServlet extends MyServlet {
 			deleteMateWait(req, resp);
 		} else if (uri.indexOf("confirmMateApply.do") != -1) {
 			confirmMateApply(req, resp);
+		} else if (uri.indexOf("adminList.do") != -1) {
+			adminList(req, resp);
 		}
 	}
 
@@ -256,13 +256,13 @@ public class MyPageServlet extends MyServlet {
 		forward(req, resp, "/WEB-INF/views/mypage/mateList.jsp");
 	}
 	
-	private void mateApplyAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	private void mateApplyAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {	
 		String cp = req.getContextPath();
 
 		String page = req.getParameter("page");
 		String query = "page=" + page;
 		MyPageDAO dao = new MyPageDAO();
-		
+
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
 		try {
@@ -548,6 +548,104 @@ public class MyPageServlet extends MyServlet {
 
 		resp.sendRedirect(cp + "/mypage/mateWait.do?" + query);
 		
+	}
+	
+	private void adminList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+		MyPageDAO dao = new MyPageDAO();
+		MyUtil util = new MyUtil();
+		
+		String cp = req.getContextPath();
+
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
+		try {
+			// admin 아니면 조회 불가
+			if (!info.getUserId().equals("admin")) {
+				resp.sendRedirect(cp + "/mypage/main.do");
+				return;
+			}
+			
+			String page = req.getParameter("page");
+			int current_page = 1;
+			if (page != null) {
+				current_page = Integer.parseInt(page);
+			}
+
+			// 검색
+			String condition = req.getParameter("condition");
+			String keyword = req.getParameter("keyword");
+			if (condition == null) {
+				condition = "all";
+				keyword = "";
+			}
+			
+			if (req.getMethod().equalsIgnoreCase("GET")) {
+				keyword = URLDecoder.decode(keyword, "utf-8");
+			}
+			
+			// 전체데이터 개수
+			int dataCount;
+			if (keyword.length() == 0) {
+				dataCount = dao.dataCountMember();
+			} else {
+				dataCount = dao.dataCountMember(condition, keyword);
+			}
+			
+			// 전체페이지수
+			int size = 5;
+			int total_page = util.pageCount(dataCount, size);
+			if (current_page > total_page) {
+				current_page = total_page;
+			}
+
+			// 게시물 가져오기
+			int offset = (current_page - 1) * size;
+			if(offset < 0) offset = 0;
+			
+			
+			
+			List<MyPageDTO> list = null;
+			if (keyword.length() == 0) {
+				//list = dao.listMember(offset, size, column, order);
+			} else {
+				list = dao.listMember(offset, size, condition, keyword);
+			}
+
+			String query = "";
+			if (keyword.length() != 0) {
+				query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");
+			}
+			
+			
+			
+			// 페이징 처리
+			String listUrl = cp + "/mypage/adminList.do";
+			String articleUrl = cp + "/mypage/adminList.do?page=" + current_page;
+			if (query.length() != 0) {
+				listUrl += "?" + query;
+				articleUrl += "&" + query;
+			}
+			String paging = util.paging(current_page, total_page, listUrl);
+
+			// 포워딩할 list.jsp에 넘길 값
+			req.setAttribute("list", list);
+			req.setAttribute("page", current_page);
+			req.setAttribute("total_page", total_page);
+			req.setAttribute("dataCount", dataCount);
+			req.setAttribute("size", size);
+			req.setAttribute("articleUrl", articleUrl);
+			req.setAttribute("paging", paging);
+			req.setAttribute("condition", condition);
+			req.setAttribute("keyword", keyword);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		// JSP로 포워딩
+		forward(req, resp, "/WEB-INF/views/mypage/adminList.jsp");
 	}
 	
 }

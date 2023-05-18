@@ -15,7 +15,8 @@
 <button type="button" onclick="location.href='profile.jsp'">정보 수정</button>
 <button type="button" onclick="location.href='wish.do'">찜 리스트</button>
 <button type="button" onclick="location.href='mateList.do'">메이트 관리 리스트</button>
-<button type="button" onclick="location.href=''">메이트 신청 리스트</button>
-
+<c:if test="${sessionScope.member.userId=='admin'}">
+	<button type="button" onclick="location.href='admin.do'">관리자 전용</button>
+</c:if>
 </body>
 </html>
