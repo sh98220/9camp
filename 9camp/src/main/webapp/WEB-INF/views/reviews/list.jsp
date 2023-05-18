@@ -204,7 +204,6 @@ function searchList() {
 						<th class="name">작성자</th>
 						<th class="date">작성일</th>
 						<th class="hit">조회수</th>
-						<th class="file">첨부</th>
 					</tr>
 				</thead>
 				
