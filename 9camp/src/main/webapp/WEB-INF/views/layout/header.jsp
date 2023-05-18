@@ -103,7 +103,7 @@
 					<a href="#">캠핑마켓</a>
 					<ul class="sub-menu">
 						<li>
-							<a href="#">중고거래</a>
+							<a href="${pageContext.request.contextPath}/auction/list.do">중고거래</a>
 						</li>
 						<li>
 							<a href="${pageContext.request.contextPath}/rent/list.do">렌탈</a>
