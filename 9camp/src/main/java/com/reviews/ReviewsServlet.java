@@ -66,13 +66,10 @@ public class ReviewsServlet extends MyUploadServlet {
 		} else if(uri.indexOf("insertReviewsLike.do") != -1) {
 			insertReviewsLike(req, resp);
 		} else if(uri.indexOf("insertReply.do") != -1) {
-			// 댓글 등록
 			insertReply(req, resp);
 		} else if(uri.indexOf("listReply.do") != -1) {
-			// 댓글 리스트
 			listReply(req, resp);
 		} else if(uri.indexOf("deleteReply.do") != -1) {
-			// 댓글 삭제
 			deleteReply(req, resp);
 		}	
 		

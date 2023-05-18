@@ -9,6 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>spring</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
+
 <style type="text/css">
 a {display: inline-block;}
 
@@ -73,7 +74,7 @@ input[type=checkbox], input[type=radio] { vertical-align: middle; }
 .table th, .table td { padding-top: 10px; padding-bottom: 10px; }
 
 .table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
-.table-border tbody > tr { border-bottom: 1px solid #ff5522; }
+.table-border tbody > tr { border-bottom: 1px solid gray; }
 .td-border td { border: 1px solid #ced4da; }
 
 tr.hover:hover { cursor: pointer; background: #f5fffa; }
@@ -127,7 +128,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     padding-bottom: 10px;
     display: inline-block;
     margin: 0 0 -7px 0;
-    border-bottom: 3px solid #ff5522;
+    border-bottom: 3px solid #eee;
 }
 
 .body-title h2 i {
@@ -204,7 +205,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	overflow-x: auto;
 }
 .img-box img {
-	width: 100px; height: 100px;
+	width: 200px; height: 200px;
 	margin-right: 5px;
 	flex: 0 0 auto;
 	cursor: pointer;
@@ -233,8 +234,10 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 .reply-list .list-header { border: 1px solid #ccc; background: #f8f8f8; }
 .reply-list tr>td { padding-left: 7px; padding-right: 7px; }
 
+.nav-link:hover { color: red; }
 
 </style>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resource/jquery/js/jquery-ui.min.js"></script>
 <script type="text/javascript">
 <c:if test="${sessionScope.member.userId==dto.userId || sessionScope.member.userId=='admin'}">
 	function deleteReviews() {
@@ -258,9 +261,7 @@ function imageViewer(img) {
 		modal: true
 	});
 }
-</script>
 
-<script type="text/javascript">
 function login(){
 	location.href = "${pageContext.request.contextPath}/member/login.do";
 }
@@ -426,7 +427,7 @@ $(function(){
 				<tbody>
 					<tr>
 						<td width="50%">
-							이름 : ${dto.userName}
+							작성자 : ${dto.userNickName}
 						</td>
 						<td align="right">
 							${dto.camRevregdate} | 조회 ${dto.camRevhitcount}
@@ -434,14 +435,20 @@ $(function(){
 					</tr>
 					
 					<tr>
-						<td colspan="2" valign="top" height="200">
+						<td width="50%">
+							캠핑장 : <a href="#"></a> 우아아아아아아아아아앙캠핑장
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="2" valign="top" height="100">
 							${dto.camRevcontent}
 						</td>
 					</tr>
 		
 					<tr>
-						<td colspan="2" height="110">
-							파&nbsp;&nbsp;일 :
+						<td colspan="2" height="200">
+							사&nbsp;&nbsp;진 :
 							<div class="img-box">
 								<c:forEach var="vo" items="${listFile}">
 									<img src="${pageContext.request.contextPath}/uploads/reviews/${vo.camRevphotoname}"
@@ -460,17 +467,27 @@ $(function(){
 					<tr>
 						<td colspan="2">
 							이전글 :
-							<c:if test="${not empty preReadDto}">
-								<a href="${pageContext.request.contextPath}/reviews/article.do?${query}&num=${preReadDto.camRevnum}">${preReadDto.camRevsubject}</a>
-							</c:if>
+							 <c:choose>
+		           				 <c:when test="${empty preReadDto}">
+		              					  제일 처음 게시글입니다.
+         					     </c:when>
+					             <c:otherwise>
+					                 <a class="nav-link" href="${pageContext.request.contextPath}/reviews/article.do?${query}&num=${preReadDto.camRevnum}">${preReadDto.camRevsubject}</a>
+					             </c:otherwise>
+					         </c:choose>
 						</td>
 					</tr>
 					<tr>
 						<td colspan="2">
 							다음글 :
-							<c:if test="${not empty nextReadDto}">
-								<a href="${pageContext.request.contextPath}/reviews/article.do?${query}&num=${nextReadDto.camRevnum}">${nextReadDto.camRevsubject}</a>
-							</c:if>
+							<c:choose>
+		           				 <c:when test="${empty nextReadDto}">
+		              					  제일 마지막 게시글입니다.
+         					     </c:when>
+					             <c:otherwise>
+					                 <a class="nav-link"  href="${pageContext.request.contextPath}/reviews/article.do?${query}&num=${nextReadDto.camRevnum}">${nextReadDto.camRevsubject}</a>
+					             </c:otherwise>
+					         </c:choose>
 						</td>
 					</tr>
 				</tbody>
@@ -531,6 +548,11 @@ $(function(){
 <footer>
     <jsp:include page="/WEB-INF/views/layout/footer.jsp"></jsp:include>
 </footer>
+
+<div class="dialog-photo">
+      <div class="photo-layout"></div>
+</div>
+
 
 </body>
 </html>

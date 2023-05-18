@@ -68,7 +68,7 @@ input[type=checkbox], input[type=radio] { vertical-align: middle; }
 .table th, .table td { padding-top: 10px; padding-bottom: 10px; }
 
 .table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
-.table-border tbody > tr { border-bottom: 1px solid #ff5522; }
+.table-border tbody > tr { border-bottom: 1px solid gray; }
 .td-border td { border: 1px solid #ced4da; }
 
 tr.hover:hover { cursor: pointer; background: #f5fffa; }
@@ -183,8 +183,8 @@ function searchList() {
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 전국캠핑자랑 </h2>
-	    </div>
+			<h2><i class="fa-solid fa-tent"></i> 전국캠핑자랑 </h2>
+	    </div>  
 	    
 	    <div class="body-main mx-auto">
 			<table class="table">
@@ -215,7 +215,7 @@ function searchList() {
 							<td class="left">
 								<a href="${articleUrl}&num=${dto.camRevnum}">${dto.camRevsubject}</a>
 							</td>
-							<td>${dto.userName}</td>
+							<td>${dto.userNickName}</td>
 							<td>${dto.camRevregdate}</td>
 							<td>${dto.camRevhitcount}</td>
 						</tr>
