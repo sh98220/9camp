@@ -431,17 +431,12 @@ public class MyPageServlet extends MyServlet {
 			}
 
 			String[] nn = req.getParameterValues("nums");
-			long nums[] = null;
-			nums = new long[nn.length];
-			for (int i = 0; i < nn.length; i++) {
-				nums[i] = Long.parseLong(nn[i]);
-			}
 
 			MyPageDAO dao = new MyPageDAO();
 
 
 			// 메이트 삭제
-			dao.deleteMateApply(nums, info.getUserId());
+			dao.deleteMateApply(nn, num);
 
 		} catch (Exception e) {
 			e.printStackTrace();

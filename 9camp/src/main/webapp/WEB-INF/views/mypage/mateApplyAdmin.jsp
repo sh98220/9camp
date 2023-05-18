@@ -105,7 +105,7 @@ function searchList() {
 			</form>
 			
 			<div class="page-navigation">
-				${dataCount == 0 ? "등록된 찜이 없습니다." : paging}
+				${dataCount == 0 ? "등록된 멤버가 없습니다." : paging}
 			</div>
 			
 			<table class="table">

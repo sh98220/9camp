@@ -786,26 +786,25 @@ public class MyPageDAO {
 		return dto;
 	}
 	
-	
-	
-	public void deleteMateApply(long[] nums, String userId) throws SQLException {
+	public void deleteMateApply(String[] nn, String num) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
 		
 		
 		try {
-				sql = "DELETE FROM campMateApply WHERE userId = ? AND"
-						+ " camMateNum IN (";
-				for (int i = 0; i < nums.length; i++) {
+				sql = "DELETE FROM campMateApply "
+						+ " WHERE camMateNum = ? AND "
+						+ " userId IN (";
+				for (int i = 0; i < nn.length; i++) {
 					sql += "?,";
 				}
 				sql = sql.substring(0, sql.length() - 1) + ")";
 
 				pstmt = conn.prepareStatement(sql);
 				
-				pstmt.setString(1, userId);
-				for (int i = 0; i < nums.length; i++) {
-					pstmt.setLong(i + 2, nums[i]);
+				pstmt.setString(1, num);
+				for (int i = 0; i < nn.length; i++) {
+					pstmt.setString(i + 2, nn[i]);
 				}
 
 				pstmt.executeUpdate();
