@@ -201,11 +201,11 @@ function searchList() {
 			<table class="table table-border table-list">
 				<thead>
 					<tr>
-						<th class="num">번호</th>
-						<th class="subject">제목</th>
-						<th class="name">작성자</th>
-						<th class="date">작성일</th>
-						<th class="hit">조회수</th>
+						<th class="caminfonum">번호</th>
+						<th class="caminfosubject">캠핑장 이름</th>
+						<th class="caminfoaddr">주소</th>
+						<th class="caminfohitcount">조회수</th>
+						<th class="caminforegdate">작성일</th>
 					</tr>
 				</thead>
 				
@@ -214,14 +214,14 @@ function searchList() {
 						<tr>
 							<td>${dataCount - (page-1) * size - status.index}</td>
 							<td class="left">
-								<a href="${articleUrl}&num=${dto.num}">${dto.subject}</a>
+								<a href="${articleUrl}&num=${dto.camInfoNum}">${dto.camInfoSubject}</a>
 							</td>
-							<td>${dto.userName}</td>
-							<td>${dto.reg_date}</td>
-							<td>${dto.hitCount}</td>
+							<td>${dto.camInfoAddr}</td>
+							<td>${dto.camInfoHitCount}</td>
+							<td>${dto.camInfoRegDate}</td>
 							<td>
-								<c:if test="${not empty dto.saveFilename}">
-									<a href="${pageContext.request.contextPath}/sbbs/download.do?num=${dto.num}"><i class="far fa-file"></i></a>
+								<c:if test="">
+									<a href="${pageContext.request.contextPath}/"><i class="far fa-file"></i></a>
 								</c:if>
 							</td>
 						</tr>
@@ -233,27 +233,31 @@ function searchList() {
 				${dataCount == 0 ? "등록된 게시물이 없습니다." : paging}
 			</div>
 			
-			<table class="table">
-				<tr>
+			<table class="table">			
+				<tr>	
 					<td width="100">
 						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/reviews/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
 					</td>
 					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/sbbs/list.do" method="post">
+						<form name="searchForm" action="${pageContext.request.contextPath}/campInfo/list.do" method="post">
 							<select name="condition" class="form-select">
 								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
-								<option value="userName" ${condition=="userName"?"selected='selected'":"" }>작성자</option>
-								<option value="reg_date"  ${condition=="reg_date"?"selected='selected'":"" }>등록일</option>
-								<option value="subject"  ${condition=="subject"?"selected='selected'":"" }>제목</option>
-								<option value="content"  ${condition=="content"?"selected='selected'":"" }>내용</option>
+								<option value="camInfoRegDate"  ${condition=="camInfoRegDate"?"selected='selected'":"" }>등록일</option>
+								<option value="camInfoSubject"  ${condition=="camInfoSubject"?"selected='selected'":"" }>제목</option>
+								<option value="camInfoContent"  ${condition=="camInfoContent"?"selected='selected'":"" }>내용</option>
 							</select>
 							<input type="text" name="keyword" value="${keyword}" class="form-control">
 							<input type="hidden" name="category" value="${category}">
 							<button type="button" class="btn" onclick="searchList();">검색</button>
 						</form>
 					</td>
+					
 					<td align="right" width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mate/write.do';">글올리기</button>
+						<c:choose>
+				    		<c:when test="${sessionScope.member.userId==dto.userId || sessionScope.member.userId=='admin'}">
+				 			   <button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/campInfo/write.do';">글올리기</button>	
+				 			</c:when>
+				   		</c:choose>
 					</td>
 				</tr>
 			</table>
