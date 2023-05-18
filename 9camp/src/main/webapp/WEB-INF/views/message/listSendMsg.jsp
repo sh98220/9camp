@@ -44,7 +44,7 @@
 }
 
 .body-main {
-	max-width: 900px;
+	width: 900px;
 	padding-bottom: 35px;
 }
 
@@ -246,7 +246,11 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 								<button type="button" class="btn" id="btnDeleteList">삭제</button>
 							</td>
 							<td width="50%" align="right">
-								${dataCount}개(${page}/${total_page} 페이지)</td>
+								${dataCount}개(${page}/${total_page} 페이지)
+								<input type="hidden" name="page" value="${page}">
+								<input type="hidden" name="condition" value="${condition}">
+								<input type="hidden" name="keyword" value="${keyword}">
+							</td>
 						</tr>
 					</table>
 
@@ -265,7 +269,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 						<tbody>
 							<c:forEach var="dto" items="${list}" varStatus="status">
 								<tr>
-									<td class="td-num"><input type="checkbox" name="nums"
+									<td class="td-num"><input type="checkbox" name="msgNum"
 										value="${dto.msgNum}"></td>
 									<td>${dataCount - (page-1) * size - status.index}</td>
 									<td class="left td-content">
@@ -317,14 +321,14 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 $(function(){
 	$("#chkAll").click(function(){
 		if($(this).is(":checked")) {
-			$("input[name=nums]").prop("checked", true);
+			$("input[name=msgNum]").prop("checked", true);
 		} else {
-			$("input[name=nums]").prop("checked", false);
+			$("input[name=msgNum]").prop("checked", false);
 		}
 	});
 	
 	$("#btnDeleteList").click(function(){
-		let cnt = $("input[name=nums]:checked").length;
+		let cnt = $("input[name=msgNum]:checked").length;
 		if(cnt === 0) {
 			alert("삭제할 쪽지를 먼저 선택하세요.");
 			return false;

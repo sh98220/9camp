@@ -197,20 +197,20 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 
 <script type="text/javascript">
 function sendOk() {
-    const f = document.reviewForm;
+    const f = document.auctionForm;
 	let str;
 	
-    str = f.camRevsubject.value.trim();
+    str = f.auctionSubject.value.trim();
     if(!str) {
         alert("제목을 입력하세요. ");
-        f.camRevsubject.focus();
+        f.auctionSubject.focus();
         return;
     }
 
-    str = f.camRevcontent.value.trim();
+    str = f.auctionContent.value.trim();
     if(!str) {
         alert("내용을 입력하세요. ");
-        f.camRevcontent.focus();
+        f.auctionContent.focus();
         return;
     }
 
@@ -222,12 +222,12 @@ function sendOk() {
     }
 
     
-    f.action = "${pageContext.request.contextPath}/reviews/${mode}_ok.do";
+    f.action = "${pageContext.request.contextPath}/auction/${mode}_ok.do";
     f.submit();
 }
 
 <c:if test="${mode == 'update'}">
-	function deleteFile(camRevphotonum) {
+	function deleteFile(auctionNum) {
 		let cnt = $(".img-box").find("img").length;
 		if(cnt == 1){
 			alert('이미지가 한개면 삭제할 수 없습니다.')
@@ -236,11 +236,17 @@ function sendOk() {
 		
 		if(confirm('이미지를 삭제하시겠습니까 ?')){
 			let query = "camRevnum=${dto.camRevnum}&camRevphotonum=" + camRevphotonum + "&page=${page}";
-			let url = "${pageContext.request.contextPath}/reviews/deleteFile.do";
+			let url = "${pageContext.request.contextPath}/aucction/deleteFile.do";
 			location.href = url + "?" + query;
 		}
 		
 	}
+	
+	    $(function() {
+	      $("#auctionEndDate").datepicker({
+	        dateFormat: "yy-mm-dd" // 날짜 형식 설정
+	      });
+	    });
 </c:if>
 </script>
 </head>
@@ -253,16 +259,16 @@ function sendOk() {
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fa-solid fa-tent fa-bounce"></i> 전국캠핑자랑 </h2>
+			<h2><i class="fa-solid fa-store fa-spin-pulse"></i> 중고거래 </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
-			<form name="reviewForm" method="post" enctype="multipart/form-data">
+			<form name="auctionForm" method="post" enctype="multipart/form-data">
 				<table class="table table-border table-form">
 					<tr> 
 						<td>제&nbsp;&nbsp;&nbsp;&nbsp;목</td>
 						<td> 
-							<input type="text" name="camRevsubject" maxlength="100" class="form-control" value="${dto.camRevsubject}">
+							<input type="text" name="auctionSubject" maxlength="100" class="form-control" value="${dto.auctionSubject}">
 						</td>
 					</tr>
 					
@@ -274,16 +280,30 @@ function sendOk() {
 					</tr>
 					
 					<tr> 
-						<td>캠핑장</td>
+						<td>경매물품</td>
 						<td> 
-							<input type="text" name="camInfosubject" maxlength="100" class="form-control" value="">						
+							<input type="text" name="auctionObject" maxlength="100" class="form-control" value="${dto.auctionObject}">						
 						</td>
 					</tr>
 					
 					<tr> 
 						<td valign="top">내&nbsp;&nbsp;&nbsp;&nbsp;용</td>
 						<td> 
-							<textarea name="camRevcontent" class="form-control">${dto.camRevcontent}</textarea>
+							<textarea name="auctionContent" class="form-control">${dto.auctionContent}</textarea>
+						</td>
+					</tr>
+					
+					<tr> 
+						<td>경매시작가</td>
+						<td> 
+							<input type="text" name="auctionStartamount" maxlength="100" class="form-control" value="${dto.auctionStartamount}">						
+						</td>
+					</tr>
+					
+					<tr> 
+						<td>경매종료일</td>
+						<td> 
+							<input type="date" id="auctionEndDate" value="${dto.auctionEnddate}">
 						</td>
 					</tr>
 					
@@ -294,14 +314,14 @@ function sendOk() {
 						</td>
 					</tr>
 					
-					<c:if test="${mode == 'update' }">
+					<c:if test="${mode == 'update'}">
 						<tr>
 							<td>등록이미지</td>
 							<td>
 								<div class="img-box">
 									<c:forEach var="vo" items="${listFile}">
-										<img src="${pageContext.request.contextPath}/uploads/reviews/${vo.camRevphotoname}"
-											onclick="deleteFile('${vo.camRevphotonum}');">
+										<img src="${pageContext.request.contextPath}/uploads/auction/${vo.auctionphotoname}"
+											onclick="deleteFile('${vo.auctionPhotonum}');">
 									</c:forEach>
 								</div>
 							</td>
@@ -314,9 +334,9 @@ function sendOk() {
 						<td align="center">
 							<button type="button" class="btn" onclick="sendOk();">${mode=="update"?"수정완료":"등록완료"}</button>
 							<button type="reset" class="btn">다시입력</button>
-							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/reviews/list.do';">${mode=="update"?"수정취소":"등록취소"}</button>
+							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/auction/list.do';">${mode=="update"?"수정취소":"등록취소"}</button>
 							<c:if test="${mode=='update' }">
-								<input type="hidden" name="camRevnum" value="${dto.camRevnum}">
+								<input type="hidden" name="auctionNum" value="${dto.auctionNum}">
 								<input type="hidden" name="page" value="${page}">
 							</c:if>							
 						</td>

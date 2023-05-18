@@ -16,7 +16,7 @@ import com.util.MyServlet;
 import com.util.MyUtil;
 
 @WebServlet("/message/*")
-public class MessageServelet extends MyServlet {
+public class MessageServlet extends MyServlet {
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -133,7 +133,6 @@ public class MessageServelet extends MyServlet {
 			req.setAttribute("paging", paging);
 			req.setAttribute("condition", condition);
 			req.setAttribute("keyword", keyword);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -142,6 +141,8 @@ public class MessageServelet extends MyServlet {
 	}
 	
 	protected void writeForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String msgRecId = req.getParameter("msgRecId");
+		req.setAttribute("msgRecId", msgRecId);
 		forward(req, resp, "/WEB-INF/views/message/writeMessage.jsp");
 	}
 	
@@ -226,7 +227,44 @@ public class MessageServelet extends MyServlet {
 	}
 	
 	protected void recDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		MessageDAO dao = new MessageDAO();
 		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
+		String cp = req.getContextPath();
+		
+		String page = req.getParameter("page");
+		String query = "page=" + page;
+		
+		try {
+			long msgNum = Long.parseLong(req.getParameter("msgNum"));
+			String condition = req.getParameter("condition");
+			String keyword = req.getParameter("keyword");
+			if (condition == null) {
+				condition = "content";
+				keyword = "";
+			}
+			keyword = URLDecoder.decode(keyword, "utf-8");
+
+			if (keyword.length() != 0) {
+				query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
+			}
+
+			MessageDTO dto = dao.readRecMsg(info.getUserId(), msgNum);
+			
+			if(dto == null) {
+				resp.sendRedirect(cp + "/message/listRecMsg.do?" + query);
+				return;
+			}
+			
+			dao.deleteRecMsg(msgNum);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp + "/message/listRecMsg.do?" + query);
 	}
 	
 	protected void listSendMsg(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -366,7 +404,44 @@ public class MessageServelet extends MyServlet {
 	}
 	
 	protected void sendDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		MessageDAO dao = new MessageDAO();
 		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
+		String cp = req.getContextPath();
+		
+		String page = req.getParameter("page");
+		String query = "page=" + page;
+		
+		try {
+			long msgNum = Long.parseLong(req.getParameter("msgNum"));
+			String condition = req.getParameter("condition");
+			String keyword = req.getParameter("keyword");
+			if (condition == null) {
+				condition = "content";
+				keyword = "";
+			}
+			keyword = URLDecoder.decode(keyword, "utf-8");
+
+			if (keyword.length() != 0) {
+				query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
+			}
+
+			MessageDTO dto = dao.readSendMsg(info.getUserId(), msgNum);
+			
+			if(dto == null) {
+				resp.sendRedirect(cp + "/message/listSendMsg.do?" + query);
+				return;
+			}
+			
+			dao.deleteSendMsg(msgNum);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp + "/message/listSendMsg.do?" + query);
 	}
 	
 }

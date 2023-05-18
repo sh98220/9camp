@@ -183,7 +183,7 @@ function searchList() {
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fa-solid fa-tent fa-bounce"></i> 전국캠핑자랑 </h2>
+			<h2><i class="fa-solid fa-store fa-spin-pulse"></i> 중고거래 </h2>
 	    </div>  
 	    
 	    <div class="body-main mx-auto">
@@ -229,10 +229,10 @@ function searchList() {
 			<table class="table">
 				<tr>
 					<td width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/reviews/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/auction/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
 					</td>
 					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/reviews/list.do" method="post">
+						<form name="searchForm" action="${pageContext.request.contextPath}//list.do" method="post">
 							<select name="condition" class="form-select">
 								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
 								<option value="userName" ${condition=="userName"?"selected='selected'":"" }>작성자</option>
@@ -246,8 +246,8 @@ function searchList() {
 						</form>
 					</td>
 					<td align="right" width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/reviews/write.do';">글올리기</button>
-					</td>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/auction/write.do';">글올리기</button>
+					</td>	
 				</tr>
 			</table>
 
