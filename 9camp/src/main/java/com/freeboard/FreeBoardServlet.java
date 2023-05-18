@@ -1,8 +1,10 @@
 package com.freeboard;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.sql.SQLException;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -10,6 +12,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.json.JSONObject;
 
 import com.member.SessionInfo;
 import com.util.MyUploadServlet;
@@ -208,14 +212,14 @@ public class FreeBoardServlet extends MyUploadServlet {
 
 			// 이전글 다음글
 			FreeBoardDTO preReadDto = dao.preReadFreeBoard( dto.getcamChatNum(), condition, keyword);
-			// FreeBoardDTO nextReadDto = dao.nextReadFreeBoard( dto.getcamChatNum(), condition, keyword);
+			FreeBoardDTO nextReadDto = dao.nextReadFreeBoard( dto.getcamChatNum(), condition, keyword);
 
 			// JSP로 전달할 속성
 			req.setAttribute("dto", dto);
 			req.setAttribute("page", page);
 			req.setAttribute("query", query);
 			req.setAttribute("preReadDto", preReadDto);
-			// req.setAttribute("nextReadDto", nextReadDto);
+			req.setAttribute("nextReadDto", nextReadDto);
 
 			// 포워딩
 			forward(req, resp, "/WEB-INF/views/freeboard/article.jsp");
@@ -336,8 +340,42 @@ public class FreeBoardServlet extends MyUploadServlet {
 	}
 	
 	
-	protected void insertLikeBoard(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 게시글 좋아요
+	protected void insertFreeBoardLike(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// 게시글 공감 저장 : AJAX-JSON
+		FreeBoardDAO dao = new FreeBoardDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
+		String state = "false";
+		int freeboardLikeCount = 0;
+		
+		try {
+			int camChatnum = Integer.parseInt(req.getParameter("camChatnum"));
+			String isNoLike = req.getParameter("isNoLike");
+			
+			if(isNoLike.equals("true")) {
+				dao.insertFreeBoardLike(camChatnum, info.getUserId()); // 공감
+			} else {
+				dao.deleteFreeBoardLike(camChatnum, info.getUserId()); // 공감 취소
+			}
+			
+			// 공감 개수
+			freeboardLikeCount = dao.countFreeBoardLike(camChatnum);
+			
+			state = "true";
+		} catch (SQLException e) {
+			state = "liked";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		JSONObject job = new JSONObject();
+		job.put("state", state);
+		job.put("freeboardLikeCount", freeboardLikeCount);
+		
+		PrintWriter out = resp.getWriter();
+		out.print(job.toString());
 	}
 	
 	protected void insertReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

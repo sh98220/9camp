@@ -10,7 +10,7 @@ public class FreeBoardDTO {
 	private String camChatRegDate;
 	
 	private int replyCount;
-	private int boardLikeCount;
+	private int freeboardLikeCount;
 	
 	public int getcamChatNum() {
 		return camChatNum;
@@ -60,11 +60,11 @@ public class FreeBoardDTO {
 	public void setReplyCount(int replyCount) {
 		this.replyCount = replyCount;
 	}
-	public int getBoardLikeCount() {
-		return boardLikeCount;
+	public int getFreeboardLikeCount() {
+		return freeboardLikeCount;
 	}
-	public void setBoardLikeCount(int boardLikeCount) {
-		this.boardLikeCount = boardLikeCount;
+	public void setFreeboardLikeCount(int freeboardLikeCount) {
+		this.freeboardLikeCount = freeboardLikeCount;
 	}
 
 	
