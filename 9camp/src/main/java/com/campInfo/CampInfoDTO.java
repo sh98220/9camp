@@ -10,7 +10,15 @@ public class CampInfoDTO {
 	private String camInfoRegDate;
 	private String camThemaName;
 	private int wishCount;
+	private String keyWordName;
 	
+	
+	public String getKeyWordName() {
+		return keyWordName;
+	}
+	public void setKeyWordName(String keyWordName) {
+		this.keyWordName = keyWordName;
+	}
 	public String getCamThemaName() {
 		return camThemaName;
 	}

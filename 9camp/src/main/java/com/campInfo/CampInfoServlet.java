@@ -44,6 +44,8 @@ public class CampInfoServlet extends MyUploadServlet {
 			list(req, resp);
 		} else if(uri.indexOf("article.do") != -1) {
 			article(req, resp);
+		}  else if(uri.indexOf("write.do") != -1) {
+			writeForm(req, resp);
 		} 
 		
 
@@ -134,6 +136,49 @@ public class CampInfoServlet extends MyUploadServlet {
 		forward(req, resp, "/WEB-INF/views/campInfo/list.jsp");
 	}
 
+	protected void writeForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		CampInfoDAO dao = new CampInfoDAO();
+		
+		List<CampInfoDTO> list = null;
+		
+		list = dao.listAllKeyword();
+		
+		
+		req.setAttribute("list", list);	
+		req.setAttribute("mode", "write");
+		forward(req, resp, "/WEB-INF/views/campInfo/write.jsp");
+	}
+	
+	protected void writeSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		CampInfoDAO dao = new CampInfoDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String cp = req.getContextPath();
+		
+		if(req.getMethod().equalsIgnoreCase("GET")) {
+			resp.sendRedirect(cp + "/campInfo/list.do");
+			return;
+		}
+		
+		try {
+			CampInfoDTO dto = new CampInfoDTO();
+			
+			dto.setCamInfoSubject(req.getParameter("camInfoSubject"));
+			dto.setCamInfoContent(req.getParameter("camInfoContent"));
+			
+			// 사진파일 업로드
+			
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp + "/campInfo/list.do?");
+	}
+	
 	
 	protected void article(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 글보기
@@ -167,12 +212,20 @@ public class CampInfoServlet extends MyUploadServlet {
 			
 			// 게시물 가져오기
 			CampInfoDTO dto = dao.readCampInfo(num);
+		
 			if(dto == null) {
 				resp.sendRedirect(cp + "/campInfo/list.do?" + query);
 				return;
-			}
+			}		
 			
 			dto.setCamInfoContent(util.htmlSymbols(dto.getCamInfoContent()));
+			
+		    // 키워드 가져오기
+			List<CampInfoDTO> list = null;
+			
+			list = dao.listKeyword(num);
+			
+			
 			
 			// 로그인 유저의 찜 여부
 			
@@ -180,6 +233,7 @@ public class CampInfoServlet extends MyUploadServlet {
 			req.setAttribute("dto", dto);
 			req.setAttribute("page", page);
 			req.setAttribute("query", query);
+			req.setAttribute("list", list);
 			
 			// 포워딩
 			forward(req, resp, "/WEB-INF/views/campInfo/article.jsp");

@@ -14,7 +14,56 @@ public class CampInfoDAO {
 	private Connection conn = DBConn.getConnection();
 	
 	public void InsertCampInfo(CampInfoDTO dto) throws SQLException {
-	
+		PreparedStatement pstmt = null;
+		String sql;
+		ResultSet rs = null;
+		int seq;
+		
+		try {
+			sql = "SELECT campInfo_seq.NEXTVAL FROM dual";
+			pstmt = conn.prepareStatement(sql);
+			
+			rs = pstmt.executeQuery();
+			
+			seq = 0;
+			if(rs.next()) {
+				seq = rs.getInt(1);
+			}
+			dto.setCamInfoNum(seq);
+			
+			rs.close();
+			pstmt.close();
+			rs = null;
+			pstmt = null;
+			
+			sql = "INSERT INTO campInfo(camInfoNum, userId, camInfoSubject, camInfoContent, camInfoAddr, camInfoHitCount, camInfoRegDate, camThemaName) "
+					+ " VALUES (?, 'admin',  ?, ?, ?, 0, SYSDATE, ?)";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, dto.getCamInfoNum());
+			pstmt.setString(2, dto.getCamInfoSubject());
+			pstmt.setString(3, dto.getCamInfoContent());
+			pstmt.setString(4, dto.getCamInfoAddr());
+			pstmt.setString(5, dto.getCamThemaName());
+			
+			pstmt.close();
+			pstmt = null;
+			
+			
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
 	}
 	
 	// 데이터 개수
@@ -237,6 +286,7 @@ public class CampInfoDAO {
 		
 	}
 	
+	// 글 쓸 내용 읽어오기 
 	public CampInfoDTO readCampInfo(long num) {
 		CampInfoDTO dto = null;
 		PreparedStatement pstmt = null;
@@ -292,6 +342,100 @@ public class CampInfoDAO {
 
 		return dto;
 	}
+	
+	// 캠핑 전체 키워드 얻어오기
+	public List<CampInfoDTO> listAllKeyword() {
+		List<CampInfoDTO> list = new ArrayList<CampInfoDTO>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StringBuilder sb = new StringBuilder();
+		
+		try {
+			sb.append(" SELECT keyWordName ");
+			sb.append(" FROM keyWordName ");
+			
+			pstmt = conn.prepareStatement(sb.toString());
+					
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				CampInfoDTO dto = new CampInfoDTO();
+				
+				dto.setKeyWordName(rs.getString("keyWordName"));
+				
+				list.add(dto);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
+		
+		return list;
+	}
+	
+	// 캠핑 키워드 리스트로 얻어오기
+	public List<CampInfoDTO> listKeyword(long num) {
+		List<CampInfoDTO> list = new ArrayList<CampInfoDTO>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StringBuilder sb = new StringBuilder();
+		
+		try {
+			sb.append(" SELECT camInfoNum, keyWordName ");
+			sb.append(" FROM campInfoKeyWord ");
+			sb.append(" WHERE camInfoNum = ? ");
+			
+			pstmt = conn.prepareStatement(sb.toString());
+			
+			pstmt.setLong(1, num);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				CampInfoDTO dto = new CampInfoDTO();
+				
+				dto.setKeyWordName(rs.getString("keyWordName"));
+				
+				list.add(dto);
+			}
+			
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e2) {
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e2) {
+				}
+			}
+		}
+
+		
+		return list;
+	}
+
 	
 	// 캠핑리스트 삭제
 	public void deleteCampInfo(long num) throws SQLException {

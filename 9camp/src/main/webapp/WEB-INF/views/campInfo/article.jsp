@@ -318,7 +318,13 @@ function deletecampInfo() {
 							${dto.camInfoContent}
 						</td>
 					</tr>
-		
+					
+					<c:forEach var="dto" items="${list}" varStatus="status">
+						<tr>						
+							<td>${dto.keyWordName}</td>
+						</tr>
+					</c:forEach>
+					
 		
 					
 				</tbody>
