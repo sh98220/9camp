@@ -96,7 +96,7 @@ public class RentBoardServlet extends MyUploadServlet{
 			}
 			
 			// 전체 페이지 수
-			int size = 10;
+			int size = 5;
 			int total_page = util.pageCount(dataCount, size);
 			if (current_page > total_page) {
 				current_page = total_page;
@@ -192,7 +192,7 @@ public class RentBoardServlet extends MyUploadServlet{
 		
 	}
 	protected void updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		
 		
 	}
 	protected void updateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -200,9 +200,63 @@ public class RentBoardServlet extends MyUploadServlet{
 		
 	}
 	protected void article(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		RentBoardDAO dao = new RentBoardDAO();
+		MyUtil util = new MyUtil();
 		
+		String cp = req.getContextPath();
+		String page = req.getParameter("page");
+		
+		String query = "page="+page;
+		
+		try {
+			long rentNum = Long.parseLong(req.getParameter("rentNum"));
+			String condition = req.getParameter("condition");
+			String keyword = req.getParameter("keyword");
+			
+			if (condition == null) {
+				condition = "all";
+				keyword = "";
+			}
+			
+			keyword = URLDecoder.decode(keyword, "utf-8");
+
+			if (keyword.length() != 0) {
+				query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
+			}
+			
+			dao.updateHitCount(rentNum);
+			
+			RentBoardDTO dto = dao.readRentBoard(rentNum);
+			if(dto == null) {
+				resp.sendRedirect(cp+"/rent/list.do?"+query);
+				return;
+			}
+			
+			dto.setRentContent(util.htmlSymbols(dto.getRentContent()));
+			
+			
+			RentBoardDTO preRentDto = dao.preReadRentBoard(dto.getRentNum(), condition, keyword);
+			RentBoardDTO nextRentDto = dao.nextReadRentBoard(dto.getRentNum(), condition, keyword);
+			
+			List<RentBoardDTO> listFile = dao.listRentPhoto(rentNum);
+			
+			req.setAttribute("dto", dto);
+			req.setAttribute("preRentDto", preRentDto);
+			req.setAttribute("nextRentDto", nextRentDto);
+			req.setAttribute("listFile", listFile);
+			req.setAttribute("page", page);
+			
+			forward(req, resp, "/WEB-INF/views/rent/article.jsp");
+			return;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp+"/rent/list.do?"+query);
 	}
+	
+	
 	protected void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		

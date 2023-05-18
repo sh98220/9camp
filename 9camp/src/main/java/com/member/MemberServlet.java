@@ -46,6 +46,7 @@ public class MemberServlet extends MyServlet {
 		} else if (uri.indexOf("delete.do") != -1) {
 			deleteSubmit(req, resp);
 		}
+		
 	}
 
 	protected void loginForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -240,6 +241,7 @@ public class MemberServlet extends MyServlet {
 		}
 
 		resp.sendRedirect(cp + "/");
+		
 	}
 
 	protected void updateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

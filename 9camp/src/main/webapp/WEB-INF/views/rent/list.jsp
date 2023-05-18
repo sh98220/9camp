@@ -213,11 +213,16 @@ function searchList() {
 						<tr>
 							<td>${dataCount - (page-1) * size - status.index}</td>
 							<td class="left">
-								<a href="${articleUrl}&num=${dto.rentNum}">${dto.rentSubject}</a>
+								<a href="${articleUrl}&rentNum=${dto.rentNum}">${dto.rentSubject}</a>
 							</td>
 							<td>${dto.hostId}</td>
 							<td>${dto.rentRegDate}</td>
 							<td>${dto.rentHitCount}</td>
+							<td>
+								<c:if test="${not empty dto.rentPhotoName}">
+									<i class="far fa-file"></i>
+								</c:if>
+							</td>
 						</tr>
 					</c:forEach>
 				</tbody>
