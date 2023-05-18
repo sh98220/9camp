@@ -13,7 +13,7 @@
 		<div class="logo-cont">
 			<a href="${pageContext.request.contextPath}/main.do">
 				<span class="logo">
-					<i class="fa-solid fa-campground"></i>
+					<i class="fa-solid fa-campground fa-bounce"></i>
 				</span>
 				<span class="logo-txt">
 					가자Goo캠핑
