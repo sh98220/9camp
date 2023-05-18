@@ -175,7 +175,54 @@ public class MessageServelet extends MyServlet {
 	}
 	
 	protected void recArticle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		MessageDAO dao = new MessageDAO();
+		MyUtil util = new MyUtil();
 		
+		HttpSession session= req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String cp = req.getContextPath();
+		String page = req.getParameter("page");
+		
+		String query = "page=" + page;
+		
+		try {
+			long msgNum = Long.parseLong(req.getParameter("msgNum"));
+			String condition = req.getParameter("condition");
+			String keyword = req.getParameter("keyword");
+			if (condition == null) {
+				condition = "content";
+				keyword = "";
+			}
+			keyword = URLDecoder.decode(keyword, "utf-8");
+
+			if (keyword.length() != 0) {
+				query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
+			}
+			
+			// 쪽지 읽음 표시
+			dao.updateRead(msgNum);
+			
+			// 쪽지 가져오기
+			MessageDTO dto = dao.readRecMsg(info.getUserId(), msgNum);
+			if (dto == null) {
+				resp.sendRedirect(cp + "/message/listRecMsg.do?" + query);
+				return;
+			}
+			dto.setMsgContent(util.htmlSymbols(dto.getMsgContent()));
+			
+			// JSP로 전달할 속성
+			req.setAttribute("dto", dto);
+			req.setAttribute("page", page);
+			req.setAttribute("query", query);
+			
+			forward(req, resp, "/WEB-INF/views/message/recArticle.jsp");
+			return;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp + "/message/listRecMsg.do?" + query);
 	}
 	
 	protected void recDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -271,7 +318,51 @@ public class MessageServelet extends MyServlet {
 	}
 	
 	protected void sendArticle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		MessageDAO dao = new MessageDAO();
+		MyUtil util = new MyUtil();
 		
+		HttpSession session= req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String cp = req.getContextPath();
+		String page = req.getParameter("page");
+		
+		String query = "page=" + page;
+		
+		try {
+			long msgNum = Long.parseLong(req.getParameter("msgNum"));
+			String condition = req.getParameter("condition");
+			String keyword = req.getParameter("keyword");
+			if (condition == null) {
+				condition = "content";
+				keyword = "";
+			}
+			keyword = URLDecoder.decode(keyword, "utf-8");
+
+			if (keyword.length() != 0) {
+				query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
+			}
+			
+			// 쪽지 가져오기
+			MessageDTO dto = dao.readSendMsg(info.getUserId(), msgNum);
+			if (dto == null) {
+				resp.sendRedirect(cp + "/message/listSendMsg.do?" + query);
+				return;
+			}
+			dto.setMsgContent(util.htmlSymbols(dto.getMsgContent()));
+			
+			// JSP로 전달할 속성
+			req.setAttribute("dto", dto);
+			req.setAttribute("page", page);
+			req.setAttribute("query", query);
+			
+			forward(req, resp, "/WEB-INF/views/message/sendArticle.jsp");
+			return;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp + "/message/listSendMsg.do?" + query);
 	}
 	
 	protected void sendDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

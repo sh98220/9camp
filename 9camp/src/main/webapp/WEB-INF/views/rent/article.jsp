@@ -9,7 +9,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>spring</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
-
 <style type="text/css">
 a {display: inline-block;}
 
@@ -74,7 +73,7 @@ input[type=checkbox], input[type=radio] { vertical-align: middle; }
 .table th, .table td { padding-top: 10px; padding-bottom: 10px; }
 
 .table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
-.table-border tbody > tr { border-bottom: 1px solid gray; }
+.table-border tbody > tr { border-bottom: 1px solid #ff5522; }
 .td-border td { border: 1px solid #ced4da; }
 
 tr.hover:hover { cursor: pointer; background: #f5fffa; }
@@ -128,7 +127,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     padding-bottom: 10px;
     display: inline-block;
     margin: 0 0 -7px 0;
-    border-bottom: 3px solid #eee;
+    border-bottom: 3px solid #ff5522;
 }
 
 .body-title h2 i {
@@ -205,7 +204,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	overflow-x: auto;
 }
 .img-box img {
-	width: 200px; height: 200px;
+	width: 100px; height: 100px;
 	margin-right: 5px;
 	flex: 0 0 auto;
 	cursor: pointer;
@@ -234,16 +233,15 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 .reply-list .list-header { border: 1px solid #ccc; background: #f8f8f8; }
 .reply-list tr>td { padding-left: 7px; padding-right: 7px; }
 
-.nav-link:hover { color: red; }
 
 </style>
-<script type="text/javascript" src="${pageContext.request.contextPath}/resource/jquery/js/jquery-ui.min.js"></script>
 <script type="text/javascript">
-<c:if test="${sessionScope.member.userId==dto.userId || sessionScope.member.userId=='admin'}">
-	function deleteReviews() {
+
+<c:if test="${sessionScope.member.userId==dto.hostId || sessionScope.member.userId=='admin'}">
+	function deleterentBoard() {
 	    if(confirm("게시글을 삭제 하시 겠습니까 ? ")) {
-		    let query = "num=${dto.camRevnum}&${query}";
-		    let url = "${pageContext.request.contextPath}/reviews/delete.do?" + query;
+		    let query = "num=${dto.rentNum}&${query}";
+		    let url = "${pageContext.request.contextPath}/rent/delete.do?" + query;
 	    	location.href = url;
 	    }
 	}
@@ -261,7 +259,9 @@ function imageViewer(img) {
 		modal: true
 	});
 }
+</script>
 
+<script type="text/javascript">
 function login(){
 	location.href = "${pageContext.request.contextPath}/member/login.do";
 }
@@ -290,115 +290,6 @@ function ajaxFun(url, method, query, dataType, fn) {
 		}
 	});
 }
-
-// 게시글 공감 여부
-$(function(){
-	$(".btnSendReviewsLike").click(function(){
-		const $i = $(this).find("i");
-		let isNoLike = $i.css("color") == "rgb(0, 0, 0)";
-		let msg = isNoLike ? "게시글에 공감하십니까 ?" : "게시글 공감을 취소하시겠습니까 ?";		
-		
-		if(! confirm(msg)){
-			return false;
-		}
-		
-		let url = "${pageContext.request.contextPath}/reviews/insertReviewsLike.do";
-		let num = "${dto.camRevnum}";
-		let qs = "camRevnum=" + num + "&isNoLike=" + isNoLike;
-		
-		const fn = function(data){
-			let state = data.state;
-			if(state === "true"){
-				let color = "black";
-				if( isNoLike ){
-					color = "blue";
-				}
-				$i.css("color", color);
-				
-				let count = data.reviewsLikeCount;
-				$("#reviewsLikeCount").text(count);
-			} else if(state === "liked"){
-				alert("좋아요는 한번만 가능합니다.");				
-			}
-		};
-		
-		ajaxFun(url, "post", qs, "json", fn);
-	});
-});
-
-//댓글 리스트 및 페이징
-$(function(){
-	listPage(1);
-});
-
-function listPage(page) {
-	let url = "${pageContext.request.contextPath}/reviews/listReply.do";
-	let qs = "camRevnum=${dto.camRevnum}&pageNo="+page;
-	let selector = "#listReply";
-	
-	const fn = function(data){
-		$(selector).html(data);
-	}
-	
-	ajaxFun(url, "get", qs, "text", fn);
-	//	ajaxFun(url, "get", qs, "html", fn); // 가능
-	
-}
-
-// 댓글 등록
-$(function(){
-	$(".btnSendReply").click(function(){
-		let num = "${dto.camRevnum}";
-		const $tb = $(this).closest("table");
-		let content = $tb.find("textarea").val().trim();
-		
-		if(! content) {
-			$tb.find("textarea").focus();
-			return false;
-		}
-		content = encodeURIComponent(content);
-		
-		let url = "${pageContext.request.contextPath}/reviews/insertReply.do";
-		let qs = "camRevnum="+num+"&camRevRepcontent="+content;
-		
-		const fn = function(data){
-			$tb.find("textarea").val("");
-			
-			let state = data.state;
-			if(state === "true"){
-				listPage(1);
-			} else {
-				alert("댓글을 추가하지 못했습니다.");
-			}
-		}
-		
-		ajaxFun(url, "post", qs, "json", fn);
-		
-	});
-});
-
-//댓글 삭제
-$(function(){
-	$("#listReply").on("click", ".deleteReply", function(){
-		if(! confirm("게시글을 삭제하시겠습니까 ? ")){
-			return false;
-		}
-		
-		let camRevRepnum = $(this).attr("data-camRevRepnum");
-		let page = $(this).attr("data-pageNo");
-		
-		let url = "${pageContext.request.contextPath}/reviews/deleteReply.do";
-		let qs = "camRevRepnum="+camRevRepnum;
-		
-		const fn = function(data){
-			listPage(page);
-		};
-		
-		ajaxFun(url, "post", qs, "json", fn);
-	});
-});
-
-
 </script>
 
 </head>
@@ -411,7 +302,7 @@ $(function(){
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 전국캠핑자랑	 </h2>
+			<h2><i class="fas fa-graduation-cap"></i> 렌트  </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
@@ -419,7 +310,7 @@ $(function(){
 				<thead>
 					<tr>
 						<td colspan="2" align="center">
-							${dto.camRevsubject}
+							${dto.rentSubject}
 						</td>
 					</tr>
 				</thead>
@@ -427,67 +318,45 @@ $(function(){
 				<tbody>
 					<tr>
 						<td width="50%">
-							작성자 : ${dto.userNickName}
+							이름 : ${dto.hostId}
 						</td>
 						<td align="right">
-							${dto.camRevregdate} | 조회 ${dto.camRevhitcount}
+							${dto.rentRegDate} | 조회 ${dto.rentHitCount}
 						</td>
 					</tr>
 					
 					<tr>
-						<td width="50%">
-							캠핑장 : <a href="#"></a> 우아아아아아아아아아앙캠핑장
-						</td>
-					</tr>
-					
-					<tr>
-						<td colspan="2" valign="top" height="100">
-							${dto.camRevcontent}
+						<td colspan="2" valign="top" height="200">
+							${dto.rentContent}
 						</td>
 					</tr>
 		
 					<tr>
-						<td colspan="2" height="200">
-							사&nbsp;&nbsp;진 :
+						<td colspan="2" height="110">
+							파&nbsp;&nbsp;일 :
 							<div class="img-box">
 								<c:forEach var="vo" items="${listFile}">
-									<img src="${pageContext.request.contextPath}/uploads/reviews/${vo.camRevphotoname}"
-										onclick="imageViewer('${pageContext.request.contextPath}/uploads/reviews/${vo.camRevphotoname}');">
+									<img src="${pageContext.request.contextPath}/uploads/rentPhoto/${vo.rentPhotoName}"
+										onclick="imageViewer('${pageContext.request.contextPath}/uploads/rentPhoto/${vo.rentPhotoName}');">
 								</c:forEach>
 							</div>
 						</td>
 					</tr>
 		
 					<tr>
-						<td colspan="2" align="center" style="border-bottom: 20px; ">
-							<button type="button" class="btn btnSendReviewsLike" title="좋아요"> <i class="fas fa-thumbs-up" style="color:${isUserLike?'blue':'black'}"></i>&nbsp;&nbsp;<span id="reviewsLikeCount">${dto.reviewsLikeCount}</span></button>
-						</td>
-					</tr>
-		
-					<tr>
 						<td colspan="2">
 							이전글 :
-							 <c:choose>
-		           				 <c:when test="${empty preReadDto}">
-		              					  제일 처음 게시글입니다.
-         					     </c:when>
-					             <c:otherwise>
-					                 <a class="nav-link" href="${pageContext.request.contextPath}/reviews/article.do?${query}&num=${preReadDto.camRevnum}">${preReadDto.camRevsubject}</a>
-					             </c:otherwise>
-					         </c:choose>
+							<c:if test="${not empty preRentDto}">
+								<a href="${pageContext.request.contextPath}/rent/article.do?${query}&rentNum=${preRentDto.rentNum}">${preRentDto.rentSubject}</a>
+							</c:if>
 						</td>
 					</tr>
 					<tr>
 						<td colspan="2">
 							다음글 :
-							<c:choose>
-		           				 <c:when test="${empty nextReadDto}">
-		              					  제일 마지막 게시글입니다.
-         					     </c:when>
-					             <c:otherwise>
-					                 <a class="nav-link"  href="${pageContext.request.contextPath}/reviews/article.do?${query}&num=${nextReadDto.camRevnum}">${nextReadDto.camRevsubject}</a>
-					             </c:otherwise>
-					         </c:choose>
+							<c:if test="${not empty nextRentDto}">
+								<a href="${pageContext.request.contextPath}/rent/article.do?${query}&rentNum=${nextRentDto.rentNum}">${nextRentDto.rentSubject}</a>
+							</c:if>
 						</td>
 					</tr>
 				</tbody>
@@ -497,8 +366,8 @@ $(function(){
 				<tr>
 					<td width="50%">
 						<c:choose>
-							<c:when test="${sessionScope.member.userId==dto.userId}">
-								<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/reviews/update.do?num=${dto.camRevnum}&page=${page}';">수정</button>
+							<c:when test="${sessionScope.member.userId==dto.hostId}">
+								<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/rent/update.do?num=${dto.rentNum}&page=${page}';">수정</button>
 							</c:when>
 							<c:otherwise>
 								<button type="button" class="btn" disabled="disabled">수정</button>
@@ -506,7 +375,7 @@ $(function(){
 						</c:choose>
 				    	
 						<c:choose>
-				    		<c:when test="${sessionScope.member.userId==dto.userId || sessionScope.member.userId=='admin'}">
+				    		<c:when test="${sessionScope.member.userId==dto.hostId || sessionScope.member.userId=='admin'}">
 				    			<button type="button" class="btn" onclick="deleteReviews();">삭제</button>
 				    		</c:when>
 				    		<c:otherwise>
@@ -515,32 +384,12 @@ $(function(){
 				    	</c:choose>
 					</td>
 					<td align="right">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/reviews/list.do?${query}';">리스트</button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/rent/list.do?${query}';">리스트</button>
 					</td>
 				</tr>
 			</table>
-	       <div class="reply">
-				<form name="replyForm" method="post">
-					<div class='form-header'>
-						<span class="bold">댓글쓰기</span><span> - 타인을 비방하거나 개인정보를 유출하는 글의 게시를 삼가해 주세요.</span>
-					</div>
-					
-					<table class="table reply-form">
-						<tr>
-							<td>
-								<textarea class='form-control' name="camRevRepcontent"></textarea>
-							</td>
-						</tr>
-						<tr>
-						   <td align='right'>
-								<button type='button' class='btn btnSendReply'>댓글 등록</button>
-							</td>
-						 </tr>
-					</table>
-				</form>
-				
-				<div id="listReply"></div>
-			</div>
+			
+
 	    </div>
 	</div>
 </main>
@@ -548,11 +397,6 @@ $(function(){
 <footer>
     <jsp:include page="/WEB-INF/views/layout/footer.jsp"></jsp:include>
 </footer>
-
-<div class="dialog-photo">
-      <div class="photo-layout"></div>
-</div>
-
 
 </body>
 </html>

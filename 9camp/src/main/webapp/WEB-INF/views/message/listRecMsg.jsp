@@ -44,7 +44,8 @@
 }
 
 .body-main {
-	min-width: 900px;
+	max-width: 900px;
+	padding-bottom: 35px;
 }
 
 .inner-page{
@@ -263,7 +264,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 								</td>
 								<td>${dataCount - (page-1) * size - status.index}</td>
 								<td class="left td-content">
-									<a href="${articleUrl}&num=${dto.msgNum}">${dto.msgContent}</a>
+									<a href="${articleUrl}&msgNum=${dto.msgNum}">${dto.msgContent}</a>
 								</td>
 								<td>${dto.userNickName}</td>
 								<td>${dto.msgRegDate}</td>

@@ -11,7 +11,6 @@
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 
 <style type="text/css">
-
 /* body-container */
 .body-container {
 	min-height: 500px;
@@ -44,7 +43,7 @@
 }
 
 .body-main {
-	max-width: 900px;
+	width: 700px;
 	padding-bottom: 35px;
 }
 
@@ -63,14 +62,12 @@
 .table-list .subject {  }
 .table-list .name { width: 100px; }
 .table-list .date { width: 150px; }
-.table-list .hit { width: 70px; }
-.table-list .file { width: 50px; }
 
 .table-list td { border-left: 1px solid #e4e5e7; }
 .table-list td.td-num { border-left: 0; }
 .table-list td.td-content {
 	padding: 0 10px;
-	max-width: 400px;
+	max-width: 500px;
 }
 
 .table-list td.td-content > a {
@@ -108,7 +105,7 @@
 .form-control {
 	border: 1px solid #999999; border-radius: 4px; background-color: #ffffff;
 	padding: 5px 5px;
-	vertical-align: middle;
+	vertical-align: baseline;
 }
 .form-control[readonly] { background-color:#f8f9fa; }
 
@@ -117,7 +114,6 @@ textarea.form-control { height: 170px; resize : none; }
 .form-select {
 	border: 1px solid #999999; border-radius: 4px; background-color: #ffffff;
 	padding: 4px 5px; 
-	font-family: "맑은 고딕", 나눔고딕, 돋움, sans-serif;
 	vertical-align: middle;
 }
 .form-select[readonly] { background-color:#f8f9fa; }
@@ -126,10 +122,18 @@ textarea:focus, input:focus { outline: none; }
 input[type=checkbox], input[type=radio] { vertical-align: middle; }
 
 /* table */
-.table { width: 100%; border-spacing: 0; border-collapse: collapse; font-size: 14px; }
-.table th, .table td { padding-top: 10px; padding-bottom: 10px; }
+.table { width: 100%; border-spacing: 0; border-collapse: collapse; }
+.table th, .table td { padding: 10px; }
 
-.table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
+.table-border thead { border-top: 2px solid #666; }
+.table-border thead > tr { border-bottom: 1px solid #666; }
+.table-border thead td.td-tit {
+	font-weight: bold;
+	width: 100px;
+	text-align: center;
+	background: #eee;
+}
+
 .table-border tbody > tr { border-bottom: 1px solid #666; }
 .td-border td { border: 1px solid #ced4da; }
 
@@ -180,15 +184,16 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 
 #msgMenuWrap > .msgMenuBtn:first-child {
 	border-bottom: none;
-}
-
-#msgMenuWrap > .msgMenuBtn:last-child {
 	font-weight: bold;
 }
 
 #msgMenuWrap > .msgMenuBtn:hover {
 	background: #333;
 	color: #fff;
+}
+
+.note-read {
+	min-width: 460px;
 }
 
 /*
@@ -214,16 +219,12 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 }
 */
 </style>
-
-
 </head>
 <body>
 
 <header>
 	<jsp:include page="/WEB-INF/views/layout/header.jsp"></jsp:include>
 </header>
-
-
 
 <main>
 	<div class="container body-container">
@@ -233,80 +234,46 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 		</div>
 
 		<div class="body-main">
-				<form name="listForm" method="post">
-					<div class="body-title">
-						<h2>
-							<i class="fa-regular fa-envelope"></i> 보낸쪽지함
-						</h2>
-					</div>
-
-					<table class="table">
+			<div class="body-title">
+				<h2><i class="fa-regular fa-envelope"></i> 받은쪽지함 </h2>
+		    </div>
+		    <!-- note-read -->
+			<div class="note-read">
+				<table class="table table-border table-article">
+					<thead>
 						<tr>
-							<td width="50%">
-								<button type="button" class="btn" id="btnDeleteList">삭제</button>
-							</td>
-							<td width="50%" align="right">
-								${dataCount}개(${page}/${total_page} 페이지)</td>
+							<td class="td-tit">보낸사람</td>
+							<td class="td-cont">${dto.userNickName} (${dto.msgWriterId})</td>
 						</tr>
-					</table>
-
-					<table class="table table-border table-list">
-						<thead>
-							<tr>
-								<th class="chk"><input type="checkbox" name="chkAll" id="chkAll"></th>
-								<th class="num">번호</th>
-								<th class="subject">내용</th>
-								<th class="name">받는사람</th>
-								<th class="date">보낸날짜</th>
-								<th class="date">읽은날짜</th>
-							</tr>
-						</thead>
-
-						<tbody>
-							<c:forEach var="dto" items="${list}" varStatus="status">
-								<tr>
-									<td class="td-num"><input type="checkbox" name="nums"
-										value="${dto.msgNum}"></td>
-									<td>${dataCount - (page-1) * size - status.index}</td>
-									<td class="left td-content">
-										<a href="${articleUrl}&msgNum=${dto.msgNum}">${dto.msgContent}</a>
-									</td>
-									<td>${dto.userNickName}</td>
-									<td>${dto.msgRegDate}</td>
-									<td>${dto.msgRead == 0 ? "안 읽음" : dto.msgReadDate}</td>
-								</tr>
-							</c:forEach>
-						</tbody>
-					</table>
-				</form>
-
-				<div class="page-navigation">
-					${dataCount == 0 ? "보낸 쪽지가 없습니다." : paging}
-				</div>
-				
+						<tr>
+							<td  class="td-tit">받은시간</td>
+							<td class="td-cont">${dto.msgRegDate}</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td colspan="2" valign="top" height="200">
+								${dto.msgContent}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			
 				<table class="table">
 					<tr>
-						<td width="100">
-							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/message/listSendMsg.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+						<td width="50%">
+							<button type="button" class="btn" onclick="recDelete();">삭제</button>
 						</td>
-						<td align="center">
-							<form name="searchForm" action="${pageContext.request.contextPath}/message/listSendMsg.do" method="post">
-								<select name="condition" class="form-select">
-									<option value="content"  ${condition=="content"?"selected='selected'":"" }>내용</option>
-								</select>
-								<input type="text" name="keyword" value="${keyword}" class="form-control">
-								<button type="button" class="btn" onclick="searchList();">검색</button>
-							</form>
-						</td>
-						<td align="right" width="100">
-							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/message/write.do';">쪽지쓰기</button>
+						<td align="right">
+							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/message/listRecMsg.do?${query}';">리스트</button>
 						</td>
 					</tr>
 				</table>
-	
-		    </div>
+			</div>
+			<!--// noter-read -->	
+			
+		</div>
 	</div>
-	    
 </main>
 
 <footer>
@@ -314,42 +281,13 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 </footer>
 
 <script type="text/javascript">
-$(function(){
-	$("#chkAll").click(function(){
-		if($(this).is(":checked")) {
-			$("input[name=nums]").prop("checked", true);
-		} else {
-			$("input[name=nums]").prop("checked", false);
-		}
-	});
-	
-	$("#btnDeleteList").click(function(){
-		let cnt = $("input[name=nums]:checked").length;
-		if(cnt === 0) {
-			alert("삭제할 쪽지를 먼저 선택하세요.");
-			return false;
-		}
-		
-		if(confirm("선택한 쪽지를 삭제 하시겠습니까 ?")) {
-			const f = document.listForm;
-			f.action="${pageContext.request.contextPath}/message/sendDelete.do";
-			f.submit();
-		}
-	});
-});
-
-function searchList() {
-	const f = document.searchForm;
-	f.submit();
+function recDelete() {
+	if(confirm("쪽지를 삭제하시겠습니까 ? ")) {
+		let query = "num=${dto.msgNum}&${query}";
+		let url = "${pageContext.request.contextPath}/message/recDelete.do?" + query;
+	    location.href = url;
+	}
 }
-
-function changeList() {
-    const f = document.listForm;
-    f.page.value="1";
-    f.action="${pageContext.request.contextPath}/message/listSendMsg.do";
-    f.submit();
-}
-
 </script>
 
 </body>

@@ -109,7 +109,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     padding-top: 35px;
     padding-bottom: 7px;
     margin: 0 0 25px 0;
-    border-bottom: 2px solid #eee;;
+    border-bottom: 2px solid #eee;
 }
 
 .body-title h2 {
@@ -121,7 +121,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     padding-bottom: 10px;
     display: inline-block;
     margin: 0 0 -7px 0;
-    border-bottom: 3px solid #ff5522;
+    border-bottom: 3px solid #eee;
 }
 
 .body-main {
@@ -228,11 +228,18 @@ function sendOk() {
 
 <c:if test="${mode == 'update'}">
 	function deleteFile(camRevphotonum) {
+		let cnt = $(".img-box").find("img").length;
+		if(cnt == 1){
+			alert('이미지가 한개면 삭제할 수 없습니다.')
+			return;
+		}
+		
 		if(confirm('이미지를 삭제하시겠습니까 ?')){
 			let query = "camRevnum=${dto.camRevnum}&camRevphotonum=" + camRevphotonum + "&page=${page}";
 			let url = "${pageContext.request.contextPath}/reviews/deleteFile.do";
 			location.href = url + "?" + query;
 		}
+		
 	}
 </c:if>
 </script>
@@ -262,7 +269,14 @@ function sendOk() {
 					<tr> 
 						<td>작성자</td>
 						<td> 
-							<p>${sessionScope.member.userName}</p> 
+							<p>${sessionScope.member.userNickName}</p> 
+						</td>
+					</tr>
+					
+					<tr> 
+						<td>캠핑장</td>
+						<td> 
+							<input type="text" name="camInfosubject" maxlength="100" class="form-control" value="">						
 						</td>
 					</tr>
 					

@@ -506,4 +506,136 @@ public class MessageDAO {
 		return list;
 	}
 	
+	// 받은쪽지 열람시 읽음 처리, 읽은 날짜 갱신
+	public void updateRead(long num) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "UPDATE message SET msgRead=1, msgReadDate=SYSDATE "
+					+ " WHERE msgNum=? AND msgRead = 0";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e2) {
+				}
+			}
+		}
+	}
+	
+	// 받은 쪽지 보기
+	public MessageDTO readRecMsg(String userId, long num) {
+		MessageDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = "SELECT msgNum, msgWriterId, msgContent, msgRegDate, userNickName "
+					+ " FROM message msg "
+					+ " JOIN member mb ON msg.msgWriterId = mb.userId "
+					+ " WHERE msgSenderId = ? AND msgSenEnabled=1 AND msgNum = ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, userId);
+			pstmt.setLong(2, num);
+
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				dto = new MessageDTO();
+				
+				dto.setMsgNum(rs.getLong("msgNum"));
+				dto.setMsgWriterId(rs.getString("msgWriterId"));
+				dto.setMsgContent(rs.getString("msgContent"));
+				dto.setMsgRegDate(rs.getString("msgRegDate"));
+				dto.setUserNickName(rs.getString("userNickName"));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
+		return dto;
+	}
+	
+	// 보낸 쪽지 보기
+	public MessageDTO readSendMsg(String userId, long num) {
+		MessageDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+
+		try {
+			sql = "SELECT msgNum, msgSenderId, msgContent, msgRegDate, userNickName, msgReadDate, msgRead "
+					+ " FROM message msg "
+					+ " JOIN member mb ON msg.msgSenderId = mb.userId "
+					+ " WHERE msgWriterId = ? AND msgSenEnabled=1 AND msgNum = ?";
+
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setString(1, userId);
+			pstmt.setLong(2, num);
+
+			rs = pstmt.executeQuery();
+
+			if(rs.next()) {
+				dto = new MessageDTO();
+
+				dto.setMsgNum(rs.getLong("msgNum"));
+				dto.setMsgWriterId(rs.getString("msgSenderId"));
+				dto.setMsgContent(rs.getString("msgContent"));
+				dto.setMsgRegDate(rs.getString("msgRegDate"));
+				dto.setUserNickName(rs.getString("userNickName"));
+				dto.setMsgReadDate(rs.getString("msgReadDate"));
+				dto.setMsgRead(rs.getInt("msgRead"));
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		return dto;
+	}
+	
+	
 }

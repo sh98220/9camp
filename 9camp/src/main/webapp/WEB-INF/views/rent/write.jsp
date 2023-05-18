@@ -376,7 +376,7 @@ function sendOk() {
 						</td>
 					</tr>
 					
-					<c:if test="${mode == 'update' }">
+					<c:if test="${mode == 'update'}">
 						<tr>
 							<td>등록이미지</td>
 							<td>
@@ -390,7 +390,7 @@ function sendOk() {
 						</tr>
 					</c:if>
 				    <tr>
-						<td>가격&nbsp;&nbsp;&nbsp;&nbsp;격</td>
+						<td>가&nbsp;&nbsp;&nbsp;&nbsp;격</td>
 						<td>
 							<input type="text" name="rentFee" placeholder="가격을 입력하세요."> 
 						</td>

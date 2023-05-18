@@ -498,9 +498,6 @@ function changeEmail() {
 							<div class="input-group">
 								<i class=''></i> <input type="text" placeholder="생년월일">
 							</div>
-							<div class="input-group">
-								<i class=''></i> <input type="text" placeholder="전화번호">
-							</div>
 
 						</form>
 						<button>Sign up</button>
@@ -526,11 +523,6 @@ function changeEmail() {
 							<div class="input-group">
 								<i class='bx bxs-lock-alt'></i> <input name="userPwd"
 									type="password" placeholder="비밀번호를 입력해주세요">
-							</div>
-							
-							<div style="padding: 10px;">
-							    <input name="loginmode" value="1" type="radio" class="form-control" checked="checked"> 회원
-								<input name="loginmode" value="2" type="radio" class="form-control"> 관리자
 							</div>
 							<button type="button" onclick="sendLogin();">Sign in</button>
 							<p>

@@ -173,7 +173,7 @@ public class ReviewsDAO {
 			StringBuilder sb = new StringBuilder();
 
 			try {
-				sb.append(" SELECT camRevnum, username, camRevsubject, camRevhitcount, ");
+				sb.append(" SELECT camRevnum, usernickname, username, camRevsubject, camRevhitcount, ");
 				sb.append("       TO_CHAR(camRevregdate, 'YYYY-MM-DD') camRevregdate ");
 				sb.append(" FROM campreviews b ");
 				sb.append(" JOIN member m ON b.userId = m.userId ");
@@ -192,6 +192,7 @@ public class ReviewsDAO {
 
 					dto.setCamRevnum(rs.getInt("camRevnum"));
 					dto.setUserName(rs.getString("userName"));
+					dto.setUserNickName(rs.getString("userNickName"));
 					dto.setCamRevsubject(rs.getString("camRevsubject"));
 					dto.setCamRevhitcount(rs.getInt("camRevhitcount"));
 					dto.setCamRevregdate(rs.getString("camRevregdate"));
@@ -226,7 +227,7 @@ public class ReviewsDAO {
 			StringBuilder sb = new StringBuilder();
 
 			try {
-				sb.append(" SELECT camRevnum, username, camRevsubject, camRevhitcount, ");
+				sb.append(" SELECT camRevnum, usernickname, username, camRevsubject, camRevhitcount, ");
 				sb.append("      TO_CHAR(camRevregdate, 'YYYY-MM-DD') camRevregdate ");
 				sb.append(" FROM campreviews b ");
 				sb.append(" JOIN member m ON b.userId = m.userId ");
@@ -261,6 +262,7 @@ public class ReviewsDAO {
 
 					dto.setCamRevnum(rs.getInt("camRevnum"));
 					dto.setUserName(rs.getString("userName"));
+					dto.setUserNickName(rs.getString("userNickName"));
 					dto.setCamRevsubject(rs.getString("camRevsubject"));
 					dto.setCamRevhitcount(rs.getInt("camRevhitcount"));
 					dto.setCamRevregdate(rs.getString("camRevregdate"));
@@ -294,7 +296,7 @@ public class ReviewsDAO {
 			String sql;
 
 			try {
-				sql = "SELECT b.camRevnum, b.userId, userName, camRevsubject, camRevcontent, "
+				sql = "SELECT b.camRevnum, b.userId, userNickName, userName, camRevsubject, camRevcontent, "
 						+ " camRevregdate, camRevhitCount, NVL(reviewsLikeCount, 0) reviewsLikeCount "
 						+ " FROM campreviews b "
 						+ " JOIN member m ON b.userId=m.userId "
@@ -315,6 +317,7 @@ public class ReviewsDAO {
 					dto.setCamRevnum(rs.getInt("camRevnum"));
 					dto.setUserId(rs.getString("userId"));
 					dto.setUserName(rs.getString("userName"));
+					dto.setUserNickName(rs.getString("userNickName"));
 					dto.setCamRevsubject(rs.getString("camRevsubject"));
 					dto.setCamRevcontent(rs.getString("camRevcontent"));
 					dto.setCamRevhitcount(rs.getInt("camRevhitCount"));
@@ -931,7 +934,7 @@ public class ReviewsDAO {
 				StringBuilder sb = new StringBuilder();
 				
 				try {
-					sb.append(" SELECT r.camRevRepnum, r.userId, userName, camRevnum, camRevRepcontent, r.camRevRepregdate ");
+					sb.append(" SELECT r.camRevRepnum, r.userId, userNickName, userName, camRevnum, camRevRepcontent, r.camRevRepregdate ");
 					sb.append(" FROM campReviewsReply r ");
 					sb.append(" JOIN member m ON r.userId = m.userId ");
 					sb.append(" WHERE camRevnum = ?");
@@ -953,6 +956,7 @@ public class ReviewsDAO {
 						dto.setCamRevnum(rs.getLong("camRevnum"));
 						dto.setUserId(rs.getString("userId"));
 						dto.setUserName(rs.getString("userName"));
+						dto.setUserNickName(rs.getString("userNickName"));
 						dto.setCamRevRepcontent(rs.getString("camRevRepcontent"));
 						dto.setCamRevRepregdate(rs.getString("camRevRepregdate"));
 						
@@ -986,7 +990,7 @@ public class ReviewsDAO {
 				String sql;
 				
 				try {
-					sql = "SELECT camRevRepnum, camRevnum, r.userId, userName, camRevRepcontent ,r.camRevRepregdate "
+					sql = "SELECT camRevRepnum, camRevnum, r.userId, userNickname, userName, camRevRepcontent ,r.camRevRepregdate "
 							+ " FROM campReviewsReply r JOIN member m ON r.userId=m.userId  "
 							+ " WHERE camRevRepNum = ? ";
 					pstmt = conn.prepareStatement(sql);
@@ -1002,6 +1006,7 @@ public class ReviewsDAO {
 						dto.setCamRevnum(rs.getLong("camRevnum"));
 						dto.setUserId(rs.getString("userId"));
 						dto.setUserName(rs.getString("userName"));
+						dto.setUserNickName(rs.getString("userNickName"));
 						dto.setCamRevRepcontent(rs.getString("camRevRepcontent"));
 						dto.setCamRevRepregdate(rs.getString("camRevRepregdate"));
 					}

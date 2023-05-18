@@ -5,6 +5,7 @@ public class ReviewsDTO {
 	private int camInfonum;
 	private String userId;
 	private String userName;
+	private String userNickName;
 	private String camRevsubject;
 	private String camRevcontent;
 	private int camRevhitcount;
@@ -40,6 +41,12 @@ public class ReviewsDTO {
 	}
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+	public String getUserNickName() {
+		return userNickName;
+	}
+	public void setUserNickName(String userNickName) {
+		this.userNickName = userNickName;
 	}
 	public String getCamRevsubject() {
 		return camRevsubject;

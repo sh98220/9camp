@@ -5,10 +5,17 @@ public class ReplyDTO {
 	private long camRevnum;
 	private String userId;
 	private String userName;
+	private String userNickName;
 	private String camRevRepcontent;
 	private String camRevRepregdate;
 	
 	
+	public String getUserNickName() {
+		return userNickName;
+	}
+	public void setUserNickName(String userNickName) {
+		this.userNickName = userNickName;
+	}
 	public long getCamRevRepnum() {
 		return camRevRepnum;
 	}

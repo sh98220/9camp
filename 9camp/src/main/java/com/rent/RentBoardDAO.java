@@ -49,10 +49,8 @@ public class RentBoardDAO {
 			pstmt.setString(4, dto.getRentObject());
 			pstmt.setString(5, dto.getRentContent());
 			pstmt.setLong(6, dto.getRentFee());
-			pstmt.setString(7, dto.getRentRegDate());
-			pstmt.setInt(8, dto.getRentHitCount());
-			pstmt.setString(9, dto.getRentStartDate());
-			pstmt.setString(10, dto.getRentEndDate());
+			pstmt.setString(7, dto.getRentStartDate());
+			pstmt.setString(8, dto.getRentEndDate());
 
 			pstmt.executeUpdate();
 
@@ -60,7 +58,7 @@ public class RentBoardDAO {
 			pstmt = null;
 
 			if (dto.getRentPhotos() != null) {
-				sql = "INSERT INTO rentalPhoto(rentalPhotoNum, rentNum, rentPhotoName) VALUES "
+				sql = "INSERT INTO rentalPhoto(rentPhotoNum, rentNum, rentPhotoName) VALUES "
 						+ " (rentPhotoNum_seq.NEXTVAL, ?, ?)";
 				pstmt = conn.prepareStatement(sql);
 
@@ -137,7 +135,7 @@ public class RentBoardDAO {
 
 
 		try {
-			sql = "SELECT COUNT(*) FROM rental r"
+			sql = "SELECT COUNT(*) FROM rental r  "
 					+ "JOIN member m ON m.userId = r.hostId ";
 
 			if(condition.equals("all")) {
@@ -152,17 +150,12 @@ public class RentBoardDAO {
 
 			pstmt = conn.prepareStatement(sql);
 
-			if(condition.equals("all")) {
-				pstmt.setString(1,keyword);
-				pstmt.setString(2,keyword);
-			} else if(condition.equals("reg_date")){
-				pstmt.setString(1,keyword);
-			} else if(condition.equals("object")) {
-				pstmt.setString(1,keyword);
-			} else {
-				pstmt.setString(1,keyword);
-			}
+			pstmt.setString(1,keyword);
 
+			if(condition.equals("all")) {
+				pstmt.setString(2,keyword);
+			} 
+			
 			rs = pstmt.executeQuery();
 
 			if(rs.next()) {
@@ -192,6 +185,36 @@ public class RentBoardDAO {
 	}
 
 	public void updateRent(RentBoardDTO dto) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql ="UPDATE rental SET rentSubject=?, rentContent=? WHERE rentNum=?";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, dto.getRentSubject());
+			pstmt.setString(2, dto.getRentContent());
+			pstmt.setLong(3, dto.getRentNum());
+			
+			pstmt.executeUpdate();
+			
+			pstmt.close();
+			pstmt = null;
+			
+			if(dto.getRentPhotos()!= null) {
+				sql = "INSERT INTO rentalPhoto(rentNum, rentPhotoNum, rentPhotoName) VALUES (?, rentPhotoNum_seq, ?)";
+				
+				pstmt = conn.prepareStatement(sql);
+			
+				
+				pstmt.executeUpdate();
+			}
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 
 	}
 
@@ -323,23 +346,329 @@ public class RentBoardDAO {
 
 		return list;
 	}
+	
+	// 조회수 증가하기
+		public void updateHitCount(long rentNum) throws SQLException {
+			PreparedStatement pstmt = null;
+			String sql;
+
+			try {
+				sql = "UPDATE rental SET rentHitCount=rentHitCount+1 WHERE rentNum=?";
+				
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setLong(1, rentNum);
+				
+				pstmt.executeUpdate();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e2) {
+					}
+				}
+			}
+
+		}
 
 	public RentBoardDTO readRentBoard(long rentNum) {
+		PreparedStatement pstmt = null;
 		RentBoardDTO dto = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = "SELECT rentNum, hostId, rentSubject, rentObject, rentContent, rentFee, "
+					+ "TO_CHAR(rentRegDate,'YYYY-MM-DD')rentRegDate, rentHitCount, "
+					+ "TO_CHAR(rentStartDate,'YYYY-MM-DD')rentStartDate, TO_CHAR(rentEndDate,'YYYY-MM-DD')rentEndDate "
+					+ "FROM rental r "
+					+ "JOIN member m ON r.hostId = m.userId "
+					+ "WHERE rentNum=? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, rentNum);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				dto = new RentBoardDTO();
+
+				dto.setRentNum(rs.getLong("rentNum"));
+				dto.setHostId(rs.getString("hostId"));
+				dto.setRentSubject(rs.getString("rentSubject"));
+				dto.setRentObject(rs.getString("rentObject"));
+				dto.setRentContent(rs.getString("rentContent"));
+				dto.setRentFee(rs.getLong("rentFee"));
+				dto.setRentRegDate(rs.getString("rentRegDate"));
+				dto.setRentHitCount(rs.getInt("rentHitCount"));
+				dto.setRentStartDate(rs.getString("rentStartDate"));
+				dto.setRentEndDate(rs.getString("rentEndDate"));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+				}
+			}
+			
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
+		
 
 		return dto;
 	}
 
-	public RentBoardDTO preReadRentBoard(long rentNum) {
+	public RentBoardDTO preReadRentBoard(long rentNum, String condition, String keyword) {
 		RentBoardDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			
+			if(keyword != null && keyword.length() != 0) {
+				sql = "SELECT rentNum, rentSubject FROM rental r "
+						+ "JOIN member m ON m.userId = r.hostId "
+						+ "WHERE (rentNum > ?) ";
+				
+				if(condition.equals("all")) {
+					sql += " AND INSTR(rentSubject, ?) >= 1 OR INSTR(rentContent, ?) >= 1 ";
+				} else if(condition.equals("reg_date")){
+					sql += "AND TO_CHAR(rentRegDate,'YYYY-MM-DD') = ? ";
+				} else if(condition.equals("object")) {
+					sql += "AND INSTR(rentObject, ?) >= 1 ";
+				} else {
+					sql += "AND INSTR(" + condition + ", ?) >= 1 ";
+				}
+				
+				sql += " ORDER BY rentNum DESC "
+						+ "FETCH FIRST 1 ROWS ONLY ";
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setLong(1, rentNum);
+				pstmt.setString(2, keyword);
+				
+				if(condition.equals("all")) {
+					pstmt.setString(3, keyword);
+				}
+
+			} else {
+				sql = "SELECT rentNum, rentSubject "
+						+ " FROM rental r "
+						+ " JOIN member m ON r.hostId = m.userId "
+						+ " WHERE (rentNum > ?) "
+						+ " ORDER BY rentNum DESC "
+						+ " FETCH FIRST 1 ROWS ONLY ";
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setLong(1, rentNum);
+			
+			}
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				dto = new RentBoardDTO();
+				
+				dto.setRentNum(rs.getLong("rentNum"));
+				dto.setRentSubject(rs.getString("rentSubject"));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+			
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
 
 		return dto;
 	}
 
-	public RentBoardDTO nextReadRentBoard(long rentNum) {
+	public RentBoardDTO nextReadRentBoard(long rentNum, String condition, String keyword) {
 		RentBoardDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			
+			if(keyword != null && keyword.length() != 0) {
+				sql = "SELECT rentNum, rentSubject FROM rental r "
+						+ "JOIN member m ON m.userId = r.hostId "
+						+ "WHERE (rentNum < ?) ";
+				
+
+				sql += " ORDER BY rentNum DESC "
+						+ "FETCH FIRST 1 ROWS ONLY ";
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setLong(1, rentNum);
+				pstmt.setString(2, keyword);
+				
+				if(condition.equals("all")) {
+					pstmt.setString(3, keyword);
+				}
+
+			} else {
+				sql = "SELECT rentNum, rentSubject "
+						+ " FROM rental r "
+						+ " JOIN member m ON r.hostId = m.userId "
+						+ " WHERE (rentNum < ?) "
+						+ " ORDER BY rentNum DESC "
+						+ " FETCH FIRST 1 ROWS ONLY ";
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setLong(1, rentNum);
+			
+			}
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				dto = new RentBoardDTO();
+				
+				dto.setRentNum(rs.getLong("rentNum"));
+				dto.setRentSubject(rs.getString("rentSubject"));
+			}
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+			
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
 
 		return dto;
+	}
+	
+	public List<RentBoardDTO> listRentPhoto(long rentNum){
+		List<RentBoardDTO> list = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		RentBoardDTO dto = null;
+		String sql;
+		ResultSet rs = null;
+		
+		try {
+			sql = "SELECT rentNum, rentPhotoNum, rentPhotoName "
+					+ "FROM rentalPhoto WHERE rentNum =?";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, rentNum);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				dto = new RentBoardDTO();
+				
+				dto.setRentNum(rs.getLong("rentNum"));
+				dto.setRentPhotoNum(rs.getLong("rentPhotoNum"));
+				dto.setRentPhotoName(rs.getString("rentPhotoName"));
+				
+				list.add(dto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+			
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
+		
+		return list;
+	}
+	
+	public RentBoardDTO readPhoto(long rentPhotoNum) {
+		RentBoardDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		
+		try {
+			sql = "SELECT rentNum, rentPhotoNum, rentPhotoName "
+					+ "FROM rentalPhoto WHERE rentPhotoNum =?";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, rentPhotoNum);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				dto = new RentBoardDTO();
+				
+				dto.setRentNum(rs.getLong("rentNum"));
+				dto.setRentPhotoNum(rs.getLong("rentPhotoNum"));
+				dto.setRentPhotoName(rs.getString("rentPhotoName"));
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+			
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
+		
+		return dto;
+		
 	}
 
 }
