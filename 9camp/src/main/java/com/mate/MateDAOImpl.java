@@ -189,6 +189,7 @@ public class MateDAOImpl implements MateDAO {
 				
 				dto.setCamInfoNum(rs.getLong("camInfoNum"));
 				dto.setUserId(rs.getString("userId"));
+				dto.setCamMateNum(rs.getLong("camMateNum"));
 				dto.setCamMateSubject(rs.getString("camMateSubject"));
 				dto.setCamMateContent(rs.getString("camMateContent"));
 				dto.setCamMateStartDate(rs.getString("camMateStartDate"));
@@ -271,6 +272,7 @@ public class MateDAOImpl implements MateDAO {
 				
 				dto.setCamInfoNum(rs.getLong("camInfoNum"));
 				dto.setUserId(rs.getString("userId"));
+				dto.setCamMateNum(rs.getLong("camMateNum"));
 				dto.setCamMateSubject(rs.getString("camMateSubject"));
 				dto.setCamMateContent(rs.getString("camMateContent"));
 				dto.setCamMateStartDate(rs.getString("camMateStartDate"));
@@ -320,7 +322,8 @@ public class MateDAOImpl implements MateDAO {
 	public void deleteMate(long[] nums, String userId) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
-
+		
+		
 		try {
 				sql = "DELETE FROM campMate WHERE userId = ? AND"
 						+ " camInfoNum IN (";

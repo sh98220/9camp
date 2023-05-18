@@ -61,7 +61,7 @@ function searchList() {
 	    </div>
 	    
 	    <div class="body-main mx-auto">
-	        <form name="listForm" method="post">
+	        <form name="listForm" method="post" action="${pageContext.request.contextPath}/mypage/myMateList.do">
 				<table class="table">
 					<tr>
 						<td align="right">
@@ -81,6 +81,7 @@ function searchList() {
 							<th class="startDate">시작일</th>
 							<th class="endDate">종료일</th>
 							<th class="dues">최대 인원</th>
+							<th class="memberlist">멤버 리스트</th>
 							<th class="chk">
 								<input type="checkbox" name="chkAll" id="chkAll">        
 							</th>
@@ -88,17 +89,19 @@ function searchList() {
 					</thead>
 					
 					<tbody>
-						<c:forEach var="dto" items="${list}" varStatus="status">
+						<c:forEach var="mateList" items="${list}" varStatus="status">
 						<tr>
-							<td>${dto.camMateNum}</td>
-							<td>${dto.camMateSubject}</td>
-							<td>${dto.camInfoSubject}</td>
-							<td>${dto.camMateStartDate}</td>
-							<td>${dto.camMateEndDate}</td>
-							<td>${dto.camMateDues}</td>
+							<td>${mateList.camMateNum}</td>
+							<td>${mateList.camMateSubject}</td>
+							<td>${mateList.camInfoSubject}</td>
+							<td>${mateList.camMateStartDate}</td>
+							<td>${mateList.camMateEndDate}</td>
+							<td>${mateList.camMateDues}</td>
+							<td><button type="button" class="btn" onclick="location.href='${AdminUrl}&num=${mateList.camMateNum}'">멤버 보기</button></td>
 							<td>
-								<input type="checkbox" name="nums" value="${dto.camMateNum}">
+								<input type="checkbox" name="nums" value="${mateList.camMateNum}">
 							</td>
+							
 						</tr>
 						</c:forEach>
 					</tbody>
@@ -106,7 +109,7 @@ function searchList() {
 			</form>
 			
 			<div class="page-navigation">
-				${dataCount == 0 ? "등록된 찜이 없습니다." : paging}
+				${dataCount == 0 ? "등록된 메이트가 없습니다." : paging}
 			</div>
 			
 			<table class="table">
@@ -124,7 +127,7 @@ function searchList() {
 								<option value="camInfoSubject"  ${condition=="camInfoSubject "?"selected='selected'":"" }>캠핑장제목</option>
 							</select>
 							<input type="text" name="keyword" value="${keyword}" class="form-control">
-							<input type="hidden" name="size" value="${size}">
+
 							<button type="button" class="btn" onclick="searchList();">검색</button>
 						</form>
 					</td>

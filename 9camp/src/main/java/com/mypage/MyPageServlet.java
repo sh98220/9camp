@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.member.SessionInfo;
-import com.mate.*;
 
 import com.util.MyServlet;
 import com.util.MyUtil;
@@ -47,12 +46,22 @@ public class MyPageServlet extends MyServlet {
 			wish(req, resp);
 		} else if (uri.indexOf("mateList.do") != -1) {
 			mateList(req, resp); //내가 관리 중인 캠핑 메이트 리스트
+		} else if (uri.indexOf("mateApplyAdmin.do") != -1) {
+			mateApplyAdmin(req, resp);
 		} else if (uri.indexOf("deleteWish.do") != -1) {
 			deleteWish(req, resp);
 		} else if (uri.indexOf("deleteMate.do") != -1) {
 			deleteMate(req, resp);
+		} else if (uri.indexOf("deleteMateApply.do") != -1) {
+			deleteMateApply(req, resp);
 		}
 	}
+
+
+
+
+
+
 
 
 
@@ -128,9 +137,9 @@ public class MyPageServlet extends MyServlet {
 			// 전체데이터 개수
 			int dataCount;
 			if (keyword.length() == 0) {
-				dataCount = dao.dataCount(info.getUserId());
+				dataCount = dao.dataCountWish(info.getUserId());
 			} else {
-				dataCount = dao.dataCount(condition, keyword, info.getUserId());
+				dataCount = dao.dataCountWish(condition, keyword, info.getUserId());
 			}
 			
 			// 전체페이지수
@@ -191,7 +200,7 @@ public class MyPageServlet extends MyServlet {
 	protected void mateList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 캠핑 메이트 관리 리스트
 		
-		MateDAO dao = new MateDAOImpl();
+		MyPageDAO dao = new MyPageDAO();
 		MyUtil util = new MyUtil();
 				
 		String cp = req.getContextPath();
@@ -222,9 +231,9 @@ public class MyPageServlet extends MyServlet {
 					// 전체데이터 개수
 					int dataCount;
 					if (keyword.length() == 0) {
-						dataCount = dao.dataCount(info.getUserId());
+						dataCount = dao.dataCountMate(info.getUserId());
 					} else {
-						dataCount = dao.dataCount(condition, keyword, info.getUserId());
+						dataCount = dao.dataCountMate(condition, keyword, info.getUserId());
 					}
 					
 					// 전체페이지수
@@ -240,7 +249,7 @@ public class MyPageServlet extends MyServlet {
 					
 					
 					
-					List<MateDTO> list = null;
+					List<MyPageDTO> list = null;
 					if (keyword.length() == 0) {
 						list = dao.listMate(offset, size, info.getUserId());
 					} else {
@@ -256,10 +265,10 @@ public class MyPageServlet extends MyServlet {
 					
 					// 페이징 처리
 					String listUrl = cp + "/mypage/mateList.do";
-					String articleUrl = cp + "/mypage/mateList.do?page=" + current_page;
+					String AdminUrl = cp + "/mypage/mateApplyAdmin.do?page=" + current_page;
 					if (query.length() != 0) {
 						listUrl += "?" + query;
-						articleUrl += "&" + query;
+						AdminUrl += "&" + query;
 					}
 					String paging = util.paging(current_page, total_page, listUrl);
 
@@ -269,7 +278,7 @@ public class MyPageServlet extends MyServlet {
 					req.setAttribute("total_page", total_page);
 					req.setAttribute("dataCount", dataCount);
 					req.setAttribute("size", size);
-					req.setAttribute("articleUrl", articleUrl);
+					req.setAttribute("AdminUrl", AdminUrl);
 					req.setAttribute("paging", paging);
 					req.setAttribute("condition", condition);
 					req.setAttribute("keyword", keyword);
@@ -282,14 +291,62 @@ public class MyPageServlet extends MyServlet {
 		forward(req, resp, "/WEB-INF/views/mypage/mateList.jsp");
 	}
 	
+	private void mateApplyAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String cp = req.getContextPath();
+
+		String page = req.getParameter("page");
+		String query = "page=" + page;
+		MyPageDAO dao = new MyPageDAO();
+
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+
+			String condition = req.getParameter("condition");
+			String keyword = req.getParameter("keyword");
+			if (condition == null) {
+				condition = "all";
+				keyword = "";
+			}
+			keyword = URLDecoder.decode(keyword, "utf-8");
+
+			if (keyword.length() != 0) {
+				query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
+			}
+
+			//메이트 멤버 가져오기
+			MyPageDTO dto = dao.readMateApply(num);
+			if (dto == null) {
+				resp.sendRedirect(cp + "/mypage/mateList.do?" + query);
+	
+				return;
+			}
+
+			
+
+			dto.setCamMateAppContent(dto.getCamMateAppContent().replaceAll("\n", "<br>"));
+
+			req.setAttribute("dto", dto);
+			req.setAttribute("query", query);
+			req.setAttribute("page", page);
+			req.setAttribute("num", num);
+
+			forward(req, resp, "/WEB-INF/views/mypage/mateApplyAdmin.jsp");
+			return;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp + "/mypage/mateList.do?" + query);
+	}
+		
+
 	protected void deleteWish(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
 		String cp = req.getContextPath();
 
 		String page = req.getParameter("page");
-		String size = req.getParameter("size");
-		String query = "size=" + size + "&page=" + page;
+		String query = "page=" + page;
 
 		String condition = req.getParameter("condition");
 		String keyword = req.getParameter("keyword");
@@ -326,8 +383,7 @@ public class MyPageServlet extends MyServlet {
 		String cp = req.getContextPath();
 
 		String page = req.getParameter("page");
-		String size = req.getParameter("size");
-		String query = "size=" + size + "&page=" + page;
+		String query = "page=" + page;
 
 		String condition = req.getParameter("condition");
 		String keyword = req.getParameter("keyword");
@@ -344,18 +400,49 @@ public class MyPageServlet extends MyServlet {
 				nums[i] = Long.parseLong(nn[i]);
 			}
 
-			MateDAO dao = new MateDAOImpl();
+			MyPageDAO dao = new MyPageDAO();
 
 
 			// 메이트 삭제
 			dao.deleteMate(nums, info.getUserId());
-			//dao.deleteWish(nums, info.getUserId());
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		resp.sendRedirect(cp + "/mypage/mateList.do?" + query);
+	}
+	
+	protected void deleteMateApply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		String cp = req.getContextPath();
+
+		String page = req.getParameter("page");
+		String num = req.getParameter("num");
+		String query = "page=" + page + "&num=" + num;
+
+		String condition = req.getParameter("condition");
+		String keyword = req.getParameter("keyword");
+
+		try {
+			if (keyword != null && keyword.length() != 0) {
+				query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
+			}
+
+			String[] nn = req.getParameterValues("nums");
+
+			MyPageDAO dao = new MyPageDAO();
+
+
+			// 메이트 삭제
+			dao.deleteMateApply(nn, num);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp + "/mypage/mateApplyAdmin.do?" + query);
 	}
 
 }

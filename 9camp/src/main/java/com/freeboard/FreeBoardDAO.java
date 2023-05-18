@@ -20,7 +20,7 @@ public class FreeBoardDAO {
 		try {
 			sql = "INSERT INTO CampChat(camChatNum, userId, camChatSubject, "
 					+ " camChatContent, camChatHitCount, camChatRegDate) "
-					+ " VALUES (camChat_seq.NEXTVAL, ?, ?, ?, 0, SYSDATE)";
+					+ " VALUES (campChat_seq.NEXTVAL, ?, ?, ?, 0, SYSDATE)";
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString(1, dto.getUserId());
@@ -255,17 +255,17 @@ public class FreeBoardDAO {
 
 		return list;
 	}
-/*	
-	// 조회수 증가하기  (Board_256)  
-	public void updateHitCount(long num) throws SQLException {
+
+	// 조회수 증가하기 
+	public void updateHitCount(long camChatnum) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
 
 		try {
-			sql = "UPDATE campChat SET hitCount=hitCount+1 WHERE num=?";
+			sql = "UPDATE campChat SET camChathitCount=camChathitCount+1 WHERE camChatnum=?";
 			pstmt = conn.prepareStatement(sql);
 			
-			pstmt.setLong(1, num);
+			pstmt.setLong(1, camChatnum);
 			
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -281,8 +281,8 @@ public class FreeBoardDAO {
 		}
 
 	}	
-*/	
-	// 해당 게시물 보기  (Board_282)
+
+	// 해당 게시물 보기
 	public FreeBoardDTO readBoard(long num) {
 		FreeBoardDTO dto = null;
 		PreparedStatement pstmt = null;
@@ -332,22 +332,24 @@ public class FreeBoardDAO {
 
 		return dto;
 	}	
-/*	
+	
 	// 게시물 수정
 	public void updateFreeBoard(FreeBoardDTO dto) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
 
 		try {
-			sql = "UPDATE camChat SET subject=?, content=? WHERE num=? AND userId=?";
+			sql = "UPDATE campChat SET camChatsubject=?, camChatcontent=? WHERE camChatnum=?";
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString(1, dto.getcamChatSubject());
 			pstmt.setString(2, dto.getcamChatContent());
 			pstmt.setLong(3, dto.getcamChatNum());
-			pstmt.setString(4, dto.getUserId());
 			
 			pstmt.executeUpdate();
+			
+			pstmt.close();
+			pstmt = null;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -362,31 +364,162 @@ public class FreeBoardDAO {
 		}
 
 	}	
-*/
-/*
+	
+	// 이전 글
+	public FreeBoardDTO preReadFreeBoard(long camChatnum, String condition, String keyword) {
+		FreeBoardDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StringBuilder sb = new StringBuilder();
+
+		try {
+			if (keyword != null && keyword.length() != 0) {
+				sb.append(" SELECT camChatnum, camChatsubject ");
+				sb.append(" FROM campChat b ");
+				sb.append(" JOIN member m ON b.userId = m.userId ");
+				sb.append(" WHERE camChatnum > ? ");
+				if (condition.equals("all")) {
+					sb.append("   AND ( INSTR(camChatsubject, ?) >= 1 OR INSTR(camChatcontent, ?) >= 1 ) ");
+				} else if (condition.equals("camChatregdate")) {
+					keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
+					sb.append("   AND TO_CHAR(camChatregdate, 'YYYYMMDD') = ? ");
+				} else {
+					sb.append("   AND INSTR(" + condition + ", ?) >= 1 ");
+				}
+				sb.append(" ORDER BY camChatnum ASC ");
+				sb.append(" FETCH FIRST 1 ROWS ONLY ");
+
+				pstmt = conn.prepareStatement(sb.toString());
+				
+				pstmt.setLong(1, camChatnum);
+				pstmt.setString(2, keyword);
+				if (condition.equals("all")) {
+					pstmt.setString(3, keyword);
+				}
+			} else {
+				sb.append(" SELECT camChatnum, camChatsubject FROM campChat ");
+				sb.append(" WHERE camChatnum > ? ");
+				sb.append(" ORDER BY camChatnum ASC ");
+				sb.append(" FETCH FIRST 1 ROWS ONLY ");
+
+				pstmt = conn.prepareStatement(sb.toString());
+				
+				pstmt.setLong(1, camChatnum);
+			}
+
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				dto = new FreeBoardDTO();
+				
+				dto.setcamChatNum(rs.getInt("camChatnum"));
+				dto.setcamChatSubject(rs.getString("camChatsubject"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		return dto;
+	}
+
+	// 다음 글
+	public FreeBoardDTO nextReadFreeBoard(long camChatnum, String condition, String keyword) {
+		FreeBoardDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StringBuilder sb = new StringBuilder();
+
+		try {
+			if (keyword != null && keyword.length() != 0) {
+				sb.append(" SELECT camChatnum, camChatsubject ");
+				sb.append(" FROM campChat b ");
+				sb.append(" JOIN member m ON b.userId = m.userId ");
+				sb.append(" WHERE camChatnum < ? ");
+				if (condition.equals("all")) {
+					sb.append("   AND ( INSTR(camChatsubject, ?) >= 1 OR INSTR(camChatcontent, ?) >= 1 ) ");
+				} else if (condition.equals("camChatregdate")) {
+					keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
+					sb.append("   AND TO_CHAR(camChatregdate, 'YYYYMMDD') = ? ");
+				} else {
+					sb.append("   AND INSTR(" + condition + ", ?) >= 1 ");
+				}
+				sb.append(" ORDER BY camChatnum DESC ");
+				sb.append(" FETCH FIRST 1 ROWS ONLY ");
+
+				pstmt = conn.prepareStatement(sb.toString());
+				
+				pstmt.setLong(1, camChatnum);
+				pstmt.setString(2, keyword);
+				if (condition.equals("all")) {
+					pstmt.setString(3, keyword);
+				}
+			} else {
+				sb.append(" SELECT camChatnum, camChatsubject FROM campChat ");
+				sb.append(" WHERE camChatnum < ? ");
+				sb.append(" ORDER BY camChatnum DESC ");
+				sb.append(" FETCH FIRST 1 ROWS ONLY ");
+
+				pstmt = conn.prepareStatement(sb.toString());
+				
+				pstmt.setLong(1, camChatnum);
+			}
+
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				dto = new FreeBoardDTO();
+				
+				dto.setcamChatNum(rs.getInt("camChatnum"));
+				dto.setcamChatSubject(rs.getString("camChatsubject"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		return dto;
+	}
+
 	// 게시물 삭제
-	public void deleteFreeBoard(long num, String userId) throws SQLException {
+	public void deleteFreeBoard(long num) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
 
 		try {
-			if (userId.equals("admin")) {
-				sql = "DELETE FROM campChat WHERE num=?";
-				pstmt = conn.prepareStatement(sql);
-				
-				pstmt.setLong(1, num);
-				
-				pstmt.executeUpdate();
-			} else {
-				sql = "DELETE FROM campChat WHERE num=? AND userId=?";
-				
-				pstmt = conn.prepareStatement(sql);
-				
-				pstmt.setLong(1, num);
-				pstmt.setString(2, userId);
-				
-				pstmt.executeUpdate();
-			}
+			sql = "DELETE FROM campChat WHERE camChatnum=?";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			
+			pstmt.executeUpdate();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;
@@ -399,9 +532,99 @@ public class FreeBoardDAO {
 			}
 		}
 	}
-*/	
+
+	// 게시물의 공감 추가
+	public void insertFreeBoardLike(long camChatnum, String userId) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "INSERT INTO campchatlike(camChatnum, userId) VALUES (?, ?)";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, camChatnum);
+			pstmt.setString(2, userId);
+			
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
+	}
 	
+	// 게시글 공감 삭제
+	public void deleteFreeBoardLike(long camChatnum, String userId) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "DELETE FROM campchatlike WHERE camChatnum = ? AND userId = ?";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, camChatnum);
+			pstmt.setString(2, userId);
+			
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
+		
+	}
 	
-	
+	// 게시물의 공감 개수
+	public int countFreeBoardLike(long camChatnum) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = "SELECT NVL(COUNT(*), 0) FROM campchatlike WHERE camChatnum=?";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, camChatnum);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				result = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+				
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
+		return result;
+	}
 	
 }

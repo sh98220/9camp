@@ -8,6 +8,10 @@ public class MessageDTO {
 	private String msgRegDate;
 	private int msgWriEnabled;
 	private int msgSenEnabled;
+	private String msgReadDate;
+	private int msgRead;
+	private String userNickName;
+	
 	public long getMsgNum() {
 		return msgNum;
 	}
@@ -49,6 +53,24 @@ public class MessageDTO {
 	}
 	public void setMsgSenEnabled(int msgSenEnabled) {
 		this.msgSenEnabled = msgSenEnabled;
+	}
+	public String getMsgReadDate() {
+		return msgReadDate;
+	}
+	public void setMsgReadDate(String msgReadDate) {
+		this.msgReadDate = msgReadDate;
+	}
+	public int getMsgRead() {
+		return msgRead;
+	}
+	public void setMsgRead(int msgRead) {
+		this.msgRead = msgRead;
+	}
+	public String getUserNickName() {
+		return userNickName;
+	}
+	public void setUserNickName(String userNickName) {
+		this.userNickName = userNickName;
 	}
 	
 	

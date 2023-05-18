@@ -209,7 +209,6 @@ function searchList() {
 						<th class="name">작성자</th>
 						<th class="date">작성일</th>
 						<th class="hit">조회수</th>
-						<th class="file">첨부</th>
 					</tr>
 				</thead>
 				
@@ -218,11 +217,11 @@ function searchList() {
 						<tr>
 							<td>${dataCount - (page-1) * size - status.index}</td>
 							<td class="left">
-								<a href="${articleUrl}&num=${dto.camChatnum}">${dto.camChatsubject}</a>
+								<a href="${articleUrl}&num=${dto.camChatNum}">${dto.camChatSubject}</a>
 							</td>
 							<td>${dto.userName}</td>
-							<td>${dto.camChatregdate}</td>
-							<td>${dto.camChathitCount}</td>
+							<td>${dto.camChatRegDate}</td>
+							<td>${dto.camChatHitCount}</td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -238,7 +237,7 @@ function searchList() {
 						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/freeboard/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
 					</td>
 					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/sbbs/list.do" method="post">
+						<form name="searchForm" action="${pageContext.request.contextPath}/freeboard/list.do" method="post">
 							<select name="condition" class="form-select">
 								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
 								<option value="userName" ${condition=="userName"?"selected='selected'":"" }>작성자</option>

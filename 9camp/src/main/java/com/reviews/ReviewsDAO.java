@@ -294,11 +294,15 @@ public class ReviewsDAO {
 			String sql;
 
 			try {
-				sql = "SELECT camRevnum, b.userId, userName, camRevsubject, camRevcontent, "
-						+ " camRevregdate, camRevhitCount "
+				sql = "SELECT b.camRevnum, b.userId, userName, camRevsubject, camRevcontent, "
+						+ " camRevregdate, camRevhitCount, NVL(reviewsLikeCount, 0) reviewsLikeCount "
 						+ " FROM campreviews b "
 						+ " JOIN member m ON b.userId=m.userId "
-						+ " WHERE camRevnum = ? ";
+						+ " LEFT OUTER JOIN ("
+						+ " 	 SELECT camRevnum, COUNT(*) reviewsLikeCount FROM campreviewslike"
+						+ "		 GROUP BY camRevnum"
+						+ " ) bc ON b.camRevnum = bc.camRevnum"
+						+ " WHERE b.camRevnum = ? ";
 				pstmt = conn.prepareStatement(sql);
 				
 				pstmt.setLong(1, num);
@@ -315,6 +319,8 @@ public class ReviewsDAO {
 					dto.setCamRevcontent(rs.getString("camRevcontent"));
 					dto.setCamRevhitcount(rs.getInt("camRevhitCount"));
 					dto.setCamRevregdate(rs.getString("camRevregdate"));
+					
+					dto.setReviewsLikeCount(rs.getInt("reviewsLikeCount"));
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -714,4 +720,344 @@ public class ReviewsDAO {
 					}
 				}
 			}
+			
+			// 게시물의 공감 추가
+			public void insertReviewsLike(long camRevnum, String userId) throws SQLException {
+				PreparedStatement pstmt = null;
+				String sql;
+				
+				try {
+					sql = "INSERT INTO campreviewslike(camRevnum, userId) VALUES (?, ?)";
+					pstmt = conn.prepareStatement(sql);
+					
+					pstmt.setLong(1, camRevnum);
+					pstmt.setString(2, userId);
+					
+					pstmt.executeUpdate();
+					
+				} catch (SQLException e) {
+					e.printStackTrace();
+					throw e;
+				} finally {
+					if(pstmt != null) {
+						try {
+							pstmt.close();
+						} catch (SQLException e) {
+						}
+					}
+				}
+				
+			}
+			
+			// 게시글 공감 삭제
+			public void deleteReviewsLike(long camRevnum, String userId) throws SQLException {
+				PreparedStatement pstmt = null;
+				String sql;
+				
+				try {
+					sql = "DELETE FROM campreviewslike WHERE camRevnum = ? AND userId = ?";
+					pstmt = conn.prepareStatement(sql);
+					
+					pstmt.setLong(1, camRevnum);
+					pstmt.setString(2, userId);
+					
+					pstmt.executeUpdate();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					throw e;
+				} finally {
+					if(pstmt != null) {
+						try {
+							pstmt.close();
+						} catch (Exception e2) {
+						}
+					}
+				}
+				
+			}
+			
+			// 게시물의 공감 개수
+			public int countReviewsLike(long camRevnum) {
+				int result = 0;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String sql;
+				
+				try {
+					sql = "SELECT NVL(COUNT(*), 0) FROM campreviewslike WHERE camRevnum=?";
+					pstmt = conn.prepareStatement(sql);
+					
+					pstmt.setLong(1, camRevnum);
+					
+					rs = pstmt.executeQuery();
+					
+					if(rs.next()) {
+						result = rs.getInt(1);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					if(rs != null) {
+						try {
+							rs.close();
+						} catch (SQLException e) {
+						}
+					}
+						
+					if(pstmt != null) {
+						try {
+							pstmt.close();
+						} catch (SQLException e) {
+						}
+					}
+				}
+				
+				return result;
+			}
+
+			// 로그인 유저의 게시글 공감 유무
+			public boolean isUserReviewsLike(long camRevnum, String userId) {
+				boolean result = false;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String sql;
+				
+				try {
+					sql = "SELECT camRevnum, userId FROM campreviewsLike WHERE camRevnum = ? AND userId = ?";
+					pstmt = conn.prepareStatement(sql);
+					
+					pstmt.setLong(1, camRevnum);
+					pstmt.setString(2, userId);
+					
+					rs = pstmt.executeQuery();
+					
+					if(rs.next()) {
+						result = true;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					if(rs != null) {
+						try {
+							rs.close();
+						} catch (Exception e2) {
+						}
+					}
+					
+					if(pstmt != null) {
+						try {
+							pstmt.close();
+						} catch (Exception e2) {
+						}
+					}
+					
+				}
+				
+				return result;
+			}
+			
+			public void insertReply(ReplyDTO dto) throws SQLException {
+				PreparedStatement pstmt = null;
+				String sql;
+				
+				try {
+					sql = "INSERT INTO campReviewsReply(camRevRepnum, camRevnum, userId, camRevRepcontent, camRevRepregdate) "
+							+ " VALUES (CAMPREVIEWSREPLY_SEQ.NEXTVAL, ?, ?, ?, SYSDATE)";
+					pstmt = conn.prepareStatement(sql);
+					
+					pstmt.setLong(1, dto.getCamRevnum());
+					pstmt.setString(2, dto.getUserId());
+					pstmt.setString(3, dto.getCamRevRepcontent());
+					
+					pstmt.executeUpdate();
+					
+				} catch (SQLException e) {
+					e.printStackTrace();
+					throw e;
+				} finally {
+					if(pstmt != null)
+						try {
+							pstmt.close();
+						} catch (SQLException e) {
+						}
+				}
+				
+			}
+
+			// 게시물의 댓글 개수
+			public int dataCountReply(long camRevnum) {
+				int result = 0;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String sql;
+				
+				try {
+					sql = "SELECT NVL(COUNT(*), 0) FROM campReviewsReply WHERE camRevnum=?";
+					pstmt = conn.prepareStatement(sql);
+					
+					pstmt.setLong(1, camRevnum);
+					
+					rs = pstmt.executeQuery();
+					
+					if(rs.next()) {
+						result = rs.getInt(1);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					if(rs != null) {
+						try {
+							rs.close();
+						} catch (SQLException e) {
+						}
+					}
+						
+					if(pstmt != null) {
+						try {
+							pstmt.close();
+						} catch (SQLException e) {
+						}
+					}
+				}
+				
+				return result;
+			}
+
+			// 게시물 댓글 리스트
+			public List<ReplyDTO> listReply(long camRevnum, int offset, int size) {
+				List<ReplyDTO> list = new ArrayList<>();
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				StringBuilder sb = new StringBuilder();
+				
+				try {
+					sb.append(" SELECT r.camRevRepnum, r.userId, userName, camRevnum, camRevRepcontent, r.camRevRepregdate ");
+					sb.append(" FROM campReviewsReply r ");
+					sb.append(" JOIN member m ON r.userId = m.userId ");
+					sb.append(" WHERE camRevnum = ?");
+					sb.append(" ORDER BY r.camRevRepnum DESC ");
+					sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
+					
+					pstmt = conn.prepareStatement(sb.toString());
+					
+					pstmt.setLong(1, camRevnum);
+					pstmt.setInt(2, offset);
+					pstmt.setInt(3, size);
+
+					rs = pstmt.executeQuery();
+					
+					while(rs.next()) {
+						ReplyDTO dto = new ReplyDTO();
+						
+						dto.setCamRevRepnum(rs.getLong("camRevRepNum"));
+						dto.setCamRevnum(rs.getLong("camRevnum"));
+						dto.setUserId(rs.getString("userId"));
+						dto.setUserName(rs.getString("userName"));
+						dto.setCamRevRepcontent(rs.getString("camRevRepcontent"));
+						dto.setCamRevRepregdate(rs.getString("camRevRepregdate"));
+						
+						list.add(dto);
+					}
+					
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					if(rs != null) {
+						try {
+							rs.close();
+						} catch (SQLException e) {
+						}
+					}
+					if(pstmt != null) {
+						try {
+							pstmt.close();
+						} catch (SQLException e) {
+						}
+					}
+				}
+				
+				return list;
+			}
+
+			public ReplyDTO readReply(long camRevRepnum) {
+				ReplyDTO dto = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String sql;
+				
+				try {
+					sql = "SELECT camRevRepnum, camRevnum, r.userId, userName, camRevRepcontent ,r.camRevRepregdate "
+							+ " FROM campReviewsReply r JOIN member m ON r.userId=m.userId  "
+							+ " WHERE camRevRepNum = ? ";
+					pstmt = conn.prepareStatement(sql);
+					
+					pstmt.setLong(1, camRevRepnum);
+
+					rs=pstmt.executeQuery();
+					
+					if(rs.next()) {
+						dto=new ReplyDTO();
+						
+						dto.setCamRevRepnum(rs.getLong("camRevRepnum"));
+						dto.setCamRevnum(rs.getLong("camRevnum"));
+						dto.setUserId(rs.getString("userId"));
+						dto.setUserName(rs.getString("userName"));
+						dto.setCamRevRepcontent(rs.getString("camRevRepcontent"));
+						dto.setCamRevRepregdate(rs.getString("camRevRepregdate"));
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					if(rs != null) {
+						try {
+							rs.close();
+						} catch (SQLException e) {
+						}
+					}
+						
+					if(pstmt != null) {
+						try {
+							pstmt.close();
+						} catch (SQLException e) {
+						}
+					}
+				}
+				
+				return dto;
+			}
+			
+			// 게시물의 댓글 삭제
+			public void deleteReply(long camRevRepnum, String userId) throws SQLException {
+				PreparedStatement pstmt = null;
+				String sql;
+				
+				if(! userId.equals("admin")) {
+					ReplyDTO dto = readReply(camRevRepnum);
+					if(dto == null || (! userId.equals(dto.getUserId()))) {
+						return;
+					}
+				}
+				
+				try {
+					sql = "DELETE FROM campReviewsReply "
+							+ " WHERE camRevRepNum = ?  ";
+					pstmt = conn.prepareStatement(sql);
+					
+					pstmt.setLong(1, camRevRepnum);
+					
+					pstmt.executeUpdate();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					throw e;
+				} finally {
+					if(pstmt != null) {
+						try {
+							pstmt.close();
+						} catch (SQLException e) {
+						}
+					}
+				}		
+				
+			}
+
 }

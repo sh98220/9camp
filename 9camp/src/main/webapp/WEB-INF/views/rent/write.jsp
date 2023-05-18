@@ -264,14 +264,28 @@ function sendOk() {
     const f = document.boardForm;
 	let str;
 	
-    str = f.subject.value.trim();
+    str = f.rentSubject.value.trim();
     if(!str) {
         alert("제목을 입력하세요. ");
         f.subject.focus();
         return;
     }
 
-    str = f.content.value.trim();
+    str = f.rentContent.value.trim();
+    if(!str) {
+        alert("내용을 입력하세요. ");
+        f.content.focus();
+        return;
+    }
+    
+    str = f.rentContent.value.trim();
+    if(!str) {
+        alert("내용을 입력하세요. ");
+        f.content.focus();
+        return;
+    }
+    
+    str = f.rentContent.value.trim();
     if(!str) {
         alert("내용을 입력하세요. ");
         f.content.focus();
@@ -283,10 +297,10 @@ function sendOk() {
 }
 
 <c:if test="${mode == 'update'}">
-	function deleteFile(num) {
+	function deleteFile(rentNum) {
 		if(confirm('파일을 삭제하시겠습니까 ?')){
-			let query = "category=${category}&num="+num+"&page=${page}";
-			let url = "${pageContext.request.contextPath}/reviews/deleteFile.do";
+			let query = "num="+rentNum+"&page=${page}";
+			let url = "${pageContext.request.contextPath}/rent/deleteFile.do";
 			location.href = url + "?" + query;
 		}
 	}
@@ -311,14 +325,14 @@ function sendOk() {
 					<tr> 
 						<td>제&nbsp;&nbsp;&nbsp;&nbsp;목</td>
 						<td> 
-							<input type="text" name="subject" maxlength="100" class="form-control" value="${dto.subject}">
+							<input type="text" name="rentSubject" maxlength="100" class="form-control" value="${dto.subject}">
 						</td>
 					</tr>
 					
 					<tr> 
 						<td>작성자</td>
 						<td> 
-							 <p>${sessionScope.member.userName}</p> 
+							 <p>${sessionScope.member.userNickName}</p> 
 						</td>
 					</tr>
 						
@@ -327,14 +341,14 @@ function sendOk() {
 						<td><!-- 검색 버튼 -->
 						    <div class="container">
 								<div class="modal-btn-box">
-								<select>
-								     <option>텐트</option>
-								     <option>침낭/이불</option>
-								     <option>조리기구</option>
-								     <option>난방기구</option>
-								     <option>냉방기구</option>
-								     <option>캠핑카</option>
-								     <option>기타</option>
+								<select name="rentObject">
+								     <option value="텐트">텐트</option>
+								     <option value="침낭/이불">침낭/이불</option>
+								     <option value="조리기구">조리기구</option>
+								     <option value="난방기구">난방기구</option>
+								     <option value="냉방기구">냉방기구</option>
+								     <option value="캠핑카">캠핑카</option>
+								     <option value="기타">기타</option>
 								</select>
 								</div>
 							</div>   				
@@ -343,15 +357,15 @@ function sendOk() {
 					<tr> 
 						<td valign="top">내&nbsp;&nbsp;&nbsp;&nbsp;용</td>
 						<td> 
-							<textarea name="content" class="form-control">${dto.content}</textarea>
+							<textarea name="rentContent" class="form-control">${dto.content}</textarea>
 						</td>
 					</tr>
 					
 					<tr>
 					    <td>기&nbsp;&nbsp;&nbsp;&nbsp;간</td>
 					    <td>
-					        <p style="display: inline-block;">출발날짜&nbsp;&nbsp;</p><input type="date" name="depdate" id="dep">&nbsp;&nbsp;
-					        <p  style="display: inline-block;">도착날짜&nbsp;&nbsp;</p><input type="date" name="aridate" id="ari">&nbsp;&nbsp;
+					        <p style="display: inline-block;">대출날짜&nbsp;&nbsp;</p><input type="date" name="rentStartDate" id="dep">&nbsp;&nbsp;
+					        <p  style="display: inline-block;">반납날짜&nbsp;&nbsp;</p><input type="date" name="rentEndDate" id="ari">&nbsp;&nbsp;
 					   		<p id="result" style="display: inline-block;"></p>
 					    </td>					   
 					</tr>
@@ -378,7 +392,7 @@ function sendOk() {
 				    <tr>
 						<td>가격&nbsp;&nbsp;&nbsp;&nbsp;격</td>
 						<td>
-							<input type="text" placeholder="ex) 50,000원"> 
+							<input type="text" name="rentFee" placeholder="가격을 입력하세요."> 
 						</td>
 					</tr>
 				</table>
@@ -386,13 +400,12 @@ function sendOk() {
 				<table class="table">
 					<tr> 
 						<td align="center">
-							<button type="button" class="btn" onclick="sendOk();">${mode=="update"?"수정완료":"등록완료"}</button>
+							<button type="button" class="btn" onclick="sendOk();">${mode =="update"?"수정완료":"등록완료"}</button>
 							<button type="reset" class="btn">다시입력</button>
 							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/rent/list.do';">${mode=="update"?"수정취소":"등록취소"}</button>
 							<c:if test="${mode=='update' }">
-								<input type="hidden" name="num" value="${dto.num}">
-								<input type="hidden" name="saveFilename" value="${dto.saveFilename}">
-								<input type="hidden" name="originalFilename" value="${dto.originalFilename}">
+								<input type="hidden" name="rentalPhotoNum" value="${dto.rentalPhotoNum}">
+								<input type="hidden" name="rentPhotoName" value="${dto.rentPhotoName}">
 								<input type="hidden" name="fileSize" value="${dto.fileSize}">
 								<input type="hidden" name="page" value="${page}">
 							</c:if>							
