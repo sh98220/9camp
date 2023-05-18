@@ -326,7 +326,7 @@ public class MessageDAO {
 		String sql;
 		
 		try {
-			sql = "SELECT msgNum, msgContent, msgRegDate, msgWriterId, userNickName "
+			sql = "SELECT msgNum, msgContent, msgRegDate, msgWriterId, userNickName, msgRead "
 					+ " FROM message msg "
 					+ " JOIN member mb ON msg.msgWriterId = mb.userId "
 					+ " WHERE msg.msgSenderId = ? AND msgSenEnabled=1 "
@@ -348,6 +348,7 @@ public class MessageDAO {
 				dto.setMsgRegDate(rs.getString("msgRegDate"));
 				dto.setMsgWriterId(rs.getString("msgWriterId"));
 				dto.setUserNickName(rs.getString("userNickName"));
+				dto.setMsgRead(rs.getInt("msgRead"));
 
 				list.add(dto);
 			}
@@ -520,7 +521,7 @@ public class MessageDAO {
 			pstmt.setLong(1, num);
 			
 			pstmt.executeUpdate();
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;
 		} finally {
@@ -595,7 +596,7 @@ public class MessageDAO {
 			sql = "SELECT msgNum, msgSenderId, msgContent, msgRegDate, userNickName, msgReadDate, msgRead "
 					+ " FROM message msg "
 					+ " JOIN member mb ON msg.msgSenderId = mb.userId "
-					+ " WHERE msgWriterId = ? AND msgSenEnabled=1 AND msgNum = ?";
+					+ " WHERE msgWriterId = ? AND msgWriEnabled=1 AND msgNum = ?";
 
 			pstmt = conn.prepareStatement(sql);
 
@@ -608,7 +609,7 @@ public class MessageDAO {
 				dto = new MessageDTO();
 
 				dto.setMsgNum(rs.getLong("msgNum"));
-				dto.setMsgWriterId(rs.getString("msgSenderId"));
+				dto.setMsgSenderId(rs.getString("msgSenderId"));
 				dto.setMsgContent(rs.getString("msgContent"));
 				dto.setMsgRegDate(rs.getString("msgRegDate"));
 				dto.setUserNickName(rs.getString("userNickName"));
@@ -635,6 +636,60 @@ public class MessageDAO {
 		}
 
 		return dto;
+	}
+	
+	// 받은 쪽지 삭제
+	public void deleteRecMsg(long num) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "UPDATE message SET msgSenEnabled=0 WHERE msgNum = ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+	}
+	
+	// 보낸 쪽지 삭제
+	public void deleteSendMsg(long num) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+
+		try {
+			sql = "UPDATE message SET msgWriEnabled=0 WHERE msgNum = ?";
+
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setLong(1, num);
+
+			pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
 	}
 	
 	

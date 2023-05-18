@@ -44,7 +44,7 @@
 }
 
 .body-main {
-	max-width: 900px;
+	width: 900px;
 	padding-bottom: 35px;
 }
 
@@ -185,6 +185,14 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	color: #fff;
 }
 
+.normal, .normal a {
+	color: #000;
+}
+
+.read, .read a {
+	color: #777;
+}
+
 /*
 @media (min-width: 576px) {
 	.container {
@@ -239,6 +247,9 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 						</td>
 						<td width="50%" align="right">
 							${dataCount}개(${page}/${total_page} 페이지)
+							<input type="hidden" name="page" value="${page}">
+							<input type="hidden" name="condition" value="${condition}">
+							<input type="hidden" name="keyword" value="${keyword}">
 						</td>
 					</tr>
 				</table>
@@ -258,15 +269,15 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 					
 					<tbody>
 						<c:forEach var="dto" items="${list}" varStatus="status">
-							<tr>
+							<tr class="${dto.msgRead==0 ? 'normal' : 'read'}">
 								<td class="td-num">
-									<input type="checkbox" name="nums" value="${dto.msgNum}">
+									<input type="checkbox" name="msgNum" value="${dto.msgNum}">
 								</td>
 								<td>${dataCount - (page-1) * size - status.index}</td>
 								<td class="left td-content">
 									<a href="${articleUrl}&msgNum=${dto.msgNum}">${dto.msgContent}</a>
 								</td>
-								<td>${dto.userNickName}</td>
+								<td><a href="${pageContext.request.contextPath}/message/write.do?msgRecId=${dto.msgWriterId}">${dto.userNickName}</a></td>
 								<td>${dto.msgRegDate}</td>
 							</tr>
 						</c:forEach>
@@ -312,14 +323,14 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 $(function(){
 	$("#chkAll").click(function(){
 		if($(this).is(":checked")) {
-			$("input[name=nums]").prop("checked", true);
+			$("input[name=msgNum]").prop("checked", true);
 		} else {
-			$("input[name=nums]").prop("checked", false);
+			$("input[name=msgNum]").prop("checked", false);
 		}
 	});
 	
 	$("#btnDeleteList").click(function(){
-		let cnt = $("input[name=nums]:checked").length;
+		let cnt = $("input[name=msgNum]:checked").length;
 		if(cnt === 0) {
 			alert("삭제할 쪽지를 먼저 선택하세요.");
 			return false;

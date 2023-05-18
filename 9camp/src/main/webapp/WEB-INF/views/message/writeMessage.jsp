@@ -2,6 +2,7 @@
 <%@ page trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -177,7 +178,7 @@
 			<div id="normalMode">
 				<div class="tf_tit">
 					<label for="who" class="recipient">받는사람</label>
-					<input type="text" id="who" name="msgSenderId" value="" placeholder="아이디 입력">
+					<input type="text" id="who" name="msgSenderId" value="${msgRecId}" placeholder="아이디 입력">
 					<button type="button" id="modal-open" class="btn">검색</button>  
 				</div>
 				<div class="writing_area">
@@ -185,7 +186,7 @@
 				</div>
 			</div>
 			<button type="button" class="btn" onclick="sendOk();"> 보내기 </button>
-			<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/message/list.do';"> 취소 </button>
+			<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/message/listRecMsg.do';"> 취소 </button>
 		</form> 
 	</div>
   

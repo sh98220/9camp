@@ -289,7 +289,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 <script type="text/javascript">
 function sendDelete() {
 	if(confirm("쪽지를 삭제하시겠습니까 ? ")) {
-		let query = "num=${dto.msgNum}&${query}";
+		let query = "msgNum=${dto.msgNum}&${query}";
 		let url = "${pageContext.request.contextPath}/message/sendDelete.do?" + query;
 	    location.href = url;
 	}
