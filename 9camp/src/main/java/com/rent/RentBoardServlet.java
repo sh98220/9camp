@@ -241,15 +241,18 @@ public class RentBoardServlet extends MyUploadServlet{
 		
 		String cp = req.getContextPath();
 		if(!req.getMethod().equalsIgnoreCase("POST")) {
-			resp.sendRedirect(cp+"/WEB-INF/views/list.do?page="+page);
+			resp.sendRedirect(cp+"/rent/list.do?page="+page);
 			return;
 		}
 		
 		try {
 			RentBoardDTO dto = new RentBoardDTO();
 			dto.setRentNum(Long.parseLong(req.getParameter("rentNum")));
-			dto.setRentSubject(req.getParameter("rentCount"));
+			dto.setRentContent(req.getParameter("rentContent"));
 			dto.setRentSubject(req.getParameter("rentSubject"));
+			dto.setRentStartDate(req.getParameter("rentStartDate"));
+			dto.setRentEndDate(req.getParameter("rentEndDate"));
+			dto.setRentFee(Long.parseLong(req.getParameter("rentFee")));
 			
 			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);
 			if(map != null) {

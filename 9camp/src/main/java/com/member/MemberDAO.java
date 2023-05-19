@@ -1,9 +1,7 @@
 package com.member;
 
 
-import java.security.SecureRandom;
 import java.sql.Connection;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -448,19 +446,4 @@ public class MemberDAO {
 		return list;
 	}
 	
-	
-	public String mkPwd() {
-		String p = "0123456789~!@#$%^&*abcdefghijklmnopqlstuvwxyzABCDEFGHIJKLMNOPQLSTUVWXYZ";
-		SecureRandom sr = new SecureRandom();
-		StringBuilder sb = new StringBuilder();
-		
-		for(int i=0; i<10; i++) {
-			 int randomIndex = sr.nextInt(p.length());
-	            sb.append(p.charAt(randomIndex));
-		}
-		
-		return sb.toString();
-	}
-
-
 }

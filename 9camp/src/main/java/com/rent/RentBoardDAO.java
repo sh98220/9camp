@@ -718,7 +718,7 @@ public class RentBoardDAO {
 		String sql;
 		
 		try {
-			sql = "DELETE FROM rentPhoto WHERE rentPhotoNum=?";
+			sql = "DELETE FROM rentalPhoto WHERE rentPhotoNum=?";
 			
 			pstmt = conn.prepareStatement(sql);
 			

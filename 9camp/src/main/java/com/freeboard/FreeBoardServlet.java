@@ -24,13 +24,20 @@ import com.util.MyUtil;
 public class FreeBoardServlet extends MyUploadServlet {
 	private static final long serialVersionUID = 1L;
 	
-
 	@Override
 	protected void execute(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("utf-8");
 		
 		String uri = req.getRequestURI();
-				
+		String cp = req.getContextPath();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		if (info == null) { // 로그인되지 않은 경우
+			resp.sendRedirect(cp + "/member/login.do");
+			return;
+		}
+		
 		if(uri.indexOf("list.do") != -1) {
 			list(req, resp);
 		} else if(uri.indexOf("write.do") != -1) {
