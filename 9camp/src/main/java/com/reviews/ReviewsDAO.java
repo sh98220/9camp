@@ -36,7 +36,7 @@ public class ReviewsDAO {
 			pstmt = null;
 			
 			sql = "INSERT INTO CAMPREVIEWS(camRevnum, camInfonum, userId, camRevsubject, camRevcontent, camRevhitcount, camRevregdate) "
-					+ " VALUES (?, 8, ?, ?, ?, 0, SYSDATE)";
+					+ " VALUES (?, 15, ?, ?, ?, 0, SYSDATE)";
 			
 			pstmt = conn.prepareStatement(sql);
 			
