@@ -241,9 +241,9 @@ function searchList() {
 							<select name="condition" class="form-select">
 								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
 								<option value="userName" ${condition=="userName"?"selected='selected'":"" }>작성자</option>
-								<option value="reg_date"  ${condition=="reg_date"?"selected='selected'":"" }>등록일</option>
-								<option value="subject"  ${condition=="subject"?"selected='selected'":"" }>제목</option>
-								<option value="content"  ${condition=="content"?"selected='selected'":"" }>내용</option>
+								<option value="camChatRegDate"  ${condition=="camChatRegDate"?"selected='selected'":"" }>등록일</option>
+								<option value="camChatSubject"  ${condition=="camChatSubject"?"selected='selected'":"" }>제목</option>
+								<option value="camChatContent"  ${condition=="camChatContent"?"selected='selected'":"" }>내용</option>
 							</select>
 							<input type="text" name="keyword" value="${keyword}" class="form-control">
 							<input type="hidden" name="category" value="${category}">

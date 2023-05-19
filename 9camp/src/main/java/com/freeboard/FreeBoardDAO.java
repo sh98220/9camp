@@ -88,13 +88,13 @@ public class FreeBoardDAO {
 		String sql;
 
 		try {
-			sql = "SELECT NVL(COUNT(*), 0) FROM campchat b "
-					+ " JOIN member1 m ON b.userId = m.userId ";
+			sql = "SELECT NVL(COUNT(*), 0) FROM campchat c "
+					+ " JOIN member m ON c.userId = m.userId ";
 			if (condition.equals("all")) {
-				sql += "  WHERE INSTR(subject, ?) >= 1 OR INSTR(content, ?) >= 1 ";
+				sql += "  WHERE INSTR(camChatSubject, ?) >= 1 OR INSTR(camChatContent, ?) >= 1 ";
 			} else if (condition.equals("camChatregdate")) {
 				keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
-				sql += "  WHERE TO_CHAR(reg_date, 'YYYYMMDD') = ? ";
+				sql += "  WHERE TO_CHAR(camChatRegDate, 'YYYYMMDD') = ? ";
 			} else {
 				sql += "  WHERE INSTR(" + condition + ", ?) >= 1 ";
 			}
@@ -195,19 +195,19 @@ public class FreeBoardDAO {
 		StringBuilder sb = new StringBuilder();
 
 		try {
-			sb.append(" SELECT camChatnum, username, camChatsubject, camChathitcount, ");
-			sb.append("      TO_CHAR(camChatregdate, 'YYYY-MM-DD') reg_date ");
-			sb.append(" FROM campchat b ");
-			sb.append(" JOIN member m ON b.userId = m.userId ");
+			sb.append(" SELECT camChatNum, usernickname, username, camChatSubject, camChatHitCount, ");
+			sb.append("      TO_CHAR(camChatRegDate, 'YYYY-MM-DD') camChatRegDate ");
+			sb.append(" FROM campchat c ");
+			sb.append(" JOIN member m ON c.userId = m.userId ");
 			if (condition.equals("all")) {
-				sb.append(" WHERE INSTR(subject, ?) >= 1 OR INSTR(content, ?) >= 1 ");
-			} else if (condition.equals("reg_date")) {
+				sb.append(" WHERE INSTR(camChatSubject, ?) >= 1 OR INSTR(camChatContent, ?) >= 1 ");
+			} else if (condition.equals("camChatRegDate")) {
 				keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
-				sb.append(" WHERE TO_CHAR(reg_date, 'YYYYMMDD') = ?");
+				sb.append(" WHERE TO_CHAR(camChatRegDate, 'YYYYMMDD') = ?");
 			} else {
 				sb.append(" WHERE INSTR(" + condition + ", ?) >= 1 ");
 			}
-			sb.append(" ORDER BY camChatnum DESC ");
+			sb.append(" ORDER BY camChatNum DESC ");
 			sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
 
 			pstmt = conn.prepareStatement(sb.toString());
