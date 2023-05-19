@@ -173,7 +173,7 @@ public class ReviewsDAO {
 			StringBuilder sb = new StringBuilder();
 
 			try {
-				sb.append(" SELECT camRevnum, usernickname, username, camRevsubject, camRevhitcount, ");
+				sb.append(" SELECT camRevnum, usernickname, username, camRevsubject, camRevhitcount, b.userId, ");
 				sb.append("       TO_CHAR(camRevregdate, 'YYYY-MM-DD') camRevregdate ");
 				sb.append(" FROM campreviews b ");
 				sb.append(" JOIN member m ON b.userId = m.userId ");
@@ -196,6 +196,7 @@ public class ReviewsDAO {
 					dto.setCamRevsubject(rs.getString("camRevsubject"));
 					dto.setCamRevhitcount(rs.getInt("camRevhitcount"));
 					dto.setCamRevregdate(rs.getString("camRevregdate"));
+					dto.setUserId(rs.getString("userId"));
 
 					list.add(dto);
 				}
