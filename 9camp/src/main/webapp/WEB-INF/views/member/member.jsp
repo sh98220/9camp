@@ -378,6 +378,84 @@ function sendLogin() {
     f.submit();
 }
 
+function memberOk() {
+	const f = document.memberForm;
+	let str;
+
+	str = f.userId.value;
+	if( !/^[a-z][a-z0-9_]{4,9}$/i.test(str) ) { 
+		alert("아이디를 다시 입력 하세요. ");
+		f.userId.focus();
+		return;
+	}
+	
+	str = f.userPwd.value;
+	if( !/^(?=.*[a-z])(?=.*[!@#$%^*+=-]|.*[0-9]).{5,10}$/i.test(str) ) { 
+		alert("패스워드를 다시 입력 하세요. ");
+		f.userPwd.focus();
+		return;
+	}
+
+	if( str !== f.userPwd2.value ) {
+        alert("패스워드가 일치하지 않습니다. ");
+        f.userPwd.focus();
+        return;
+	}
+	
+    str = f.userName.value;
+    if( !/^[가-힣]{2,5}$/.test(str) ) {
+        alert("이름을 다시 입력하세요. ");
+        f.userName.focus();
+        return;
+    }
+
+    str = f.userBirth.value;
+    if( !str ) {
+        alert("생년월일를 입력하세요. ");
+        f.userBirth.focus();
+        return;
+    }
+    
+    str = f.tel1.value;
+    if( !str ) {
+        alert("전화번호를 입력하세요. ");
+        f.tel1.focus();
+        return;
+    }
+
+    str = f.tel2.value;
+    if( !/^\d{3,4}$/.test(str) ) {
+        alert("숫자만 가능합니다. ");
+        f.tel2.focus();
+        return;
+    }
+
+    str = f.tel3.value;
+    if( !/^\d{4}$/.test(str) ) {
+    	alert("숫자만 가능합니다. ");
+        f.tel3.focus();
+        return;
+    }
+    
+    str = f.email1.value.trim();
+    if( !str ) {
+        alert("이메일을 입력하세요. ");
+        f.email1.focus();
+        return;
+    }
+
+    str = f.email2.value.trim();
+    if( !str ) {
+        alert("이메일을 입력하세요. ");
+        f.email2.focus();
+        return;
+    }
+
+   	f.action = "${pageContext.request.contextPath}/member/member_ok.do";
+    f.submit();
+}
+
+
 function changeEmail() {
     const f = document.memberForm;
 	    
@@ -404,7 +482,7 @@ function changeEmail() {
 				<div class="form-wrapper align-items-center">
 					<div class="form sign-up">
 
-						<form name="memberForm">
+						<form name="memberForm" method="POST">
 
 							<div class="input-group">
 								<i class='bx bxs-user'></i> <input type="text" name="userId"
@@ -413,6 +491,10 @@ function changeEmail() {
 							<div class="input-group">
 								<i class='bx bxs-lock-alt'></i> <input type="password"
 									name="userPwd" placeholder="비밀번호">
+							</div>
+							<div class="input-group">
+								<i class='bx bxs-lock-alt'></i> <input type="password"
+									name="userPwd2" placeholder="비밀번호 확인">
 							</div>
 							<div class="input-group">
 								<i class=''></i> <input type="text" name="userName"
@@ -493,14 +575,14 @@ function changeEmail() {
 									class="form-control" value="${dto.tel3}" style="width: 33%;">
 							</div>
 							<div class="input-group">
-								<i class=''></i> <input type="text" placeholder="닉네임">
+								<i class=''></i> <input type="text"  name="userNickName" placeholder="닉네임">
 							</div>
 							<div class="input-group">
-								<i class=''></i> <input type="text" placeholder="생년월일">
+								<i class=''></i> <input type="text" name="userBirth" placeholder="생년월일">
 							</div>
 
 						</form>
-						<button>Sign up</button>
+						<button  type="button" onclick="memberOk();">Sign up</button>
 						<p>
 							<span> 계정이 이미 있으신가요? </span> <b onclick="toggle()"
 								class="pointer"> Sign in here </b>
@@ -526,7 +608,7 @@ function changeEmail() {
 							</div>
 							<button type="button" onclick="sendLogin();">Sign in</button>
 							<p>
-								<b><a href="${pageContext.request.contextPath}/member/userIdForm.do">비밀번호를 잊으셨나요?</a></b>
+								<b><a href="${pageContext.request.contextPath}/member/pwdFind.do">비밀번호를 잊으셨나요?</a></b>
 							</p>
 							<p>
 								<span> 계정이 없으신가요? </span> 

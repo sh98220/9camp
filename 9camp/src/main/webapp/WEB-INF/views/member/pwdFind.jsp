@@ -28,19 +28,12 @@ function sendOk() {
 
 	let str = f.userId.value;
 	if(!str) {
-		alert("아이디를 입력하세요.");
+		alert("아이디를 입력하세요. ");
 		f.userId.focus();
 		return;
 	}
-	
-	str = f.userName.value;
-	if(!str) {
-		alert("이름을 입력하세요.");
-		f.userName.focus();
-		return;
-	}
 
-	f.action = "${pageContext.request.contextPath}/member/userIdCheck.do";
+	f.action = "${pageContext.request.contextPath}/member/pwdFind_ok.do";
 	f.submit();
 }
 
@@ -64,14 +57,10 @@ function sendOk() {
 				<div class="info-box">
 					<form name="pwdForm" method="post">
 						<div class="row text-center">
-							비밀번호를 찾을 아이디와 이메일을 입력해주세요.
+							비밀번호를 찾을 아이디를 입력해주세요.
 						</div>
 						<div class="row">
 							<input name="userId" type="text" class="form-control" placeholder="아이디">
-						</div>
-						
-						<div class="row">
-							<input name="userName" type="text" class="form-control" placeholder="이름">
 						</div>
 						<div>
 							<button type="button" class="btnConfirm" onclick="sendOk();">확인</button>

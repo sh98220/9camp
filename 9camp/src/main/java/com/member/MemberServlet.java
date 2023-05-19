@@ -2,6 +2,7 @@ package com.member;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Random;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.mail.Mail;
+import com.mail.MailSender;
 import com.util.MyServlet;
 
 @WebServlet("/member/*")
@@ -45,6 +48,12 @@ public class MemberServlet extends MyServlet {
 			userIdForm(req, resp);
 		} else if (uri.indexOf("delete.do") != -1) {
 			deleteSubmit(req, resp);
+		} else if (uri.indexOf("pwdFind.do")!= -1) {
+			pwdFindForm(req, resp);
+		} else if (uri.indexOf("pwdFind_ok.do")!= -1) {
+			pwdFindSubmit(req, resp);
+		} else if (uri.indexOf("complete.do")!= -1) {
+			complete(req, resp);
 		}
 		
 	}
@@ -352,6 +361,139 @@ public class MemberServlet extends MyServlet {
 		}
 
 		resp.sendRedirect(cp + "/");
+	}
+	
+	protected void pwdFindForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+
+		String cp = req.getContextPath();
+
+		if(info != null) {
+			resp.sendRedirect(cp+"/");
+			return;
+		}
+
+		forward(req, resp, "/WEB-INF/views/member/pwdFind.jsp");
+	}
+
+
+
+	protected void pwdFindSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		HttpSession session = req.getSession();
+
+		String cp = req.getContextPath();
+
+		if(req.getMethod().equalsIgnoreCase("GET")) {
+			resp.sendRedirect(cp+"/");
+			return;
+		}
+
+		String userId = req.getParameter("userId");
+
+		try {
+			MemberDAO dao = new MemberDAO();
+			MemberDTO dto = dao.readMember(userId);
+
+			if(dto == null) {
+				String s = "등록된 아이디가 아닙니다.";
+				req.setAttribute("message", s);
+				forward(req, resp, "/WEB-INF/views/member/pwdFind.jsp");
+				return;
+			} else if (dto.getUserEmail()==null||dto.getUserEmail().equals("")) {
+				String s = "이메일을 등록하지 않았습니다. 관리자에게 문의하세요.";
+				req.setAttribute("message", s);
+				forward(req, resp, "/WEB-INF/views/member/pwdFind.jsp");
+				return;
+			}
+
+			// 임시 패스워드 생성
+			String pwd = generatePwd();
+			
+			// 메일로 전송
+			String msg = dto.getUserName()+"님의 새로 발급된 임시 비밀번호는 <span style='color:blue;'><b>" + pwd + "</b></span> 입니다. <br>" 
+			+ "로그인 후 반드시 패스워드를 변경하시기 바랍니다.";
+			
+			Mail mail = new Mail();
+			MailSender sender = new MailSender();
+			mail.setReceiverEmail(dto.getUserEmail());
+			mail.setSenderEmail("9campforcamper@gmail.com"); //메일 설정 이메일 입력
+			mail.setSenderName("관리자");
+			mail.setSubject("임시 패스워드 발급");
+			mail.setContent(msg);
+			
+			boolean b = sender.mailSend(mail);
+			if(b) {
+				// 테이블의 패스워드 변경
+				dto.setUserPwd(pwd);
+				dao.updateMember(dto);
+			} else {
+				req.setAttribute("message", "이메일 전송이 실패했습니다.");
+				forward(req, resp, "/WEB-INF/views/member/pwdFind.jsp");
+				return;
+			}
+			
+			session.setAttribute("userName", dto.getUserName());
+			resp.sendRedirect(cp+"/member/complete.do?mode=pf");
+			return;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp +"/");
+	}
+
+	protected void complete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		HttpSession session = req.getSession();
+		String userName = (String)session.getAttribute("userName");
+		session.removeAttribute("userName");
+
+		String cp = req.getContextPath();
+
+		String mode = req.getParameter("mode");
+		if(mode == null) {
+			resp.sendRedirect(cp + "/");
+			return;
+		}
+
+		String msg = "";
+		String title = "";
+		msg = "<span style='color:blue;'>" + userName + "</span> 님에게 <br>";
+		if(mode.equals("join")) {
+			title = "회원 가입";
+
+			msg += "회원가입을 축하합니다";
+			msg += "로그인 후 차별화된 서비스를 이용하시기 바랍니다.";
+		} else if(mode.equals("pf")) {
+			title = "비밀번호 찾기";
+
+			msg += "임시 비밀번호를 메일로 전송했습니다.<br>";
+			msg += "로그인 후 비밀번호를 변경해주세요.";
+		} else {
+			resp.sendRedirect(cp + "/");
+			return;
+		}
+
+		req.setAttribute("title", title);
+		req.setAttribute("message", msg);
+
+		forward(req, resp, "/WEB-INF/views/member/complete.jsp");
+
+	}
+	
+	// 10자리 임시 패스워드 작성
+	private String generatePwd() {
+		StringBuilder sb = new StringBuilder();
+		
+		Random rd = new Random();
+		String s = "!@#$%^&*~-+=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopgrstuvwxyz0123456789";
+		for(int i=0; i<10; i++) {
+			int n = rd.nextInt(s.length());
+			sb.append(s.substring(n, n+1));
+		}
+		
+		return sb.toString();
 	}
 
 
