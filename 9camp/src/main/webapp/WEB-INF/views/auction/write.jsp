@@ -220,7 +220,31 @@ function sendOk() {
         f.auctionContent.focus();
         return;
     }
+    
+    str = f.auctionStartamount.value.trim();
+    if (!str || !/^[0-9]+$/.test(str)) {
+        alert("경매시작가를 숫자로만 입력하세요. ");
+        f.auctionStartamount.focus();
+        return;
+    }
+    
+    str = f.auctionEnddate.value.trim();
+    if (!str) {
+        alert("경매 종료일을 설정하세요. ");
+        f.auctionStartamount.focus();
+        return;
+    }
 
+    const currentDate = new Date(); 
+    const endDate = new Date(f.auctionEnddate.value.trim()); 
+
+    // 경매 종료일이 현재 시간보다 이전인지 검사
+    if (endDate < currentDate) {
+        alert("경매 종료일은 현재 시간보다 이후로 설정해야 합니다. ");
+        f.auctionEnddate.focus();
+        return;
+    }
+    
     let mode = "${mode}";
     if( (mode === "write") && (!f.selectFile.value) ) {
         alert("이미지 파일을 추가 하세요. ");

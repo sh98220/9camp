@@ -240,7 +240,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 <script type="text/javascript" src="${pageContext.request.contextPath}/resource/jquery/js/jquery-ui.min.js"></script>
 <script type="text/javascript">
 <c:if test="${sessionScope.member.userId==dto.auctionSaleId || sessionScope.member.userId=='admin'}">
-	function deleteReviews() {
+	function deleteAuction() {
 	    if(confirm("게시글을 삭제 하시 겠습니까 ? ")) {
 		    let query = "num=${dto.auctionNum}&${query}";
 		    let url = "${pageContext.request.contextPath}/auction/delete.do?" + query;
@@ -248,6 +248,22 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	    }
 	}
 </c:if>
+
+function sendOk() {
+    const f = document.auctionForm;
+	let str;
+	
+    str = f.auctionRecamount.value.trim();
+    if(!str) {
+        alert("금액을 입력하세요. ");
+        f.auctionRecamount.focus();
+        return;
+    }
+    
+    f.action = "${pageContext.request.contextPath}/auction/auctionRecamount.do";
+    f.submit();
+}
+
 
 function imageViewer(img) {
 	const viewer = $(".photo-layout");
@@ -307,6 +323,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 	    </div>
 	    
 	    <div class="body-main mx-auto">
+	    <form name="auctionForm" method="post" enctype="multipart/form-data">
 			<table class="table table-border table-article">
 				<thead>
 					<tr>
@@ -354,14 +371,17 @@ function ajaxFun(url, method, query, dataType, fn) {
 					
 					<tr>
 						<td width="50%">
-							경매시작가 : ${dto.auctionStartamount}원 | 현재입찰가 : ${dto.auctionFinalamount}원
+							경매시작가 : ${dto.auctionStartamount}원 | 현재입찰가 : ${dto.auctionRecamount}원
 						</td>
 					</tr>
 					
 					<tr>
 						<td width="50%">
-							<button type="button" class="btn">입찰하기</button>
-							<input type="text" name="auctionFinalamount" maxlength="100" class="form-control" value="${dto.auctionFinalamount}">					
+							<button type="button" class="btn" onclick="sendOk();">입찰하기</button>
+							
+							<input type="hidden" name="auctionNum" maxlength="100" class="form-control" value="${dto.auctionNum}">
+							<input type="hidden" name="page" value="${page}">				
+							<input type="text" name="auctionRecamount" maxlength="100" class="form-control" value="${dto.auctionRecamount}">					
 						</td>
 					</tr>
 		
@@ -394,6 +414,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 					</td>
 				</tr>
 			</table>
+			</form>
 	    </div>
 	</div>
 </main>

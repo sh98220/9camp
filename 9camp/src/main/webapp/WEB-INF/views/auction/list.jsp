@@ -234,7 +234,7 @@ function searchList() {
 						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/auction/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
 					</td>
 					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/list.do" method="post">
+						<form name="searchForm" action="${pageContext.request.contextPath}/auction/list.do" method="post">
 							<select name="condition" class="form-select">
 								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
 								<option value="userNickName" ${condition=="userNickName"?"selected='selected'":"" }>작성자</option>

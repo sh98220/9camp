@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.reviews.ReviewsDTO;
 import com.util.DBConn;
 
 public class AuctionDAO {
@@ -79,6 +78,36 @@ public class AuctionDAO {
 			}
 		}
 	}
+	
+	public void insertAuctionRecamount(AuctionDTO dto) throws SQLException{
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {		
+			sql = "INSERT INTO AUCTIONRECORD(auctionnum, auctionuserId, auctionRecamount, auctionRecdate, auctionConfirm) "
+					+ " VALUES (?, ?, ?, SYSDATE, 0)";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, dto.getAuctionNum());
+			pstmt.setString(2, dto.getAuctionUserId());
+			pstmt.setLong(3, dto.getAuctionRecamount());
+			
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e2) {
+				}
+			}
+		}
+	}
+	
 	public int dataCount() {
 		int result = 0;
 		PreparedStatement pstmt = null;
@@ -266,14 +295,13 @@ public class AuctionDAO {
 				while (rs.next()) {
 					AuctionDTO dto = new AuctionDTO();
 
-					dto.setAuctionNum(rs.getLong("Auction"));
+					dto.setAuctionNum(rs.getLong("Auctionnum"));
 					dto.setUserName(rs.getString("userName"));
 					dto.setUserNickName(rs.getString("userNickName"));
 					dto.setAuctionSubject(rs.getString("auctionsubject"));
 					dto.setAuctionObject(rs.getString("auctionObject"));
 					dto.setAuctionRegdate(rs.getString("auctionRegdate"));
 					dto.setAuctionEnddate(rs.getString("auctionEnddate"));
-					dto.setAuctionSaleId(rs.getString("auctionSaleId"));
 
 
 					list.add(dto);
@@ -306,10 +334,13 @@ public class AuctionDAO {
 
 			try {
 				sql = "SELECT b.auctionnum, b.auctionSaleId, userNickName, userName, auctionSubject, auctionContent, "
-						+ " TO_CHAR(auctionRegdate, 'YYYY-MM-DD') auctionregdate,"
+						+ " TO_CHAR(auctionRegdate, 'YYYY-MM-DD') auctionregdate, NVL(auctionRecAmount, 0) auctionRecAmount,"
 						+ " TO_CHAR(auctionEnddate, 'YYYY-MM-DD') auctionEnddate, auctionObject, auctionStartamount, auctionFinalamount "
 						+ " FROM auction b "
 						+ " JOIN member m ON b.auctionSaleId=m.userId "
+						+ " LEFT OUTER JOIN ("
+						+ "    SELECT auctionnum, NVL(MAX(auctionRecAmount), 0) auctionRecAmount FROM auctionRecord   GROUP BY auctionnum"
+						+"  ) m ON b.auctionnum = m.auctionnum"
 						+ " WHERE b.auctionnum = ? ";
 				pstmt = conn.prepareStatement(sql);
 				
@@ -335,6 +366,7 @@ public class AuctionDAO {
 					dto.setAuctionObject(rs.getString("auctionObject"));
 					dto.setAuctionStartamount(rs.getLong("auctionStartamount"));
 					dto.setAuctionFinalamount(rs.getLong("auctionFinalamount"));
+					dto.setAuctionRecamount(rs.getLong("auctionRecAmount"));
 					
 				}
 			} catch (SQLException e) {
@@ -402,4 +434,121 @@ public class AuctionDAO {
 			return list;
 		}
 		
+		public void deleteAuction(long num) throws SQLException {
+			PreparedStatement pstmt = null;
+			String sql;
+
+			try {
+				sql = "DELETE FROM AUCTION WHERE auctionnum=?";
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setLong(1, num);
+				
+				pstmt.executeUpdate();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e) {
+					}
+				}
+			}
+		}
+		
+		public void deleteAuctionFile(String mode, long num) throws SQLException {
+			PreparedStatement pstmt = null;
+			String sql;
+
+			try {
+				if (mode.equals("all")) {
+					sql = "DELETE FROM AUCTIONPHOTO WHERE auctionNum = ?";
+				} else {
+					sql = "DELETE FROM AUCTIONPHOTO WHERE auctionPhotonum = ?";
+				}
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setLong(1, num);
+
+				pstmt.executeUpdate();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e2) {
+					}
+				}
+			}
+		}
+		
+		public AuctionDTO readAuctionFile(long auctionPhotonum) {
+			AuctionDTO dto = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+
+			try {
+				sql = "SELECT auctionPhotonum, auctionnum, auctionphotoname FROM auctionphoto WHERE auctionPhotonum = ?";
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setLong(1, auctionPhotonum);
+				
+				rs = pstmt.executeQuery();
+
+				if (rs.next()) {
+					dto = new AuctionDTO();
+
+					dto.setAuctionPhotonum(rs.getLong("auctionPhotonum"));
+					dto.setAuctionNum(rs.getLong("auctionNum"));
+					dto.setAuctionPhotoname(rs.getString("auctionPhotoname"));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException e) {
+					}
+				}
+
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e) {
+					}
+				}
+			}
+
+			return dto;
+	}
+		
+		public void updateAuctionFinalamount(AuctionDTO dto) throws SQLException {
+		    PreparedStatement pstmt = null;
+		    String sql;
+		    
+		    try {
+		        sql = "UPDATE auction SET auctionFinalamount = ? WHERE auctionNum = ?";
+		        
+		        pstmt = conn.prepareStatement(sql);
+		        pstmt.setLong(1, dto.getAuctionFinalamount());
+		        pstmt.setLong(2, dto.getAuctionNum());
+		        
+		        pstmt.executeUpdate();
+		    } finally {
+		        if (pstmt != null) {
+		            try {
+		                pstmt.close();
+		            } catch (SQLException e) {
+		                e.printStackTrace();
+		            }
+		        }
+		    }
+		}
 }
