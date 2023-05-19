@@ -4,6 +4,8 @@ public class FreeBoardDTO {
 	private int camChatNum;
 	private String userId;
 	private String userName;
+	private String userNickName;
+	
 	private String camChatSubject;
 	private String camChatContent;
 	private int camChatHitCount;
@@ -29,6 +31,12 @@ public class FreeBoardDTO {
 	}
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+	public String getUserNickName() {
+		return userNickName;
+	}
+	public void setUserNickName(String userNickName) {
+		this.userNickName = userNickName;
 	}
 	public String getcamChatSubject() {
 		return camChatSubject;

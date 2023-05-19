@@ -12,7 +12,7 @@
 	<c:forEach var="vo" items="${listReply}">	
 		<tr class='list-header'>
 			<td width='50%'>
-				<span class='bold'>${vo.userName}</span>
+				<span class='bold'>${vo.userNickName}</span>
 			</td>
 			<td width='50%' align='right'>
 				<span>${vo.camChatRepRegDate}</span> |

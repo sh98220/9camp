@@ -141,10 +141,10 @@ public class FreeBoardDAO {
 		StringBuilder sb = new StringBuilder();
 
 		try {
-			sb.append(" SELECT camChatnum, username, camChatsubject, camChatcontent, camChathitcount, ");
+			sb.append(" SELECT camChatnum, usernickname, username, camChatsubject, camChatcontent, camChathitcount, ");
 			sb.append("       TO_CHAR(camChatregdate, 'YYYY-MM-DD') camChatregdate ");
-			sb.append(" FROM campchat b ");
-			sb.append(" JOIN member m ON b.userId = m.userId ");
+			sb.append(" FROM campchat c ");
+			sb.append(" JOIN member m ON c.userId = m.userId ");
 			sb.append(" ORDER BY camChatnum DESC ");
 			sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
 
@@ -160,6 +160,7 @@ public class FreeBoardDAO {
 
 				dto.setcamChatNum(rs.getInt("camChatNum"));
 				dto.setUserName(rs.getString("userName"));
+				dto.setUserNickName(rs.getString("userNickName"));
 				dto.setcamChatSubject(rs.getString("camChatsubject"));
 				dto.setcamChatContent(rs.getString("camChatcontent"));
 				dto.setcamChatHitCount(rs.getInt("camChatHitCount"));
@@ -230,6 +231,7 @@ public class FreeBoardDAO {
 
 				dto.setcamChatNum(rs.getInt("camChatNum"));
 				dto.setUserName(rs.getString("userName"));
+				dto.setUserNickName(rs.getString("userNickName"));
 				dto.setcamChatSubject(rs.getString("camChatSubject"));
 				dto.setcamChatHitCount(rs.getInt("camChatHitCount"));
 				dto.setcamChatRegDate(rs.getString("camChatRegDate"));
@@ -290,15 +292,15 @@ public class FreeBoardDAO {
 		String sql;
 
 		try {
-			sql = "SELECT b.camChatnum, b.userId, userName, camChatsubject, camChatcontent, "
+			sql = "SELECT c.camChatnum, c.userId, userNickName, userName, camChatsubject, camChatcontent, "
 					+ " camChatregdate, camChathitCount, NVL(freeboardLikeCount, 0) freeboardLikeCount "
-					+ " FROM campchat b "
-					+ " JOIN member m ON b.userId=m.userId "
+					+ " FROM campchat c "
+					+ " JOIN member m ON c.userId=m.userId "
 					+ " LEFT OUTER JOIN ("
 					+ " 	 SELECT camChatnum, COUNT(*) freeboardLikeCount FROM campchatlike"
 					+ "		 GROUP BY camChatnum"
-					+ " ) bc ON b.camChatnum = bc.camChatnum"
-					+ " WHERE b.camChatnum = ? ";
+					+ " ) bc ON c.camChatnum = bc.camChatnum"
+					+ " WHERE c.camChatnum = ? ";
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setLong(1, num);
@@ -311,6 +313,7 @@ public class FreeBoardDAO {
 				dto.setcamChatNum(rs.getInt("camChatNum"));
 				dto.setUserId(rs.getString("userId"));
 				dto.setUserName(rs.getString("userName"));
+				dto.setUserNickName(rs.getString("userNickName"));
 				dto.setcamChatSubject(rs.getString("camChatsubject"));
 				dto.setcamChatContent(rs.getString("camChatcontent"));
 				dto.setcamChatHitCount(rs.getInt("camChatHitCount"));
@@ -750,7 +753,7 @@ public class FreeBoardDAO {
 		StringBuilder sb = new StringBuilder();
 		
 		try {
-			sb.append(" SELECT r.camChatRepNum, r.userId, userName, camChatnum, camChatRepContent, r.camChatRepRegDate ");
+			sb.append(" SELECT r.camChatRepNum, r.userId, usernickname, userName, camChatnum, camChatRepContent, r.camChatRepRegDate ");
 			sb.append(" FROM campChatReply r ");
 			sb.append(" JOIN member m ON r.userId = m.userId ");
 			sb.append(" WHERE camChatnum = ?");
@@ -772,6 +775,7 @@ public class FreeBoardDAO {
 				dto.setCamChatNum(rs.getLong("camChatNum"));
 				dto.setUserId(rs.getString("userId"));
 				dto.setUserName(rs.getString("userName"));
+				dto.setUserNickName(rs.getString("userNickName"));
 				dto.setCamChatRepContent(rs.getString("camChatRepContent"));
 				dto.setCamChatRepRegDate(rs.getString("camChatRepRegDate"));
 				
@@ -806,7 +810,7 @@ public class FreeBoardDAO {
 		String sql;
 		
 		try {
-			sql = "SELECT camChatRepNum, camChatNum, r.userId, userName, camChatRepContent ,r.camChatRepRegDate "
+			sql = "SELECT camChatRepNum, camChatNum, r.userId, userNickname, userName, camChatRepContent ,r.camChatRepRegDate "
 					+ " FROM campChatReply r JOIN member m ON r.userId=m.userId  "
 					+ " WHERE camChatRepNum = ? ";
 			pstmt = conn.prepareStatement(sql);
@@ -822,6 +826,7 @@ public class FreeBoardDAO {
 				dto.setCamChatNum(rs.getLong("camChatNum"));
 				dto.setUserId(rs.getString("userId"));
 				dto.setUserName(rs.getString("userName"));
+				dto.setUserNickName(rs.getString("userNickName"));
 				dto.setCamChatRepContent(rs.getString("camChatRepContent"));
 				dto.setCamChatRepRegDate(rs.getString("camChatRepRegdate"));
 			}

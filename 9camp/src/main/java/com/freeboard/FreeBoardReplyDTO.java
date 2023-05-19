@@ -5,6 +5,7 @@ public class FreeBoardReplyDTO {
 	private long camChatNum;
 	private String userId;
 	private String userName;
+	private String userNickName;
 	private String camChatRepContent;
 	private String camChatRepRegDate;
 	
@@ -33,6 +34,12 @@ public class FreeBoardReplyDTO {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+	public String getUserNickName() {
+		return userNickName;
+	}
+	public void setUserNickName(String userNickName) {
+		this.userNickName = userNickName;
+	}
 	public String getCamChatRepContent() {
 		return camChatRepContent;
 	}
@@ -45,6 +52,7 @@ public class FreeBoardReplyDTO {
 	public void setCamChatRepRegDate(String camChatRepRegDate) {
 		this.camChatRepRegDate = camChatRepRegDate;
 	}
+
 	
 	
 	
