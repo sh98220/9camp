@@ -50,6 +50,7 @@
 				<li>
 					<a href="${pageContext.request.contextPath}/message/listRecMsg.do" class="top-icon ic_msg" title="쪽지">
 						<i class="fa-regular fa-envelope"></i>
+						<span class="msg_count">new</span>
 					</a>
 				</li>
 			</c:if>

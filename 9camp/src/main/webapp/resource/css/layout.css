@@ -60,12 +60,10 @@
 	align-items: center;
 }
 
-.top-cont .icon-cont > li {
-	margin-right: 10px;
-}
-
 .top-cont .icon-cont > li.point-li.bar {
 	color: #666;
+	margin-left: 15px;
+	margin-right: 10px;
 }
 
 .top-cont .icon-cont > li.point-li a {
@@ -81,6 +79,10 @@
 
 .top-cont .icon-cont a.top-icon {
 	display: inline-block;
+	width: 40px;
+	height: 26px;
+	text-align: center;
+	line-height: 26px;
 }
 
 .top-cont .icon-cont a.top-icon i {
@@ -91,6 +93,34 @@
 
 .top-cont .icon-cont li:last-child {
 	margin-right: 0;
+}
+
+/*쪽지 아이콘 영역*/
+.top-cont .icon-cont a.top-icon.ic_msg {
+	position: relative;
+	overflow: visible;
+	width: 40px;
+	height: 26px;
+	text-align: center;
+}
+
+.top-cont .icon-cont .ic_msg > i {
+	display: inline-block;
+	line-height: 26px;
+}
+
+.top-cont .icon-cont .ic_msg .msg_count {
+	color: #fff;
+	background: #333;
+	border: 1px solid rgba(0,0,0,.04);
+    border-radius: 10px;
+    min-width: 20px;
+    padding: 0 5px;
+    position: absolute;
+    top: -5px;
+    right: -4px;
+    font-size: 10px;
+    line-height: 18px;
 }
 
 /*nav*/
