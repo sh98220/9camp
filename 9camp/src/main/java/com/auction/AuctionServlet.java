@@ -57,10 +57,11 @@ public class AuctionServlet extends MyUploadServlet {
 			delete(req, resp);
 		} else if(uri.indexOf("auctionRecamount.do") != -1) {
 			auctionRecamount(req, resp);
-		} else if(uri.indexOf("auctionRecamount_ok.do") != -1) {
-			auctionRecamountSubmit(req,resp);
+		}  else if(uri.indexOf("update.do") != -1) {
+			updateForm(req, resp);
+		} else if(uri.indexOf("update_ok.do") != -1) {
+			updateSubmit(req, resp);
 		}
-		
 		
 	}
 
@@ -364,43 +365,80 @@ public class AuctionServlet extends MyUploadServlet {
 		//resp.sendRedirect(cp + "/auction/list.do?page=" + page);
 	}
 	
-	protected void auctionRecamountSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	
+	protected void updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		AuctionDAO dao = new AuctionDAO();
 		
-		
-		MyUtil util = new MyUtil();
-		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+
 		String cp = req.getContextPath();
-		
+
 		String page = req.getParameter("page");
-		String query = "page=" + page;
 
 		try {
 			long num = Long.parseLong(req.getParameter("num"));
-
-			// 게시물 가져오기
 			AuctionDTO dto = dao.readAuction(num);
-			if (dto == null ) { // 게시물이 없으면 다시 리스트로
-				resp.sendRedirect(cp + "/auction/list.do?" + query);
+
+			if (dto == null) {
+				resp.sendRedirect(cp + "/auction/list.do?page=" + page);
 				return;
 			}
-			dto.setAuctionContent(util.htmlSymbols(dto.getAuctionContent()));
 
-			
-			// JSP로 전달할 속성
+			// 게시물을 올린 사용자가 아니면
+			if (!dto.getAuctionSaleId().equals(info.getUserId())) {
+				resp.sendRedirect(cp + "/auction/list.do?page=" + page);
+				return;
+			}
+
+			List<AuctionDTO> listFile = dao.listPhotoFile(num);
+
 			req.setAttribute("dto", dto);
 			req.setAttribute("page", page);
-			req.setAttribute("query", query);
-			
+			req.setAttribute("listFile", listFile);
 
-			// 포워딩 
-			forward(req, resp, "/WEB-INF/views/auction/article.jsp");
+			req.setAttribute("mode", "update");
+
+			forward(req, resp, "/WEB-INF/views/auction/write.jsp");
 			return;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		resp.sendRedirect(cp + "/auction/article.do?" + query);
+		resp.sendRedirect(cp + "/auction/list.do?page=" + page);
+	}
+	
+	protected void updateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		AuctionDAO dao = new AuctionDAO();
+
+		String cp = req.getContextPath();
+		if (req.getMethod().equalsIgnoreCase("GET")) {
+			resp.sendRedirect(cp + "/auction/list.do");
+			return;
+		}
+
+		String page = req.getParameter("page");
+
+		try {
+			AuctionDTO dto = new AuctionDTO();
+			dto.setAuctionNum(Long.parseLong(req.getParameter("auctionNum")));
+			dto.setAuctionSubject(req.getParameter("auctionSubject"));
+			dto.setAuctionContent(req.getParameter("auctionContent"));
+			dto.setAuctionObject(req.getParameter("auctionObject"));
+			dto.setAuctionEnddate(req.getParameter("auctionEnddate"));
+
+			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);
+			if (map != null) {
+				String[] saveFiles = map.get("saveFilenames");
+				dto.setImageFiles(saveFiles);
+			}
+
+			dao.updateAuction(dto);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp + "/auction/list.do?page=" + page);
 	}
 }
 	

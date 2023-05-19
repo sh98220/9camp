@@ -231,7 +231,7 @@ function sendOk() {
     str = f.auctionEnddate.value.trim();
     if (!str) {
         alert("경매 종료일을 설정하세요. ");
-        f.auctionStartamount.focus();
+        f.auctionEnddate.focus();
         return;
     }
 
@@ -266,7 +266,7 @@ function sendOk() {
 		}
 		
 		if(confirm('이미지를 삭제하시겠습니까 ?')){
-			let query = "camRevnum=${dto.camRevnum}&camRevphotonum=" + camRevphotonum + "&page=${page}";
+			let query = "auctionNum=${dto.auctionNum}&auctionPhotonum=" + auctionPhotonum + "&page=${page}";
 			let url = "${pageContext.request.contextPath}/aucction/deleteFile.do";
 			location.href = url + "?" + query;
 		}
@@ -324,12 +324,14 @@ function sendOk() {
 						</td>
 					</tr>
 					
-					<tr> 
+					<c:if test="${mode != 'update'}">
+						<tr> 
 						<td>경매시작가</td>
 						<td> 
 							<input type="text" name="auctionStartamount" maxlength="100" class="form-control" value="${dto.auctionStartamount}">						
 						</td>
 					</tr>
+					</c:if>				
 					
 					<tr> 
 						<td>경매종료일</td>
@@ -351,7 +353,7 @@ function sendOk() {
 							<td>
 								<div class="img-box">
 									<c:forEach var="vo" items="${listFile}">
-										<img src="${pageContext.request.contextPath}/uploads/auction/${vo.auctionphotoname}"
+										<img src="${pageContext.request.contextPath}/uploads/auction/${vo.auctionPhotoname}"
 											onclick="deleteFile('${vo.auctionPhotonum}');">
 									</c:forEach>
 								</div>

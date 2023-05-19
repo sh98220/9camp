@@ -529,6 +529,51 @@ public class AuctionDAO {
 			return dto;
 	}
 		
+		public void updateAuction(AuctionDTO dto) throws SQLException {
+			PreparedStatement pstmt = null;
+			String sql;
+
+			try {
+				sql = "UPDATE auction SET auctionsubject=?, auctioncontent=?, auctionobject=?, auctionEnddate=? WHERE auctionnum=?";
+				pstmt = conn.prepareStatement(sql);
+
+				pstmt.setString(1, dto.getAuctionSubject());
+				pstmt.setString(2, dto.getAuctionContent());
+				pstmt.setString(3, dto.getAuctionObject());
+				pstmt.setString(4, dto.getAuctionEnddate());
+				pstmt.setLong(5, dto.getAuctionNum());
+
+				pstmt.executeUpdate();
+				
+				pstmt.close();
+				pstmt = null;
+
+				if (dto.getImageFiles() != null) {
+					sql = "INSERT INTO auctionphoto(auctionphotonum, auctionnum, auctionphotoname) VALUES "
+							+ " (AUCTIONPHOTO_seq.NEXTVAL, ?, ?)";
+					pstmt = conn.prepareStatement(sql);
+					
+					for (int i = 0; i < dto.getImageFiles().length; i++) {
+						pstmt.setLong(1, dto.getAuctionNum());
+						pstmt.setString(2, dto.getImageFiles()[i]);
+						
+						pstmt.executeUpdate();
+					}
+				}
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e) {
+					}
+				}
+			}
+		}
+			
 		public void updateAuctionFinalamount(AuctionDTO dto) throws SQLException {
 		    PreparedStatement pstmt = null;
 		    String sql;
