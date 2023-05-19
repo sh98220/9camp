@@ -46,7 +46,15 @@ public class CampInfoServlet extends MyUploadServlet {
 			article(req, resp);
 		}  else if(uri.indexOf("write.do") != -1) {
 			writeForm(req, resp);
-		} 
+		} else if(uri.indexOf("write_ok.do") != -1) {
+			writeSubmit(req, resp);
+		} else if(uri.indexOf("update.do") != -1) {
+			updateForm(req, resp);
+		} else if(uri.indexOf("update_ok.do") != -1) {
+			updateSubmit(req, resp);
+		} else if(uri.indexOf("delete.do") != -1) {
+			delete(req, resp);
+		}
 		
 
 	}
@@ -140,21 +148,22 @@ public class CampInfoServlet extends MyUploadServlet {
 		CampInfoDAO dao = new CampInfoDAO();
 		
 		List<CampInfoDTO> list = null;
+		List<CampInfoDTO> list1 = null;
 		
 		list = dao.listAllKeyword();
+		list1 = dao.listAllThemaName();
 		
 		
 		req.setAttribute("list", list);	
+		req.setAttribute("list1", list1);	
+		
 		req.setAttribute("mode", "write");
 		forward(req, resp, "/WEB-INF/views/campInfo/write.jsp");
 	}
 	
 	protected void writeSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		CampInfoDAO dao = new CampInfoDAO();
-		
-		HttpSession session = req.getSession();
-		SessionInfo info = (SessionInfo)session.getAttribute("member");
-		
+	
 		String cp = req.getContextPath();
 		
 		if(req.getMethod().equalsIgnoreCase("GET")) {
@@ -167,6 +176,13 @@ public class CampInfoServlet extends MyUploadServlet {
 			
 			dto.setCamInfoSubject(req.getParameter("camInfoSubject"));
 			dto.setCamInfoContent(req.getParameter("camInfoContent"));
+			dto.setCamInfoAddr(req.getParameter("camInfoAddr"));
+			dto.setCamKeyWord(req.getParameter("camKeyWord"));
+			dto.setCamThemaName(req.getParameter("camThemaName"));
+			
+			dao.InsertCampInfo(dto);
+			
+			
 			
 			// 사진파일 업로드
 			
@@ -220,11 +236,7 @@ public class CampInfoServlet extends MyUploadServlet {
 			
 			dto.setCamInfoContent(util.htmlSymbols(dto.getCamInfoContent()));
 			
-		    // 키워드 가져오기
-			List<CampInfoDTO> list = null;
-			
-			list = dao.listKeyword(num);
-			
+		   
 			
 			
 			// 로그인 유저의 찜 여부
@@ -233,7 +245,7 @@ public class CampInfoServlet extends MyUploadServlet {
 			req.setAttribute("dto", dto);
 			req.setAttribute("page", page);
 			req.setAttribute("query", query);
-			req.setAttribute("list", list);
+		
 			
 			// 포워딩
 			forward(req, resp, "/WEB-INF/views/campInfo/article.jsp");
@@ -245,4 +257,109 @@ public class CampInfoServlet extends MyUploadServlet {
 		
 		resp.sendRedirect(cp + "/campInfo/list.do?" + query);
 	}
+	
+	protected void updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		CampInfoDAO dao = new CampInfoDAO();
+		
+		String cp = req.getContextPath();
+		
+		String page = req.getParameter("page");
+	
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+			CampInfoDTO dto = dao.readCampInfo(num);
+			
+			if (dto == null) {
+				resp.sendRedirect(cp + "/campInfo/list.do?page=" + page);
+				return;
+			}
+			
+			// 게심루은 관리자만 삭제 가능
+			List<CampInfoDTO> list = null;
+			List<CampInfoDTO> list1 = null;
+			
+			list = dao.listAllKeyword();
+			list1 = dao.listAllThemaName();
+
+			req.setAttribute("list1", list1);
+			
+			req.setAttribute("list", list);	
+			req.setAttribute("dto", dto);
+			req.setAttribute("page", page);
+			
+			req.setAttribute("mode", "update");
+
+			forward(req, resp, "/WEB-INF/views/campInfo/write.jsp");
+			return;
+	
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp + "/campInfo/list.do?page=" + page);		
+	}
+	
+	protected void updateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		CampInfoDAO dao = new CampInfoDAO();
+		
+		String cp = req.getContextPath();
+		if(req.getMethod().equalsIgnoreCase("GET")) {
+			resp.sendRedirect(cp + "/campInfo/list.do");
+			return;
+		}
+		
+		String page = req.getParameter("page");
+		
+		try {
+			CampInfoDTO dto = new CampInfoDTO();
+			dto.setCamInfoNum(Integer.parseInt(req.getParameter("camInfoNum")));
+			dto.setCamInfoSubject(req.getParameter("camInfoSubject"));
+			dto.setCamInfoContent(req.getParameter("camInfoContent"));
+			dto.setCamInfoAddr(req.getParameter("camInfoAddr"));
+			dto.setCamKeyWord(req.getParameter("camKeyWord"));
+			dto.setCamThemaName(req.getParameter("camThemaName"));
+			
+			dao.updateCampInfo(dto);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp + "/campInfo/list.do?page=" + page);
+		
+	}
+	
+	protected void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		CampInfoDAO dao = new CampInfoDAO();
+		
+		String cp = req.getContextPath();
+		
+		String page = req.getParameter("page");
+		
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+			
+			CampInfoDTO dto = dao.readCampInfo(num);
+			
+			if(dto == null) {
+				resp.sendRedirect(cp + "/campInfo/list.do?page=" + page);
+				return;
+			}
+			
+			dao.deleteCampInfo(num);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp + "/campInfo/list.do?page=" + page);
+	}
+	
+	
+	
+	
+	
+	
+	
 }

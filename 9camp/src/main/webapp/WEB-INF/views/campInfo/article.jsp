@@ -319,14 +319,17 @@ function deletecampInfo() {
 						</td>
 					</tr>
 					
-					<c:forEach var="dto" items="${list}" varStatus="status">
-						<tr>						
-							<td>${dto.keyWordName}</td>
-						</tr>
-					</c:forEach>
+					<tr>
+						<td colspan="2" valign="top" height="100">
+							키워드 : ${dto.camKeyWord}
+						</td>
+					</tr>
 					
-		
-					
+					<tr>
+						<td colspan="2" valign="top" height="100">
+						  테마 :	${dto.camThemaName}
+						</td>
+					</tr>
 				</tbody>
 			</table>
 			

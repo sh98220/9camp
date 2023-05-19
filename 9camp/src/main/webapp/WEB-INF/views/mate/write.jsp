@@ -186,7 +186,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	}
 }
 
-
+/* 모달창 디자인 */
 .modal-btn-box { text-align:left; }
 .modal-btn-box button {
 	display: inline-block;

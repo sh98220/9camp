@@ -36,8 +36,8 @@ public class CampInfoDAO {
 			rs = null;
 			pstmt = null;
 			
-			sql = "INSERT INTO campInfo(camInfoNum, userId, camInfoSubject, camInfoContent, camInfoAddr, camInfoHitCount, camInfoRegDate, camThemaName) "
-					+ " VALUES (?, 'admin',  ?, ?, ?, 0, SYSDATE, ?)";
+			sql = "INSERT INTO campInfo(camInfoNum, userId, camInfoSubject, camInfoContent, camInfoAddr, camInfoHitCount, camInfoRegDate, camThemaName, camKeyword) "
+					+ " VALUES (?, 'admin',  ?, ?, ?, 0, SYSDATE, ?, ?)";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -46,12 +46,9 @@ public class CampInfoDAO {
 			pstmt.setString(3, dto.getCamInfoContent());
 			pstmt.setString(4, dto.getCamInfoAddr());
 			pstmt.setString(5, dto.getCamThemaName());
+			pstmt.setString(6, dto.getCamKeyWord());
 			
-			pstmt.close();
-			pstmt = null;
-			
-			
-			
+			pstmt.executeUpdate();	
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -295,7 +292,7 @@ public class CampInfoDAO {
 
 		try {
 			sql = "SELECT c.camInfoNum, camInfoSubject, camInfoContent, camInfoAddr, "
-					+ " camInfoHitCount, TO_CHAR(camInfoRegDate, 'YYYY-MM-DD') camInfoRegDate, camThemaName, NVL(wishCount, 0) wishCount "
+					+ " camInfoHitCount, TO_CHAR(camInfoRegDate, 'YYYY-MM-DD') camInfoRegDate, camThemaName, NVL(wishCount, 0) wishCount, camKeyWord "
 					+ " FROM campInfo c "
 					+ " LEFT OUTER JOIN("
 					+ " SELECT camInfoNum, COUNT(*) wishCount"
@@ -319,7 +316,8 @@ public class CampInfoDAO {
 				dto.setCamInfoHitCount(rs.getInt("camInfoHitCount"));
 				dto.setCamInfoRegDate(rs.getString("camInfoRegDate"));
 				dto.setCamThemaName(rs.getString("camThemaName"));
-				dto.setWishCount(rs.getInt("wishCount"));				
+				dto.setWishCount(rs.getInt("wishCount"));	
+				dto.setCamKeyWord(rs.getString("camKeyWord"));
 			}
 			
 		} catch (SQLException e) {
@@ -362,6 +360,52 @@ public class CampInfoDAO {
 				CampInfoDTO dto = new CampInfoDTO();
 				
 				dto.setKeyWordName(rs.getString("keyWordName"));
+				
+				list.add(dto);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
+		
+		return list;
+	}
+	
+	// 테마 리스트 불러오기
+	
+	public List<CampInfoDTO> listAllThemaName() {
+		List<CampInfoDTO> list = new ArrayList<CampInfoDTO>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StringBuilder sb = new StringBuilder();
+		
+		try {
+			sb.append(" SELECT themaName");
+			sb.append(" FROM themaName ");
+			
+			pstmt = conn.prepareStatement(sb.toString());
+					
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				CampInfoDTO dto = new CampInfoDTO();
+				
+				dto.setThemaName(rs.getString("themaName"));
 				
 				list.add(dto);
 			}
@@ -468,12 +512,15 @@ public class CampInfoDAO {
 		String sql;
 		
 		try {
-			sql = "UPDATE campInfo SET camInfoSubject=?, camInfoContent=? WHERE camInfoNum=?";
+			sql = "UPDATE campInfo SET camInfoSubject=?, camInfoContent=?, camInfoAddr = ?, camThemaName = ?, camKeyWord = ? WHERE camInfoNum=?";
 			pstmt = conn.prepareStatement(sql);
 
 			pstmt.setString(1, dto.getCamInfoSubject());
 			pstmt.setString(2, dto.getCamInfoContent());
-			pstmt.setLong(3, dto.getCamInfoNum());
+			pstmt.setString(3, dto.getCamInfoAddr());
+			pstmt.setString(4, dto.getCamThemaName());
+			pstmt.setString(5, dto.getCamKeyWord());
+			pstmt.setLong(6, dto.getCamInfoNum());
 
 			pstmt.executeUpdate();
 			

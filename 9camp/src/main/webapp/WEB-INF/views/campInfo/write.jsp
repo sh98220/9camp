@@ -193,6 +193,77 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	cursor: pointer;
 }
 
+.modal-btn-box { text-align:left; }
+.modal-btn-box button {
+	display: inline-block;
+	width: 134px;
+	height: 28px;
+	background-color: #ffffff;
+	border: 1px solid #e1e1e1;
+	cursor: pointer;
+}
+
+.popup-wrap {
+	background-color: rgba(0,0,0,.3);
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: none;
+	padding: 15px;
+}
+.popup {
+	width: 100%;
+	max-width: 400px;
+	background-color: #ffffff;
+	border-radius: 10px;
+	overflow: hidden;
+	background-color: orange;
+	box-shadow: 5px 10px 10px 1px rgba(0,0,0,.3);
+}
+.popup-head {
+	width: 100%;
+	height: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.head-title {
+	font-size: 33px;
+	font-weight: 700;
+    text-align: center;
+}
+.popup-body {
+	width:100%;
+	background-color:#ffffff;
+}
+.popup-content{
+  width:100%;
+  padding:30px;
+}
+
+.popup-foot{
+	width: 100%;
+	height: 50px;
+}
+.pop-btn{
+	display:inline-flex;
+	width:50%;
+	height:100%;
+	float:left;
+	justify-content:center;
+	align-items:center;
+	color:#ffffff;
+	cursor:pointer;
+}
+.pop-btn.confirm {
+	border-right:1px solid #ffffff;
+}
+
+
 </style>
 
 <script type="text/javascript">
@@ -202,30 +273,48 @@ function sendOk() {
 	
     str = f.camInfoSubject.value.trim();
     if(!str) {
-        alert("제목을 입력하세요. ");
+        alert("캠핑장 이름을 입력하세요. ");
         f.camInfoSubject.focus();
         return;
     }
 
+    str = f.camInfoAddr.value.trim();
+    if(!str) {
+        alert("주소를 입력하세요. ");
+        f.camInfoAddr.focus();
+        return;
+    }
+    
     str = f.camInfoContent.value.trim();
     if(!str) {
         alert("내용을 입력하세요. ");
         f.camInfoContent.focus();
         return;
     }
-
+    
+    str = f.camThemaName.value.trim();
+    if(!str) {
+    	alert("테마명을 입력하세요");
+    	f.camThemaName.focus();
+    	return;
+    }
+    
+    str = f.camKeyWord.value.trim();
+ 
+ /*
     let mode = "${mode}";
     if( (mode === "write") && (!f.selectFile.value) ) {
         alert("이미지 파일을 추가 하세요. ");
         f.selectFile.focus();
         return;
     }
-
+*/
     
     f.action = "${pageContext.request.contextPath}/campInfo/${mode}_ok.do";
     f.submit();
 }
 
+/*
 <c:if test="${mode == 'update'}">
 	function deleteFile(camInfoPhotoNum) {
 		let cnt = $(".img-box").find("img").length;
@@ -242,6 +331,9 @@ function sendOk() {
 		
 	}
 </c:if>
+
+*/
+
 </script>
 </head>
 <body>
@@ -253,7 +345,7 @@ function sendOk() {
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 캠핑장구경 </h2>
+			<h2><i class="fas fa-graduation-cap"></i> 캠핑장등록 </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
@@ -284,19 +376,54 @@ function sendOk() {
 						<td>첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
 						<td> 
 							<input type="file" name="selectFile" accept="image/*" multiple="multiple" class="form-control">
-						</td>
+						</td>		
+					</tr>
+					
+					<tr>
+						<td>테&nbsp;&nbsp;&nbsp;&nbsp;마</td>
+						<td> 
+							<i class="fa-solid fa-fan"></i>봄<input type="radio" name="camThemaName" maxlength="100" class="form-control" value="봄">
+							<i class="fa-solid fa-umbrella-beach"></i>여름<input type="radio" name="camThemaName" maxlength="100" class="form-control" value="여름">
+							<i class="fa-solid fa-wheat-awn"></i>가을<input type="radio" name="camThemaName" maxlength="100" class="form-control" value="가을">
+							<i class="fa-solid fa-snowflake"></i>겨울<input type="radio" name="camThemaName" maxlength="100" class="form-control" value="겨울">
+						</td>		
 					</tr>
 					
 					<tr>
 						<td>키워드</td>
-						<td>
-								<c:forEach var="dto" items="${list}">
-									<input type="checkbox" name="" value="">${dto.keyWordName}
-								</c:forEach>
-						</td>
+					
+						<td><!-- 검색 버튼 -->
+						    <div class="container">
+								<div class="modal-btn-box">
+									<input type="text" name="camKeyWord" id= "selected-keywords" value="${dto.camKeyWord}" readonly="readonly" style= "width: 30%;">
+									<button type="button" id="modal-open" >키워드 선택하기</button>  
+								</div>
+							  
+								<div class="popup-wrap" id="popup">
+									<div class="popup">
+										<div class="popup-head">
+											<span class="head-title">키워드 추가하기</span>
+							      		</div>
+										<div class="popup-body">
+											<div class="popup-content">
+												<c:forEach var="dto" items="${list}" varStatus="status">
+													<input type="checkbox" name="keyWordName" value="${dto.keyWordName}">${dto.keyWordName}
+												</c:forEach>
+											</div>
+										</div>
+										<div class="popup-foot">
+											<span class="pop-btn confirm" id="modal-confirm">확인</span>
+											<span class="pop-btn close" id="modal-close">창 닫기</span>
+										</div>			
+									</div>
+								</div>
+							
+							</div>   				
+   						</td>	
+						
 					</tr>
 					
-					
+					<!--  
 					<c:if test="${mode == 'update' }">
 						<tr>
 							<td>등록이미지</td>
@@ -309,7 +436,10 @@ function sendOk() {
 								</div>
 							</td>
 						</tr>
+					
 					</c:if>
+					
+					-->
 				</table>
 					
 				<table class="table">
@@ -335,6 +465,38 @@ function sendOk() {
 <footer>
 	<jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
 </footer>
+
+<script type="text/javascript">
+$(function(){
+	 $("#modal-confirm").click(function() {
+
+	    var selectedKeywords = [];
+	    $("input[name=keyWordName]:checked").each(function() {
+	      selectedKeywords.push($(this).val());
+	    });
+	 
+	    $("#selected-keywords").val(selectedKeywords.join(", "));
+	  
+	    modalClose();
+	 });
+	
+	 
+	 
+	$("#modal-open").click(function(){
+		$("#popup").css('display','flex').hide().fadeIn();
+	});
+	
+	$("#modal-close").click(function(){
+		modalClose();
+	});
+	
+	function modalClose(){
+		$("#popup").fadeOut();
+	}
+});
+
+
+</script>
 
 </body>
 </html>
