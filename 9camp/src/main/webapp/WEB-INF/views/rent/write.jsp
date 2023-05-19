@@ -314,9 +314,9 @@ function sendOk() {
 }
 
 <c:if test="${mode == 'update'}">
-	function deleteFile(rentNum) {
+	function deleteFile(rentPhotoNum) {
 		if(confirm('파일을 삭제하시겠습니까 ?')){
-			let query = "rentNum="+rentNum+"&page=${page}";
+			let query = "rentNum=${dto.rentNum}&rentPhotoNum="+rentPhotoNum+"&page=${page}";
 			let url = "${pageContext.request.contextPath}/rent/deleteFile.do";
 			location.href = url + "?" + query;
 		}
@@ -381,7 +381,7 @@ function sendOk() {
 					<tr>
 					    <td>기&nbsp;&nbsp;&nbsp;&nbsp;간</td>
 					    <td>
-					        <p style="display: inline-block;">대출날짜&nbsp;&nbsp;</p><input type="date" name="rentStartDate" id="dep">&nbsp;&nbsp;
+					        <p style="display: inline-block;">렌트날짜&nbsp;&nbsp;</p><input type="date" name="rentStartDate" id="dep">&nbsp;&nbsp;
 					        <p  style="display: inline-block;">반납날짜&nbsp;&nbsp;</p><input type="date" name="rentEndDate" id="ari">&nbsp;&nbsp;
 					   		<p id="result" style="display: inline-block;"></p>
 					    </td>					   
@@ -400,7 +400,7 @@ function sendOk() {
 								<div class="img-box">
 									<c:forEach var="vo" items="${listFile}">
 										<img src="${pageContext.request.contextPath}/uploads/rentPhoto/${vo.rentPhotoName}"
-											onclick="deleteFile('${vo.rentPhotoName}');">
+											onclick="deleteFile('${vo.rentPhotoNum}');">
 									</c:forEach>
 								</div>
 							</td>
@@ -409,7 +409,7 @@ function sendOk() {
 				    <tr>
 						<td>가&nbsp;&nbsp;&nbsp;&nbsp;격</td>
 						<td>
-							<input type="text" name="rentFee" placeholder="가격을 입력하세요."> 
+							<input type="text" name="rentFee" placeholder="가격을 입력하세요." value="${dto.rentFee }"> 
 						</td>
 					</tr>
 				</table>
@@ -421,9 +421,10 @@ function sendOk() {
 							<button type="reset" class="btn">다시입력</button>
 							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/rent/list.do';">${mode=="update"?"수정취소":"등록취소"}</button>
 							<c:if test="${mode=='update'}">
-								<input type="hidden" name="rentalPhotoNum" value="${dto.rentPhotoNum}">
+								<input type="hidden" name="rentPhotoNum" value="${dto.rentPhotoNum}">
 								<input type="hidden" name="rentPhotoName" value="${dto.rentPhotoName}">
 								<input type="hidden" name="page" value="${page}">
+								<input type="hidden" name="rentNum" value="${dto.rentNum}">
 							</c:if>							
 						</td>
 					</tr>

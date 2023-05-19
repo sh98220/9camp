@@ -22,7 +22,7 @@
 						<span class='deleteReply' data-camChatRepNum='${vo.camChatRepNum}' data-pageNo='${pageNo}'>삭제</span>
 					</c:when>
 					<c:otherwise>
-						<span class="notifyReply">신고</span>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 					</c:otherwise>
 				</c:choose>
 				
