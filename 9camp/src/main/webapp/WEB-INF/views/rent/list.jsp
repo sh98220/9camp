@@ -183,7 +183,7 @@ function searchList() {
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 렌탈 </h2>
+			<h2><i class="fa-solid fa-smoking fa-shake" style="color: #640000;"></i> 렌탈 </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">

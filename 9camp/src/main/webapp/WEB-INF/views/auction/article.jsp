@@ -357,6 +357,13 @@ function ajaxFun(url, method, query, dataType, fn) {
 							경매시작가 : ${dto.auctionStartamount}원 | 현재입찰가 : ${dto.auctionFinalamount}원
 						</td>
 					</tr>
+					
+					<tr>
+						<td width="50%">
+							<button type="button" class="btn">입찰하기</button>
+							<input type="text" name="auctionFinalamount" maxlength="100" class="form-control" value="${dto.auctionFinalamount}">					
+						</td>
+					</tr>
 		
 				</tbody>
 			</table>
