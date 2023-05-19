@@ -219,7 +219,7 @@ function searchList() {
 							<td class="left">
 								<a href="${articleUrl}&num=${dto.camChatNum}">${dto.camChatSubject}</a>
 							</td>
-							<td>${dto.userName}</td>
+							<td>${dto.userNickName}</td>
 							<td>${dto.camChatRegDate}</td>
 							<td>${dto.camChatHitCount}</td>
 						</tr>
@@ -240,7 +240,7 @@ function searchList() {
 						<form name="searchForm" action="${pageContext.request.contextPath}/freeboard/list.do" method="post">
 							<select name="condition" class="form-select">
 								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
-								<option value="userName" ${condition=="userName"?"selected='selected'":"" }>작성자</option>
+								<option value="userNickName" ${condition=="userNickName"?"selected='selected'":"" }>작성자</option>
 								<option value="camChatRegDate"  ${condition=="camChatRegDate"?"selected='selected'":"" }>등록일</option>
 								<option value="camChatSubject"  ${condition=="camChatSubject"?"selected='selected'":"" }>제목</option>
 								<option value="camChatContent"  ${condition=="camChatContent"?"selected='selected'":"" }>내용</option>

@@ -376,7 +376,7 @@ $(function(){
 				<tbody>
 					<tr>
 						<td width="50%">
-							이름 : ${dto.userName}
+							이름 : ${dto.userNickName}
 						</td>
 						<td align="right">
 							${dto.camChatRegDate} | 조회 ${dto.camChatHitCount}
