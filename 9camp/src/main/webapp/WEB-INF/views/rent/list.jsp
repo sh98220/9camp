@@ -215,7 +215,7 @@ function searchList() {
 							<td class="left">
 								<a href="${articleUrl}&rentNum=${dto.rentNum}">${dto.rentSubject}</a>
 							</td>
-							<td>${dto.hostId}</td>
+							<td>${sessionScope.member.userNickName}</td>
 							<td>${dto.rentRegDate}</td>
 							<td>${dto.rentHitCount}</td>
 							<td>
