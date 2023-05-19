@@ -465,24 +465,24 @@ $(function(){
 					</tr>
 		
 					<tr>
-						<td colspan="2">
-							이전글 :
-							 <c:choose>
-		           				 <c:when test="${empty preReadDto}">
-		              					  제일 처음 게시글입니다.
-         					     </c:when>
-					             <c:otherwise>
-					                 <a class="nav-link" href="${pageContext.request.contextPath}/reviews/article.do?${query}&num=${preReadDto.camRevnum}">${preReadDto.camRevsubject}</a>
-					             </c:otherwise>
-					         </c:choose>
-						</td>
-					</tr>
+						    <td colspan="2">
+						        이전글 :
+						        <c:choose>
+						            <c:when test="${empty preReadDto}">
+						                <span style="font-weight: bold;">제일 처음 게시글입니다.</span>
+						            </c:when>
+						            <c:otherwise>
+						                <a class="nav-link" href="${pageContext.request.contextPath}/reviews/article.do?${query}&num=${preReadDto.camRevnum}">${preReadDto.camRevsubject}</a>
+						            </c:otherwise>
+						        </c:choose>
+						    </td>
+						</tr>
 					<tr>
 						<td colspan="2">
 							다음글 :
 							<c:choose>
 		           				 <c:when test="${empty nextReadDto}">
-		              					  제일 마지막 게시글입니다.
+		              					 <span style="font-weight: bold;">제일 마지막 게시글입니다.</span>
          					     </c:when>
 					             <c:otherwise>
 					                 <a class="nav-link"  href="${pageContext.request.contextPath}/reviews/article.do?${query}&num=${nextReadDto.camRevnum}">${nextReadDto.camRevsubject}</a>
