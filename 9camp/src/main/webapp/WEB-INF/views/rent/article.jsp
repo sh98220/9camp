@@ -240,7 +240,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 <c:if test="${sessionScope.member.userId==dto.hostId || sessionScope.member.userId=='admin'}">
 	function deleterentBoard() {
 	    if(confirm("게시글을 삭제 하시 겠습니까 ? ")) {
-		    let query = "num=${dto.rentNum}&${query}";
+		    let query = "rentNum=${dto.rentNum}&page=${page}";
 		    let url = "${pageContext.request.contextPath}/rent/delete.do?" + query;
 	    	location.href = url;
 	    }
@@ -318,7 +318,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 				<tbody>
 					<tr>
 						<td width="50%">
-							이름 : ${dto.hostId}
+							이름 : ${sessionScope.member.userNickName}
 						</td>
 						<td align="right">
 							${dto.rentRegDate} | 조회 ${dto.rentHitCount}
@@ -367,7 +367,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 					<td width="50%">
 						<c:choose>
 							<c:when test="${sessionScope.member.userId==dto.hostId}">
-								<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/rent/update.do?num=${dto.rentNum}&page=${page}';">수정</button>
+								<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/rent/update.do?page=${page}&rentNum=${dto.rentNum}';">수정</button>
 							</c:when>
 							<c:otherwise>
 								<button type="button" class="btn" disabled="disabled">수정</button>
@@ -376,7 +376,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 				    	
 						<c:choose>
 				    		<c:when test="${sessionScope.member.userId==dto.hostId || sessionScope.member.userId=='admin'}">
-				    			<button type="button" class="btn" onclick="deleteReviews();">삭제</button>
+				    			<button type="button" class="btn" onclick="deleterentBoard();">삭제</button>
 				    		</c:when>
 				    		<c:otherwise>
 				    			<button type="button" class="btn" disabled="disabled">삭제</button>
@@ -388,8 +388,6 @@ function ajaxFun(url, method, query, dataType, fn) {
 					</td>
 				</tr>
 			</table>
-			
-
 	    </div>
 	</div>
 </main>

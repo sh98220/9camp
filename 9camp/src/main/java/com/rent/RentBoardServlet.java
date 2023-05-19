@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.member.SessionInfo;
+import com.util.FileManager;
 import com.util.MyUploadServlet;
 import com.util.MyUtil;
 
@@ -192,13 +193,79 @@ public class RentBoardServlet extends MyUploadServlet{
 		
 	}
 	protected void updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		RentBoardDAO dao = new RentBoardDAO();
 		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+
+		String cp = req.getContextPath();
+
+		String page = req.getParameter("page");
+		
+		try {
+			long rentNum = Long.parseLong(req.getParameter("rentNum"));
+			RentBoardDTO dto = dao.readRentBoard(rentNum);
+			
+			if(dto == null) {
+				resp.sendRedirect(cp+"/rent/list.do?page="+page);
+				return;
+			}
+			
+			if(!dto.getHostId().equals(info.getUserId())) {
+				resp.sendRedirect(cp+"/rent/list.do?page="+page);
+				return;
+			}
+			
+			List<RentBoardDTO> listFile = dao.listRentPhoto(rentNum);
+			
+			req.setAttribute("dto", dto);
+			req.setAttribute("page", page);
+			req.setAttribute("listFile", listFile);
+
+			req.setAttribute("mode", "update");
+			
+			
+			forward(req, resp, "/WEB-INF/views/rent/write.jsp");
+			return;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp+"/rent/list.do?page="+page);
 		
 	}
+	
 	protected void updateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		RentBoardDAO dao = new RentBoardDAO();
+		String page = req.getParameter("page");
 		
+		String cp = req.getContextPath();
+		if(!req.getMethod().equalsIgnoreCase("POST")) {
+			resp.sendRedirect(cp+"/WEB-INF/views/list.do?page="+page);
+			return;
+		}
+		
+		try {
+			RentBoardDTO dto = new RentBoardDTO();
+			dto.setRentNum(Long.parseLong(req.getParameter("rentNum")));
+			dto.setRentSubject(req.getParameter("rentCount"));
+			dto.setRentSubject(req.getParameter("rentSubject"));
+			
+			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);
+			if(map != null) {
+				String[] saveFiles = map.get("saveFilenames");
+				dto.setRentPhotos(saveFiles);
+			}
+			
+			dao.updateRent(dto);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendRedirect(cp+"/rent/list.do?page="+page);
 	}
+	
 	protected void article(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		RentBoardDAO dao = new RentBoardDAO();
 		MyUtil util = new MyUtil();
@@ -258,16 +325,84 @@ public class RentBoardServlet extends MyUploadServlet{
 	
 	
 	protected void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		RentBoardDAO dao = new RentBoardDAO();
+		String cp = req.getContextPath();
+		String page = req.getParameter("page");
+		
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		
+		try {
+			long rentNum = Long.parseLong(req.getParameter("rentNum"));
+			
+			RentBoardDTO dto = dao.readRentBoard(rentNum);
+			
+			if(dto == null) {
+				resp.sendRedirect(cp+"/rent/list.do?page="+page);
+				return;
+			}
+			
+			if(!dto.getHostId().equals(info.getUserId())) {
+				resp.sendRedirect(cp+"/rent/list.do?page="+page);
+				return;
+			}
+			
+			List<RentBoardDTO> list = dao.listRentPhoto(rentNum);
+			for(RentBoardDTO vo : list) {
+				FileManager.doFiledelete(pathname, vo.getRentPhotoName());
+			}
+			
+			dao.deleteRent(rentNum);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		
+		resp.sendRedirect(cp+"/rent/list.do?page="+page);
 		
 	}
+	
 	protected void deleteFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		RentBoardDAO dao = new RentBoardDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String cp = req.getContextPath();
+		String page = req.getParameter("page");
+		
+		try {
+			long rentNum = Long.parseLong(req.getParameter("rentNum"));
+			long rentPhotoNum = Long.parseLong(req.getParameter("rentPhotoNum"));
+			
+		    RentBoardDTO dto = dao.readRentBoard(rentNum);
+		    
+		    if(dto == null) {
+		    	resp.sendRedirect(cp + "/rent/list.do?page="+page);
+		    	return;
+		    }
+		    
+		    if(!dto.getHostId().equals(info.getUserId())) {
+		    	resp.sendRedirect(cp + "/rent/list.do?page="+page);
+		    	return;
+		    }
+		    
+		    RentBoardDTO vo = dao.readPhoto(rentPhotoNum);
+		    if(vo != null) {
+		    	FileManager.doFiledelete(pathname,vo.getRentPhotoName());
+		    	
+		    	dao.deletePhotoFile(rentPhotoNum);
+		    }
+		    
+		    resp.sendRedirect(cp + "/rent/update.do?rentNum="+rentNum);
+		    return;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		resp.sendRedirect(cp+"/rent/list.do?page="+page);
 		
 	}
 	
-	
-	
-	
-
 }

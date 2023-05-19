@@ -143,6 +143,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 
 
 
+
 .table-list thead > tr:first-child { background: skyblue; }
 .table-list th, .table-list td { text-align: center; }
 .table-list .left { text-align: left; padding-left: 5px; }
@@ -256,6 +257,22 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 .pop-btn.confirm {
 	border-right:1px solid #3b5fbf;
 }
+
+.img-box {
+	max-width: 600px;
+	padding: 5px;
+	box-sizing: border-box;
+	display: flex; /* 자손요소를 flexbox로 변경 */
+	flex-direction: row; /* 정방향 수평나열 */
+	flex-wrap: nowrap;
+	overflow-x: auto;
+}
+.img-box img {
+	width: 37px; height: 37px;
+	margin-right: 5px;
+	flex: 0 0 auto;
+	cursor: pointer;
+}
 	
 </style>
 
@@ -267,28 +284,28 @@ function sendOk() {
     str = f.rentSubject.value.trim();
     if(!str) {
         alert("제목을 입력하세요. ");
-        f.subject.focus();
+        f.rentSubject.focus();
         return;
     }
 
     str = f.rentContent.value.trim();
     if(!str) {
         alert("내용을 입력하세요. ");
-        f.content.focus();
+        f.rentContent.focus();
         return;
     }
     
-    str = f.rentContent.value.trim();
+    str = f.rentStartDate.value.trim();
     if(!str) {
         alert("내용을 입력하세요. ");
-        f.content.focus();
+        f.rentStartDate.focus();
         return;
     }
     
-    str = f.rentContent.value.trim();
+    str = f.rentEndDate.value.trim();
     if(!str) {
         alert("내용을 입력하세요. ");
-        f.content.focus();
+        f.rentEndDate.focus();
         return;
     }
 
@@ -299,7 +316,7 @@ function sendOk() {
 <c:if test="${mode == 'update'}">
 	function deleteFile(rentNum) {
 		if(confirm('파일을 삭제하시겠습니까 ?')){
-			let query = "num="+rentNum+"&page=${page}";
+			let query = "rentNum="+rentNum+"&page=${page}";
 			let url = "${pageContext.request.contextPath}/rent/deleteFile.do";
 			location.href = url + "?" + query;
 		}
@@ -325,7 +342,7 @@ function sendOk() {
 					<tr> 
 						<td>제&nbsp;&nbsp;&nbsp;&nbsp;목</td>
 						<td> 
-							<input type="text" name="rentSubject" maxlength="100" class="form-control" value="${dto.subject}">
+							<input type="text" name="rentSubject" maxlength="100" class="form-control" value="${dto.rentSubject}">
 						</td>
 					</tr>
 					
@@ -357,7 +374,7 @@ function sendOk() {
 					<tr> 
 						<td valign="top">내&nbsp;&nbsp;&nbsp;&nbsp;용</td>
 						<td> 
-							<textarea name="rentContent" class="form-control">${dto.content}</textarea>
+							<textarea name="rentContent" class="form-control">${dto.rentContent}</textarea>
 						</td>
 					</tr>
 					
@@ -403,10 +420,9 @@ function sendOk() {
 							<button type="button" class="btn" onclick="sendOk();">${mode =="update"?"수정완료":"등록완료"}</button>
 							<button type="reset" class="btn">다시입력</button>
 							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/rent/list.do';">${mode=="update"?"수정취소":"등록취소"}</button>
-							<c:if test="${mode=='update' }">
-								<input type="hidden" name="rentalPhotoNum" value="${dto.rentalPhotoNum}">
+							<c:if test="${mode=='update'}">
+								<input type="hidden" name="rentalPhotoNum" value="${dto.rentPhotoNum}">
 								<input type="hidden" name="rentPhotoName" value="${dto.rentPhotoName}">
-								<input type="hidden" name="fileSize" value="${dto.fileSize}">
 								<input type="hidden" name="page" value="${page}">
 							</c:if>							
 						</td>
