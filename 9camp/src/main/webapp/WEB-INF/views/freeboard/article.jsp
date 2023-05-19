@@ -241,8 +241,9 @@ function ajaxFun(url, method, query, dataType, fn) {
 
 // 게시글 공감 여부
 $(function(){
-	$(".btnSendFreeBoardLike").click(function(){
+	$(".btnSendFreeboardLike").click(function(){
 		const $i = $(this).find("i");
+
 		let isNoLike = $i.css("color") == "rgb(0, 0, 0)";
 		let msg = isNoLike ? "게시글에 공감하십니까 ?" : "게시글 공감을 취소하시겠습니까 ?";		
 		
@@ -307,7 +308,7 @@ $(function(){
 		content = encodeURIComponent(content);
 		
 		let url = "${pageContext.request.contextPath}/freeboard/insertReply.do";
-		let qs = "camChatNum="+num+"&camChatRepcontent="+content;
+		let qs = "camChatNum="+num+"&camChatRepContent="+content;
 		
 		const fn = function(data){
 			$tb.find("textarea").val("");
@@ -332,11 +333,11 @@ $(function(){
 			return false;
 		}
 		
-		let camChatRepnum = $(this).attr("data-camChatRepnum");
+		let camChatRepNum = $(this).attr("data-camChatRepNum");
 		let page = $(this).attr("data-pageNo");
 		
 		let url = "${pageContext.request.contextPath}/freeboard/deleteReply.do";
-		let qs = "camChatRepnum="+camChatRepnum;
+		let qs = "camChatRepNum="+camChatRepNum;
 		
 		const fn = function(data){
 			listPage(page);
@@ -439,7 +440,28 @@ $(function(){
 					</td>
 				</tr>
 			</table>
-	        
+    	       <div class="reply">
+				<form name="replyForm" method="post">
+					<div class='form-header'>
+						<span class="bold">댓글쓰기</span><span> - 타인을 비방하거나 개인정보를 유출하는 글의 게시를 삼가해 주세요.</span>
+					</div>
+					
+					<table class="table reply-form">
+						<tr>
+							<td>
+								<textarea class='form-control' name="camChatRepContent"></textarea>
+							</td>
+						</tr>
+						<tr>
+						   <td align='right'>
+								<button type='button' class='btn btnSendReply'>댓글 등록</button>
+							</td>
+						 </tr>
+					</table>
+				</form>
+				
+				<div id="listReply"></div>
+			</div>
 	    </div>
 	</div>
 </main>

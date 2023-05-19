@@ -43,11 +43,21 @@ public class FreeBoardServlet extends MyUploadServlet {
 			updateForm(req, resp);
 		} else if(uri.indexOf("update_ok.do") != -1) {
 			updateSubmit(req, resp);
-		} else if(uri.indexOf("deleteFile.do") != -1) {
-			deleteFile(req, resp);
 		} else if(uri.indexOf("delete.do") != -1) {
 			delete(req, resp);
-		}
+		} else if(uri.indexOf("insertFreeBoardLike.do") != -1) {
+			insertFreeBoardLike(req, resp);
+		
+		} else if(uri.indexOf("insertReply.do") != -1) {
+			// 댓글 등록
+			insertReply(req, resp);
+		} else if(uri.indexOf("listReply.do") != -1) {
+			// 댓글 리스트
+			listReply(req, resp);
+		} else if(uri.indexOf("deleteReply.do") != -1) {
+			// 댓글 삭제
+			deleteReply(req, resp);
+		}	
 		
 		
 	}
@@ -209,6 +219,11 @@ public class FreeBoardServlet extends MyUploadServlet {
 				return;
 			}
 			dto.setcamChatContent(util.htmlSymbols(dto.getcamChatContent()));
+			
+			// 로그인 유저의 게시글 공감 여부
+			HttpSession session = req.getSession();
+			SessionInfo info = (SessionInfo)session.getAttribute("member");
+			boolean isUserLike = dao.isUserFreeBoardLike(num, info.getUserId());
 
 			// 이전글 다음글
 			FreeBoardDTO preReadDto = dao.preReadFreeBoard( dto.getcamChatNum(), condition, keyword);
@@ -220,6 +235,8 @@ public class FreeBoardServlet extends MyUploadServlet {
 			req.setAttribute("query", query);
 			req.setAttribute("preReadDto", preReadDto);
 			req.setAttribute("nextReadDto", nextReadDto);
+			
+			req.setAttribute("isUserLike", isUserLike);
 
 			// 포워딩
 			forward(req, resp, "/WEB-INF/views/freeboard/article.jsp");
@@ -303,11 +320,8 @@ public class FreeBoardServlet extends MyUploadServlet {
 	
 	}
 	
-	protected void deleteFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-	
-	}
-	
 	protected void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// 게시글 삭제
 		FreeBoardDAO dao = new FreeBoardDAO();
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
@@ -351,7 +365,7 @@ public class FreeBoardServlet extends MyUploadServlet {
 		int freeboardLikeCount = 0;
 		
 		try {
-			int camChatnum = Integer.parseInt(req.getParameter("camChatnum"));
+			int camChatnum = Integer.parseInt(req.getParameter("camChatNum"));
 			String isNoLike = req.getParameter("isNoLike");
 			
 			if(isNoLike.equals("true")) {
@@ -378,14 +392,111 @@ public class FreeBoardServlet extends MyUploadServlet {
 		out.print(job.toString());
 	}
 	
+	
 	protected void insertReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 댓글 추가
+		FreeBoardDAO dao = new FreeBoardDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
+		String state = "false";
+		try {
+			FreeBoardReplyDTO dto = new FreeBoardReplyDTO();
+			
+			long num = Long.parseLong(req.getParameter("camChatNum"));
+			dto.setCamChatNum(num);
+			dto.setUserId(info.getUserId());
+			dto.setCamChatRepContent(req.getParameter("camChatRepContent"));
+		
+		dao.insertReply(dto);
+		
+		state = "true";
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		JSONObject job = new JSONObject();
+		job.put("state", state);
+		
+		resp.setContentType("text/html;charset=utf-8");
+		PrintWriter out = resp.getWriter();
+		out.print(job.toString());
 	}
 	
 	protected void deleteReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 댓글 삭제
+		FreeBoardDAO dao = new FreeBoardDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		String state = "false";
+		
+		try {
+			int camChatRepNum = Integer.parseInt(req.getParameter("camChatRepNum"));
+			dao.deleteReply(camChatRepNum, info.getUserId());
+			state = "true";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		JSONObject job = new JSONObject();
+		job.put("state", state);
+		
+		resp.setContentType("text/html; charset=utf-8");
+		PrintWriter out = resp.getWriter();
+		out.print(job.toString());
 	}
 
+	protected void listReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// 댓글 리스트
+		FreeBoardDAO dao = new FreeBoardDAO();
+		MyUtil util = new MyUtil();
+		
+		try {
+			long camChatNum = Long.parseLong(req.getParameter("camChatNum"));
+			String pageNo = req.getParameter("pageNo");
+			int current_page = 1;
+			if(pageNo != null) {
+				current_page = Integer.parseInt(pageNo);
+			}
+			
+			int size = 5;
+			int total_page = 0;
+			int replyCount = 0;
+			
+			replyCount = dao.dataCountReply(camChatNum);
+			total_page = util.pageCount(replyCount, size);
+			if(current_page > total_page) {
+				current_page = total_page;
+			}
+			
+			int offset = (current_page - 1) * size;
+			if(offset < 0) offset = 0;
+			
+			List<FreeBoardReplyDTO> listReply = dao.listReply(camChatNum, offset, size);
+			
+			for(FreeBoardReplyDTO dto : listReply) {
+				dto.setCamChatRepContent(dto.getCamChatRepContent().replaceAll("\n", "<br>"));
+			}
+			
+			String paging = util.pagingMethod(current_page, total_page, "listPage");
+			
+			req.setAttribute("listReply", listReply);
+			req.setAttribute("pageNo", current_page);
+			req.setAttribute("replyCount", replyCount);
+			req.setAttribute("total_page", total_page);
+			req.setAttribute("paging", paging);
+			
+			forward(req, resp, "/WEB-INF/views/freeboard/listReply.jsp");
+			return;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		resp.sendError(400);
 	
+	}
 	
 }
