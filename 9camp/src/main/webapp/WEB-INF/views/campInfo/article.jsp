@@ -7,7 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>spring</title>
+<title>가자Goo캠핑</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 <style type="text/css">
 a {display: inline-block;}
@@ -268,6 +268,41 @@ function ajaxFun(url, method, query, dataType, fn) {
 		}
 	});
 }
+
+//캠핑장 찜 여부
+$(function(){
+	$(".btnSendCampWish").click(function(){
+		const $i = $(this).find("i");
+		let isNoLike = $i.css("color") == "rgb(0, 0, 0)";
+		let msg = isNoLike ? "찜 하시겠습니까? ?" : "찜을 취소하시겠습니까 ?";		
+		
+		if(! confirm(msg)){
+			return false;
+		}
+		
+		let url = "${pageContext.request.contextPath}/campInfo/insertCampWish.do";
+		let num = "${dto.camInfoNum}";
+		let qs = "camInfoNum=" + num + "&isNoLike=" + isNoLike;
+		
+		const fn = function(data){
+			let state = data.state;
+			if(state === "true"){
+				let color = "black";
+				if( isNoLike ){
+					color = "blue";
+				}
+				$i.css("color", color);
+				
+				let count = data.wishCount;
+				$("#wishCount").text(count);
+			} else if(state === "liked"){
+				alert("좋아요는 한번만 가능합니다.");				
+			}
+		};
+		
+		ajaxFun(url, "post", qs, "json", fn);
+	});
+});
 </script>
 
 <script type="text/javascript">
@@ -309,7 +344,7 @@ function deletecampInfo() {
 				<tbody>
 					<tr>
 						<td align="right">
-							${dto.camInfoRegDate} | 조회 ${dto.camInfoHitCount}
+							${dto.camInfoRegDate} | 조회 ${dto.camInfoHitCount} | 찜하기 &nbsp;&nbsp;<button type="button" class="btn btnSendCampWish" title="좋아요"> <i class="fas fa-thumbs-up" style="color:${isUserWish?'blue':'black'}"></i></button>
 						</td>
 					</tr>
 					
@@ -331,6 +366,10 @@ function deletecampInfo() {
 						</td>
 					</tr>
 				</tbody>
+				
+			
+				
+				
 			</table>
 			
 			<table class="table">

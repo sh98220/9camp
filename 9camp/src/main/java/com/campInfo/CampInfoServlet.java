@@ -2,8 +2,10 @@ package com.campInfo;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -12,6 +14,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.json.JSONObject;
 
 import com.member.SessionInfo;
 import com.util.MyUploadServlet;
@@ -54,6 +58,8 @@ public class CampInfoServlet extends MyUploadServlet {
 			updateSubmit(req, resp);
 		} else if(uri.indexOf("delete.do") != -1) {
 			delete(req, resp);
+		} else if(uri.indexOf("insertCampWish.do") != -1) {
+			insertCampWish(req, resp);
 		}
 		
 
@@ -236,6 +242,12 @@ public class CampInfoServlet extends MyUploadServlet {
 			
 			dto.setCamInfoContent(util.htmlSymbols(dto.getCamInfoContent()));
 			
+			// 로그인 유저의 게시글 공감 여부
+			HttpSession session = req.getSession();
+			SessionInfo info = (SessionInfo)session.getAttribute("member");
+			boolean isUserWish = dao.isUserCampWish(num, info.getUserId());
+			
+			
 		   
 			
 			
@@ -245,7 +257,7 @@ public class CampInfoServlet extends MyUploadServlet {
 			req.setAttribute("dto", dto);
 			req.setAttribute("page", page);
 			req.setAttribute("query", query);
-		
+			req.setAttribute("isUserWish", isUserWish);
 			
 			// 포워딩
 			forward(req, resp, "/WEB-INF/views/campInfo/article.jsp");
@@ -356,6 +368,43 @@ public class CampInfoServlet extends MyUploadServlet {
 		resp.sendRedirect(cp + "/campInfo/list.do?page=" + page);
 	}
 	
+	protected void insertCampWish(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// 게시글 공감 저장 : AJAX-JSON
+		CampInfoDAO dao = new CampInfoDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
+		String state = "false";
+		int wishCount = 0;
+		
+		try {
+			int camInfoNum = Integer.parseInt(req.getParameter("camInfoNum"));
+			String isNoLike = req.getParameter("isNoLike");
+			
+			if(isNoLike.equals("true")) {
+				dao.insertCampWish(camInfoNum, info.getUserId()); // 공감
+			} else {
+				dao.deleteCampWish(camInfoNum, info.getUserId()); // 공감 취소
+			}
+			
+			// 공감 개수
+			wishCount = dao.countCampWish(camInfoNum);
+			
+			state = "true";
+		} catch (SQLException e) {
+			state = "liked";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		JSONObject job = new JSONObject();
+		job.put("state", state);
+		job.put("wishCount", wishCount);
+		
+		PrintWriter out = resp.getWriter();
+		out.print(job.toString());
+	}
 	
 	
 	
