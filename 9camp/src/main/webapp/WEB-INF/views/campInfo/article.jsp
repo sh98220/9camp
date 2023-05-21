@@ -250,13 +250,10 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 
 .s_title2 {
 	width: 100%;
-    margin-top: 70px;
-    z-index: 3;
-    text-align: left;
+    margin-top: 30px;
+    text-align: center;
     color: #fff;
-    top: 75px;
     text-shadow: 2px 2px 3px rgb(0,0,0);
-    background: url(/img/2018/sub/line50p.png) repeat-x 0 bottom;
     padding-bottom: 20px;
 }
 
@@ -298,8 +295,79 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     margin-right: 5px;
 }
 
+#cont_inner {
+    width: 100%;
+    position: relative;
+    height: auto;
+    clear: both;
+    padding: 0px 0 0px 0;
+    background: #fff;
+}
 
+.camp_info_box {
+    position: relative;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+    clear: both;
+    margin-bottom: 100px;
+}
+.camp_info_box .cont_tb {
+    width: 45%;
+    float: right;
+    height: auto;
+    overflow: hidden;
+}
 
+.camp_info_box .cont_tb table {
+    width: 118%;
+    font-size: 14px;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+.camp_info_box .cont_tb table tr th {
+    padding: 11px 6px;
+    border-bottom: 1px solid #c8c8c8;
+    text-align: left;
+    color: #000;
+    line-height: 25px;
+}
+
+tbody {
+    display: table-row-group;
+    vertical-align: middle;
+    border-color: inherit;
+}
+
+@media (max-width: 1000px) {
+	.camp_info_box .cont_tb tbody tr:nth-child(1) th {
+	    border-top: 2px solid #FF9800;
+	}
+}
+
+@media (max-width: 1000px){
+	.camp_info_box .cont_tb tbody tr:nth-child(1) td {
+	    border-top: 2px solid #000;
+	}
+}
+
+#sub_title_wrap2 {
+    position: relative;
+    width: 100%;
+    height: auto;
+    padding-bottom: 10px;
+    clear: both;
+    
+}
+
+@media (max-width: 1000px){
+	#sub_title_wrap2 {
+	    padding-top: 10px;
+	}
+}
 </style>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resource/jquery/js/jquery-ui.min.js"></script>
 <script type="text/javascript">
@@ -403,52 +471,60 @@ function imageViewer(img) {
 	
 <main>
 	<div class="container body-container">
-	    <div class="layout">
-			<div class="s_title2">
-				<p class="camp_name">${dto.camInfoSubject}</p>
-				<p class="camp_s_tt"> 운해와 야경이 일품인 휴양림속 힐링</p> 		
-			</div>
-			<div class="camp_tag">
-				<p class="tag_tt">키워드</p>
-				<p style="float: left">${dto.camKeyWord}</p>
-				<p style="float: right">${dto.camInfoRegDate} | 조회 ${dto.camInfoHitCount} | 찜하기 &nbsp;&nbsp;<button type="button" class="btn btnSendCampWish" title="좋아요"> <i class="fa-solid fa-star" style="color:${isUserWish?'orange':'black'}"></i></button>
-				 </p>	
-				
-			</div>
-			
-
-			
+		<div id="sub_title_wrap2">
+		    <div class="layout">
+				<div class="s_title2">
+					<p class="camp_name">${dto.camInfoSubject}</p>
+					<p class="camp_s_tt"> 운해와 야경이 일품인 휴양림속 힐링</p> 		
+				</div>
+				<div class="camp_tag">
+					<p class="tag_tt">키워드</p>
+					<p style="float: left">${dto.camKeyWord}</p>
+					<p style="float: right">${dto.camInfoRegDate} &nbsp;&nbsp;|   조회수 &nbsp;&nbsp;${dto.camInfoHitCount} &nbsp;&nbsp;|   찜하기 &nbsp;&nbsp;<button type="button" class="btn btnSendCampWish" title="좋아요"> <i class="fa-solid fa-star" style="color:${isUserWish?'orange':'black'}"></i></button>
+					 </p>			
+				</div>
+		    </div>
+		 </div>
+	    
+	    <div id="cont_inner">
+	    	<div class="camp_info_box">
+	    		<div class="img_b">
+					<c:forEach var="vo" items="${listFile}">
+						<img src="${pageContext.request.contextPath}/uploads/campInfo/${vo.camInfoPhotoName}">
+					</c:forEach>
+	    		</div>
+	    		<div class="cont_tb">
+	    			<table class="table">
+	    				<colgroup>
+	    					<col style="width: 30%;">		
+	    					<col style="width: 70%;">
+	    				</colgroup>
+	    				<tbody>
+	    					<tr>
+	    						<th scope="col">주소</th>
+	    						<td>${dto.camInfoAddr}</td>
+	    					</tr>
+	    					<tr>
+	    						<th scope="col">캠핑장테마</th>
+	    							<td>${dto.camThemaName}</td>
+	    					</tr>
+	    				</tbody>
+	    				
+	    			
+	    			</table>
+	    		
+	    		</div>
+	    		
+	    	</div>
 	    </div>
+	    
+	    
+	    
+	    
 	    
 	    <div class="body-main mx-auto">
 			<table class="table table-border table-article">
-				<tbody>
-			
-					
-					<tr>
-						<td colspan="2" valign="top" height="200">
-							${dto.camInfoContent}
-							<div class="img_b">
-								<c:forEach var="vo" items="${listFile}">
-									<img src="${pageContext.request.contextPath}/uploads/campInfo/${vo.camInfoPhotoName}">
-								</c:forEach>
-							</div>
-						</td>
-						
-					</tr>
-					
-					<tr>
-						<td colspan="2" valign="top" height="100">
-							키워드 : ${dto.camKeyWord}
-						</td>
-					</tr>
-					
-					<tr>
-						<td colspan="2" valign="top" height="100">
-						  테마 :	${dto.camThemaName}
-						</td>
-					</tr>
-					
+				<tbody>					
 					<tr>
 						<td colspan="2" height="200">
 							사&nbsp;&nbsp;진 :
