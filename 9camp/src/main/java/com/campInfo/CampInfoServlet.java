@@ -7,6 +7,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -18,6 +19,8 @@ import javax.servlet.http.HttpSession;
 import org.json.JSONObject;
 
 import com.member.SessionInfo;
+
+import com.util.FileManager;
 import com.util.MyUploadServlet;
 import com.util.MyUtil;
 
@@ -60,8 +63,9 @@ public class CampInfoServlet extends MyUploadServlet {
 			delete(req, resp);
 		} else if(uri.indexOf("insertCampWish.do") != -1) {
 			insertCampWish(req, resp);
+		} else if(uri.indexOf("deleteFile.do") != -1) {
+			deleteFile(req, resp);
 		}
-		
 
 	}
 	
@@ -130,6 +134,7 @@ public class CampInfoServlet extends MyUploadServlet {
 		}
 
 		String paging = util.paging(current_page, total_page, listUrl);
+	
 
 		// 포워딩할 JSP에 전달할 속성
 		req.setAttribute("list", list);
@@ -141,6 +146,7 @@ public class CampInfoServlet extends MyUploadServlet {
 		req.setAttribute("paging", paging);
 		req.setAttribute("condition", condition);
 		req.setAttribute("keyword", keyword);
+	
 	
 		
 		} catch (Exception e) {
@@ -157,7 +163,7 @@ public class CampInfoServlet extends MyUploadServlet {
 		List<CampInfoDTO> list1 = null;
 		
 		list = dao.listAllKeyword();
-		list1 = dao.listAllThemaName();
+	
 		
 		
 		req.setAttribute("list", list);	
@@ -185,6 +191,12 @@ public class CampInfoServlet extends MyUploadServlet {
 			dto.setCamInfoAddr(req.getParameter("camInfoAddr"));
 			dto.setCamKeyWord(req.getParameter("camKeyWord"));
 			dto.setCamThemaName(req.getParameter("camThemaName"));
+			
+			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);
+			if(map != null) {
+				String[] saveFiles = map.get("saveFilenames");
+				dto.setImageFiles(saveFiles);
+			}
 			
 			dao.InsertCampInfo(dto);
 			
@@ -247,7 +259,7 @@ public class CampInfoServlet extends MyUploadServlet {
 			SessionInfo info = (SessionInfo)session.getAttribute("member");
 			boolean isUserWish = dao.isUserCampWish(num, info.getUserId());
 			
-			
+			List<CampInfoDTO> listFile = dao.listPhotoFile(num);
 		   
 			
 			
@@ -258,6 +270,7 @@ public class CampInfoServlet extends MyUploadServlet {
 			req.setAttribute("page", page);
 			req.setAttribute("query", query);
 			req.setAttribute("isUserWish", isUserWish);
+			req.setAttribute("listFile", listFile);
 			
 			// 포워딩
 			forward(req, resp, "/WEB-INF/views/campInfo/article.jsp");
@@ -289,15 +302,17 @@ public class CampInfoServlet extends MyUploadServlet {
 			// 게심루은 관리자만 삭제 가능
 			List<CampInfoDTO> list = null;
 			List<CampInfoDTO> list1 = null;
+			List<CampInfoDTO> listFile = dao.listPhotoFile(num);
 			
 			list = dao.listAllKeyword();
-			list1 = dao.listAllThemaName();
+		
 
 			req.setAttribute("list1", list1);
 			
 			req.setAttribute("list", list);	
 			req.setAttribute("dto", dto);
 			req.setAttribute("page", page);
+			req.setAttribute("listFile", listFile);
 			
 			req.setAttribute("mode", "update");
 
@@ -332,6 +347,13 @@ public class CampInfoServlet extends MyUploadServlet {
 			dto.setCamKeyWord(req.getParameter("camKeyWord"));
 			dto.setCamThemaName(req.getParameter("camThemaName"));
 			
+			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);
+			if (map != null) {
+				String[] saveFiles = map.get("saveFileNames");
+				dto.setImageFiles(saveFiles);
+			}
+			
+			
 			dao.updateCampInfo(dto);
 			
 		} catch (Exception e) {
@@ -358,6 +380,13 @@ public class CampInfoServlet extends MyUploadServlet {
 				resp.sendRedirect(cp + "/campInfo/list.do?page=" + page);
 				return;
 			}
+			
+			List<CampInfoDTO> listFile = dao.listPhotoFile(num);
+			for(CampInfoDTO vo : listFile) {
+				FileManager.doFiledelete(pathname, vo.getCamInfoPhotoName());				
+			}
+			dao.deleteCampInfoFile("all", num);
+			
 			
 			dao.deleteCampInfo(num);
 			
@@ -404,6 +433,44 @@ public class CampInfoServlet extends MyUploadServlet {
 		
 		PrintWriter out = resp.getWriter();
 		out.print(job.toString());
+	}
+	
+	protected void deleteFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		CampInfoDAO dao = new CampInfoDAO();
+		
+		String cp = req.getContextPath();
+
+		String page = req.getParameter("page");
+
+		try {
+			int camInfoNum = Integer.parseInt(req.getParameter("camInfoNum"));
+			int camInfoPhotoNum = Integer.parseInt(req.getParameter("camInfoPhotoNum"));
+			
+			CampInfoDTO dto = dao.readCampInfo(camInfoNum);
+			
+			if (dto == null) {
+				resp.sendRedirect(cp + "/campInfo/list.do?page=" + page);
+				return;
+			}
+			
+			CampInfoDTO vo = dao.readCampInfoFile(camInfoPhotoNum);
+			
+			if(vo != null) {
+				FileManager.doFiledelete(pathname, vo.getCamInfoPhotoName());
+				
+				dao.deleteCampInfoFile("one", camInfoPhotoNum);
+			}
+
+			resp.sendRedirect(cp + "/campInfo/update.do?num=" + camInfoNum + "&page=" + page);
+			return;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp + "/campInfo/list.do?page=" + page);
+	
+		
+		
 	}
 	
 	

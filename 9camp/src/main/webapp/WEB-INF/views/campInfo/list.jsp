@@ -174,6 +174,7 @@ function searchList() {
 	const f = document.searchForm;
 	f.submit();
 }
+
 </script>
 </head>
 <body>
@@ -205,6 +206,7 @@ function searchList() {
 						<th class="caminfosubject">캠핑장 이름</th>
 						<th class="caminfoaddr">주소</th>
 						<th class="caminfohitcount">조회수</th>
+						<th class="wishCount">찜</th>
 						<th class="caminforegdate">작성일</th>
 					</tr>
 				</thead>
@@ -218,6 +220,7 @@ function searchList() {
 							</td>
 							<td>${dto.camInfoAddr}</td>
 							<td>${dto.camInfoHitCount}</td>
+							<td>${dto.wishCount}</td>
 							<td>${dto.camInfoRegDate}</td>
 							<td>
 								<c:if test="">

@@ -14,6 +14,28 @@ public class CampInfoDTO {
 	private String camKeyWord;
 	private String themaName;
 	
+	private int camInfoPhotoNum;
+	private String camInfoPhotoName;
+	private String[] imageFiles;
+	
+	public int getCamInfoPhotoNum() {
+		return camInfoPhotoNum;
+	}
+	public void setCamInfoPhotoNum(int camInfoPhotoNum) {
+		this.camInfoPhotoNum = camInfoPhotoNum;
+	}
+	public String getCamInfoPhotoName() {
+		return camInfoPhotoName;
+	}
+	public void setCamInfoPhotoName(String camInfoPhotoName) {
+		this.camInfoPhotoName = camInfoPhotoName;
+	}
+	public String[] getImageFiles() {
+		return imageFiles;
+	}
+	public void setImageFiles(String[] imageFiles) {
+		this.imageFiles = imageFiles;
+	}
 	public String getThemaName() {
 		return themaName;
 	}

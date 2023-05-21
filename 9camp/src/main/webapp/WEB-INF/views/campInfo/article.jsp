@@ -111,11 +111,10 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 }
 
 .body-title {
-    color: #424951;
-    padding-top: 35px;
-    padding-bottom: 7px;
-    margin: 0 0 25px 0;
-    border-bottom: 2px solid #eee;
+    display: block;
+    position: relative;
+    width: 97%;
+    margin: 0 auto;
 }
 
 .body-title h2 {
@@ -203,6 +202,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	flex-wrap: nowrap;
 	overflow-x: auto;
 }
+
 .img-box img {
 	width: 100px; height: 100px;
 	margin-right: 5px;
@@ -233,12 +233,75 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 .reply-list .list-header { border: 1px solid #ccc; background: #f8f8f8; }
 .reply-list tr>td { padding-left: 7px; padding-right: 7px; }
 
+.img_b {
+	width: 50%;
+    height: 100%;
+    float: left;
+    background: #eee;
+    border: 1px solid #dedede;
+    box-sizing: border-box;
+}
+
+.img_b > img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.s_title2 {
+	width: 100%;
+    margin-top: 70px;
+    z-index: 3;
+    text-align: left;
+    color: #fff;
+    top: 75px;
+    text-shadow: 2px 2px 3px rgb(0,0,0);
+    background: url(/img/2018/sub/line50p.png) repeat-x 0 bottom;
+    padding-bottom: 20px;
+}
+
+.s_title2 > .camp_name {
+    font-size: 35px;
+    font-family: BM_dh;
+    line-height: 40px;
+    color: #fff !important;
+}
+
+.s_title2 .camp_s_tt {
+    font-size: 20px;
+    clear: both;
+    margin: 0;
+    letter-spacing: -2px;
+    color: #fff;
+    padding: 5px 0 0 0;
+}
+
+.camp_tag {
+    width: 100%;
+    position: relative;
+    height: auto;
+    clear: both;
+    margin: 20px 0 0 0;
+    overflow: hidden;
+    min-height: 32px;
+}
+
+.camp_tag p.tag_tt {
+    display: block;
+    float: left;
+    padding: 0 15px;
+    border: 1px solid #9C27B0;
+    border-radius: 100px;
+    text-align: center;
+    font-size: 15px;
+    color: #9C27B0;
+    margin-right: 5px;
+}
+
+
 
 </style>
-<script type="text/javascript">
-
-</script>
-
+<script type="text/javascript" src="${pageContext.request.contextPath}/resource/jquery/js/jquery-ui.min.js"></script>
 <script type="text/javascript">
 function login(){
 	location.href = "${pageContext.request.contextPath}/member/login.do";
@@ -274,7 +337,7 @@ $(function(){
 	$(".btnSendCampWish").click(function(){
 		const $i = $(this).find("i");
 		let isNoLike = $i.css("color") == "rgb(0, 0, 0)";
-		let msg = isNoLike ? "찜 하시겠습니까? ?" : "찜을 취소하시겠습니까 ?";		
+		let msg = isNoLike ? "찜 하시겠습니까 ?" : "찜을 취소하시겠습니까 ?";		
 		
 		if(! confirm(msg)){
 			return false;
@@ -289,14 +352,14 @@ $(function(){
 			if(state === "true"){
 				let color = "black";
 				if( isNoLike ){
-					color = "blue";
+					color = "orange";
 				}
 				$i.css("color", color);
 				
 				let count = data.wishCount;
 				$("#wishCount").text(count);
 			} else if(state === "liked"){
-				alert("좋아요는 한번만 가능합니다.");				
+				alert("찜하기는 한번만 가능합니다.");				
 			}
 		};
 		
@@ -316,6 +379,19 @@ function deletecampInfo() {
 }
 </c:if>
 
+function imageViewer(img) {
+	const viewer = $(".photo-layout");
+	let s="<img src='"+img+"'>";
+	viewer.html(s);
+	
+	$(".dialog-photo").dialog({
+		title:"이미지",
+		width: 600,
+		height: 530,
+		modal: true
+	});
+}
+
 </script>
 
 </head>
@@ -327,31 +403,38 @@ function deletecampInfo() {
 	
 <main>
 	<div class="container body-container">
-	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 전국캠핑구경	 </h2>
+	    <div class="layout">
+			<div class="s_title2">
+				<p class="camp_name">${dto.camInfoSubject}</p>
+				<p class="camp_s_tt"> 운해와 야경이 일품인 휴양림속 힐링</p> 		
+			</div>
+			<div class="camp_tag">
+				<p class="tag_tt">키워드</p>
+				<p style="float: left">${dto.camKeyWord}</p>
+				<p style="float: right">${dto.camInfoRegDate} | 조회 ${dto.camInfoHitCount} | 찜하기 &nbsp;&nbsp;<button type="button" class="btn btnSendCampWish" title="좋아요"> <i class="fa-solid fa-star" style="color:${isUserWish?'orange':'black'}"></i></button>
+				 </p>	
+				
+			</div>
+			
+
+			
 	    </div>
 	    
 	    <div class="body-main mx-auto">
 			<table class="table table-border table-article">
-				<thead>
-					<tr>
-						<td colspan="2" align="center">
-							${dto.camInfoSubject}
-						</td>
-					</tr>
-				</thead>
-				
 				<tbody>
-					<tr>
-						<td align="right">
-							${dto.camInfoRegDate} | 조회 ${dto.camInfoHitCount} | 찜하기 &nbsp;&nbsp;<button type="button" class="btn btnSendCampWish" title="좋아요"> <i class="fas fa-thumbs-up" style="color:${isUserWish?'blue':'black'}"></i></button>
-						</td>
-					</tr>
+			
 					
 					<tr>
 						<td colspan="2" valign="top" height="200">
 							${dto.camInfoContent}
+							<div class="img_b">
+								<c:forEach var="vo" items="${listFile}">
+									<img src="${pageContext.request.contextPath}/uploads/campInfo/${vo.camInfoPhotoName}">
+								</c:forEach>
+							</div>
 						</td>
+						
 					</tr>
 					
 					<tr>
@@ -363,6 +446,18 @@ function deletecampInfo() {
 					<tr>
 						<td colspan="2" valign="top" height="100">
 						  테마 :	${dto.camThemaName}
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="2" height="200">
+							사&nbsp;&nbsp;진 :
+							<div class="img-box">
+								<c:forEach var="vo" items="${listFile}">
+									<img src="${pageContext.request.contextPath}/uploads/campInfo/${vo.camInfoPhotoName}"
+										onclick="imageViewer('${pageContext.request.contextPath}/uploads/campInfo/${vo.camInfoPhotoName}');">
+								</c:forEach>
+							</div>
 						</td>
 					</tr>
 				</tbody>
@@ -400,6 +495,10 @@ function deletecampInfo() {
 <footer>
     <jsp:include page="/WEB-INF/views/layout/footer.jsp"></jsp:include>
 </footer>
+
+<div class="dialog-photo">
+      <div class="photo-layout"></div>
+</div>
 
 </body>
 </html>

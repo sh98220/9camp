@@ -50,6 +50,23 @@ public class CampInfoDAO {
 			
 			pstmt.executeUpdate();	
 			
+			pstmt.close();
+			pstmt = null;
+			
+			if(dto.getImageFiles() != null) {
+				sql = "INSERT INTO campPhoto(camInfoPhotoNum, camInfoNum, camInfoPhotoName)"
+						+ "VALUES (campPhoto_SEQ.NEXTVAL, ? , ?)";
+				pstmt = conn.prepareStatement(sql);
+				
+				for(int i = 0; i < dto.getImageFiles().length; i++) {
+					pstmt.setLong(1, dto.getCamInfoNum());
+					pstmt.setString(2, dto.getImageFiles()[i]);
+					
+					pstmt.executeUpdate();
+				}
+				
+			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;
@@ -385,53 +402,7 @@ public class CampInfoDAO {
 		
 		return list;
 	}
-	
-	// 테마 리스트 불러오기
-	
-	public List<CampInfoDTO> listAllThemaName() {
-		List<CampInfoDTO> list = new ArrayList<CampInfoDTO>();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		StringBuilder sb = new StringBuilder();
-		
-		try {
-			sb.append(" SELECT themaName");
-			sb.append(" FROM themaName ");
-			
-			pstmt = conn.prepareStatement(sb.toString());
-					
-			rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
-				CampInfoDTO dto = new CampInfoDTO();
-				
-				dto.setThemaName(rs.getString("themaName"));
-				
-				list.add(dto);
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-				}
-			}
 
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-				}
-			}
-		}
-		
-		
-		return list;
-	}
-	
 	// 캠핑 키워드 리스트로 얻어오기
 	public List<CampInfoDTO> listKeyword(long num) {
 		List<CampInfoDTO> list = new ArrayList<CampInfoDTO>();
@@ -526,6 +497,22 @@ public class CampInfoDAO {
 			
 			pstmt.close();
 			pstmt = null;
+			
+
+			if (dto.getImageFiles() != null) {
+				sql = "INSERT INTO campPhoto(camInfoPhotoNum, camInfoNum, camInfoPhotoName) VALUES "
+						+ " (CAMPPHOTO_seq.NEXTVAL, ?, ?)";
+				pstmt = conn.prepareStatement(sql);
+				
+				for (int i = 0; i < dto.getImageFiles().length; i++) {
+					pstmt.setLong(1, dto.getCamInfoNum());
+					pstmt.setString(2, dto.getImageFiles()[i]);
+					
+					pstmt.executeUpdate();
+				}
+			}
+			
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;
@@ -702,5 +689,151 @@ public class CampInfoDAO {
 		return result;
 	}
 
+	// 사진 파일 리스트
+	public List<CampInfoDTO> listPhotoFile(long num) {
+		List<CampInfoDTO> list = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = "SELECT camInfoPhotoNum, camInfoNum, camInfoPhotoName FROM campPhoto WHERE camInfoNum = ?";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				CampInfoDTO dto = new CampInfoDTO();
+
+				dto.setCamInfoPhotoNum(rs.getInt("camInfoPhotoNum"));
+				dto.setCamInfoNum(rs.getInt("camInfoNum"));
+				dto.setCamInfoPhotoName(rs.getString("camInfoPhotoName"));
+				
+				list.add(dto);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
+		return list;
+	}
+	
+	// 사진 파일 삭제
+	public void deleteCampInfoFile(String mode, long num) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+
+		try {
+			if (mode.equals("all")) {
+				sql = "DELETE FROM CAMPPHOTO WHERE camInfoNum = ?";
+			} else {
+				sql = "DELETE FROM CAMPPHOTO WHERE camInfoPhotonum = ?";
+			}
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+
+			pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e2) {
+				}
+			}
+		}
+	}
+		
+		// 사진 읽어오기
+		public CampInfoDTO readCampInfoFile(int camInfoPhotoNum) {
+			CampInfoDTO dto = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+
+			try {
+				sql = "SELECT camInfoPhotoNum, camInfoNum, camInfoPhotoName FROM campPhoto WHERE camInfoPhotoNum = ?";
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setLong(1, camInfoPhotoNum);
+				
+				rs = pstmt.executeQuery();
+
+				if (rs.next()) {
+					dto = new CampInfoDTO();
+
+					dto.setCamInfoPhotoNum(rs.getInt("camInfoPhotoNum"));
+					dto.setCamInfoNum(rs.getInt("camInfoNum"));
+					dto.setCamInfoPhotoName(rs.getString("camInfoPhotoName"));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException e) {
+					}
+				}
+
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e) {
+					}
+				}
+			}
+
+			return dto;
+	}
+		
+		public void deleteCampPhotoFile(String mode, long num) throws SQLException {
+			PreparedStatement pstmt = null;
+			String sql;
+
+			try {
+				if (mode.equals("all")) {
+					sql = "DELETE FROM campPhoto WHERE camInfoNum = ?";
+				} else {
+					sql = "DELETE FROM campPhoto WHERE camInfoPhotoNum = ?";
+				}
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setLong(1, num);
+
+				pstmt.executeUpdate();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e;
+			} finally {
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e2) {
+					}
+				}
+			}
+		}
 	
 }

@@ -292,6 +292,8 @@ function sendOk() {
         return;
     }
     
+    
+    
     str = f.camThemaName.value.trim();
     if(!str) {
     	alert("테마명을 입력하세요");
@@ -300,21 +302,20 @@ function sendOk() {
     }
     
     str = f.camKeyWord.value.trim();
- 
- /*
+
     let mode = "${mode}";
     if( (mode === "write") && (!f.selectFile.value) ) {
         alert("이미지 파일을 추가 하세요. ");
         f.selectFile.focus();
         return;
     }
-*/
+
     
     f.action = "${pageContext.request.contextPath}/campInfo/${mode}_ok.do";
     f.submit();
 }
 
-/*
+
 <c:if test="${mode == 'update'}">
 	function deleteFile(camInfoPhotoNum) {
 		let cnt = $(".img-box").find("img").length;
@@ -332,7 +333,7 @@ function sendOk() {
 	}
 </c:if>
 
-*/
+
 
 </script>
 </head>
@@ -373,7 +374,7 @@ function sendOk() {
 					</tr>
 			
 					<tr>
-						<td>첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
+						<td>사&nbsp;&nbsp;&nbsp;&nbsp;진</td>
 						<td> 
 							<input type="file" name="selectFile" accept="image/*" multiple="multiple" class="form-control">
 						</td>		
@@ -423,23 +424,22 @@ function sendOk() {
 						
 					</tr>
 					
-					<!--  
+				
 					<c:if test="${mode == 'update' }">
 						<tr>
 							<td>등록이미지</td>
 							<td>
 								<div class="img-box">
-									<c:forEach var="vo" items="">
-										<img src="${pageContext.request.contextPath}/"
-											onclick="deleteFile();">
+									<c:forEach var="vo" items="${listFile}">
+										<img src="${pageContext.request.contextPath}/uploads/campInfo/${vo.camInfoPhotoName}"
+											onclick="deleteFile('${vo.camInfoPhotoNum}');">
 									</c:forEach>
 								</div>
 							</td>
 						</tr>
-					
 					</c:if>
 					
-					-->
+			
 				</table>
 					
 				<table class="table">
