@@ -253,7 +253,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     margin-top: 30px;
     text-align: center;
     color: #fff;
-    text-shadow: 2px 2px 3px rgb(0,0,0);
+    text-shadow: 2px 0px 3px #FF9800;
     padding-bottom: 20px;
 }
 
@@ -261,7 +261,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     font-size: 35px;
     font-family: BM_dh;
     line-height: 40px;
-    color: #fff !important;
+    color: #FF9800 !important;
 }
 
 .s_title2 .camp_s_tt {
@@ -287,11 +287,11 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     display: block;
     float: left;
     padding: 0 15px;
-    border: 1px solid #9C27B0;
+    border: 1px solid #FF9800;
     border-radius: 100px;
     text-align: center;
     font-size: 15px;
-    color: #9C27B0;
+    color: #FF9800;
     margin-right: 5px;
 }
 
@@ -340,18 +340,6 @@ tbody {
     display: table-row-group;
     vertical-align: middle;
     border-color: inherit;
-}
-
-@media (max-width: 1000px) {
-	.camp_info_box .cont_tb tbody tr:nth-child(1) th {
-	    border-top: 2px solid #FF9800;
-	}
-}
-
-@media (max-width: 1000px){
-	.camp_info_box .cont_tb tbody tr:nth-child(1) td {
-	    border-top: 2px solid #000;
-	}
 }
 
 #sub_title_wrap2 {
@@ -480,7 +468,7 @@ function imageViewer(img) {
 				<div class="camp_tag">
 					<p class="tag_tt">키워드</p>
 					<p style="float: left">${dto.camKeyWord}</p>
-					<p style="float: right">${dto.camInfoRegDate} &nbsp;&nbsp;|   조회수 &nbsp;&nbsp;${dto.camInfoHitCount} &nbsp;&nbsp;|   찜하기 &nbsp;&nbsp;<button type="button" class="btn btnSendCampWish" title="좋아요"> <i class="fa-solid fa-star" style="color:${isUserWish?'orange':'black'}"></i></button>
+					<p style="float: right; padding-right: 0px" >${dto.camInfoRegDate} &nbsp;&nbsp;|   조회수 &nbsp;&nbsp;${dto.camInfoHitCount} &nbsp;&nbsp;| 찜하기 수&nbsp;&nbsp; ${dto.wishCount}   &nbsp;&nbsp;| 찜하기 &nbsp;&nbsp;<button type="button" class="btn btnSendCampWish" title="좋아요"> <i class="fa-solid fa-star" style="color:${isUserWish?'orange':'black'}"></i></button>
 					 </p>			
 				</div>
 		    </div>
@@ -501,8 +489,8 @@ function imageViewer(img) {
 	    				</colgroup>
 	    				<tbody>
 	    					<tr>
-	    						<th scope="col">주소</th>
-	    						<td>${dto.camInfoAddr}</td>
+	    						<th scope="col" style = "border-top: 2px solid #FF9800;">주소</th>
+	    						<td style = "border-top: 2px solid #000;">${dto.camInfoAddr}</td>
 	    					</tr>
 	    					<tr>
 	    						<th scope="col">캠핑장테마</th>
