@@ -87,18 +87,18 @@ function searchList() {
 					</thead>
 					
 					<tbody>
-
+						<c:forEach var="member" items="${list}" varStatus="status">
 						<tr>				
-							<td>${dto.userNickName}</td>
-							<td>${dto.camMateAppContent}</td>
-							<td>${dto.camMateAppGender}</td>
-							<td>${dto.camMateAppAge}</td>
+							<td>${member.userNickName}</td>
+							<td>${member.camMateAppContent}</td>
+							<td>${member.camMateAppGender}</td>
+							<td>${member.camMateAppAge}</td>
 							<td>
-								<input type="checkbox" name="nums" value="${dto.userId}">
+								<input type="checkbox" name="nums" value="${member.userId}">
 							</td>
 							
 						</tr>
-
+						</c:forEach>
 					</tbody>
 				</table>
 			</form>
@@ -115,11 +115,10 @@ function searchList() {
 					<td align="center">
 						<form name="searchForm" action="${pageContext.request.contextPath}/mypage/mateApplyAdmin.do?page=${page}&num=${num}" method="post">
 							<select name="condition" class="form-select">
-								<!-- <option value="all" ${condition=="all"?"selected='selected'":"" }>제목+내용</option> -->
 								<option value="userNickName" ${condition=="userNickName"?"selected='selected'":"" }>닉네임</option>
-								<option value="camMateAppContent"  ${condition=="camMateAppContent "?"selected='selected'":"" }>내용</option>
-								<option value="camMateAppGender"  ${condition=="camMateAppGender "?"selected='selected'":"" }>성별</option>
-								<option value="camMateAppAge"  ${condition=="camMateAppAge "?"selected='selected'":"" }>나이</option>
+								<option value="camMateAppContent"  ${condition=="camMateAppContent"?"selected='selected'":"" }>내용</option>
+								<option value="camMateAppGender"  ${condition=="camMateAppGender"?"selected='selected'":"" }>성별</option>
+								<option value="camMateAppAge"  ${condition=="camMateAppAge"?"selected='selected'":"" }>나이</option>
 							</select>
 							<input type="text" name="keyword" value="${keyword}" class="form-control">
 

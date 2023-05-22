@@ -62,7 +62,7 @@ function searchList() {
 	    </div>
 	    
 	    <div class="body-main mx-auto">
-	        <form name="listForm" method="post" action="${pageContext.request.contextPath}/mypage/myMateList.do">
+	        <form name="listForm" method="post" action="${pageContext.request.contextPath}/mypage/mateList.do">
 				<table class="table">
 					<tr>
 						<td align="right">

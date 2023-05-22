@@ -38,14 +38,12 @@ function searchList() {
 	$(function(){  
 		$("#chkAll").click(function(){
 			if($(this).is(":checked")) {
-				$("input[name=nums]").prop("checked", true);
+				$("input[name=userId]").prop("checked", true);
 			} else {
-				$("input[name=nums]").prop("checked", false);
+				$("input[name=userId]").prop("checked", false);
 			}
 		});
 	});
-
-	
 </script>
 </head>
 <body>
@@ -57,18 +55,19 @@ function searchList() {
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-clipboard-list"></i> 나의 메이트 목록 </h2>
+			<h2><i class="fas fa-clipboard-list"></i> 모든 유저 목록 </h2>
 			<button type="button" onclick="location.href='${pageContext.request.contextPath}/mypage/main.do'">뒤로 가기</button>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
-	        <form name="listForm" method="post" action="${pageContext.request.contextPath}/mypage/myMateList.do">
+	        <form name="listForm" method="post" action="${pageContext.request.contextPath}/mypage/adminList.do">
 				<table class="table">
 					<tr>
 						<td align="right">
 							<input type="hidden" name="page" value="${page}">
 							<input type="hidden" name="condition" value="${condition}">
 							<input type="hidden" name="keyword" value="${keyword}">
+							<input type="hidden" name="userId" value="${userId}">
 						</td>
 					</tr>
 				</table>
@@ -76,15 +75,15 @@ function searchList() {
 				<table class="table table-border table-list">
 					<thead>
 						<tr>
-							<th class="num">번호</th>
-							<th class="mateSubject">메이트제목</th>
-							<th class="campSubject">캠핑장제목</th>
-							<th class="startDate">시작일</th>
-							<th class="endDate">종료일</th>
-							<th class="admin">관리자 닉네임</th>
-							<th class="dues">최대 인원</th>
-							<th class="memberlist">멤버 리스트</th>
-							<th class="memberWait">신청 대기 리스트</th>
+							<th class="id">아이디</th>
+							<th class="name">이름</th>
+							<th class="nickName">닉네임</th>
+							<th class="tel">전화번호</th>
+							<th class="birth">생일</th>
+							<th class="email">이메일</th>
+							<th class="point">포인트</th>
+							<th class="regDate">생성일</th>
+							<th class="updateDate">수정일</th>
 							<th class="chk">
 								<input type="checkbox" name="chkAll" id="chkAll">
 							</th>
@@ -92,19 +91,19 @@ function searchList() {
 					</thead>
 					
 					<tbody>
-						<c:forEach var="mateList" items="${list}" varStatus="status">
+						<c:forEach var="member" items="${list}" varStatus="status">
 						<tr>
-							<td>${mateList.camMateNum}</td>
-							<td>${mateList.camMateSubject}</td>
-							<td>${mateList.camInfoSubject}</td>
-							<td>${mateList.camMateStartDate}</td>
-							<td>${mateList.camMateEndDate}</td>
-							<td>${mateList.userNickName}</td>
-							<td>${mateList.camMateDues}</td>
-							<td><button type="button" class="btn" onclick="location.href='${AdminUrl}&num=${mateList.camMateNum}'">멤버 보기</button></td>
-							<td><button type="button" class="btn" onclick="location.href='${waitUrl}&num=${mateList.camMateNum}'">대기 보기</button></td>
+							<td>${member.userId}</td>
+							<td>${member.userName}</td>
+							<td>${member.userNickName}</td>
+							<td>${member.userTel}</td>
+							<td>${member.userBirth}</td>
+							<td>${member.userEmail}</td>
+							<td>${member.userPoint}</td>
+							<td>${member.userRegDate}</td>
+							<td>${member.userUpdateDate}</td>
 							<td>
-								<input type="checkbox" name="nums" value="${mateList.camMateNum}">
+								<input type="checkbox" name="userId" value="${member.userId}">
 							</td>
 							
 						</tr>
@@ -114,46 +113,47 @@ function searchList() {
 			</form>
 			
 			<div class="page-navigation">
-				${dataCount == 0 ? "등록된 메이트가 없습니다." : paging}
+				${dataCount == 0 ? "등록된 유저가 없습니다." : paging}
 			</div>
 			
 			<table class="table">
 				<tr>
 					<td width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mypage/mateList.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mypage/adminList.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
 					</td>
 					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/mypage/mateList.do" method="post">
+						<form name="searchForm" action="${pageContext.request.contextPath}/mypage/adminList.do" method="post">
 							<select name="condition" class="form-select">
 								<!-- <option value="all" ${condition=="all"?"selected='selected'":"" }>제목+내용</option> -->
-								<option value="camMateNum" ${condition=="camMateNum"?"selected='selected'":"" }>메이트번호</option>
-								<option value="camMateSubject"  ${condition=="camMateSubject "?"selected='selected'":"" }>메이트제목</option>
-								<option value="camMateContent"  ${condition=="camMateContent "?"selected='selected'":"" }>메이트내용</option>
-								<option value="camInfoSubject"  ${condition=="camInfoSubject "?"selected='selected'":"" }>캠핑장제목</option>
-								<option value="userNickName"  ${condition=="userNickName "?"selected='selected'":"" }>관리자 닉네임</option>
+								<option value="userId" ${condition=="userId"?"selected='selected'":"" }>아이디</option>
+								<option value="userName"  ${condition=="userName"?"selected='selected'":"" }>이름</option>
+								<option value="userNickName"  ${condition=="userNickName"?"selected='selected'":"" }>닉네임</option>
+								<option value="userRegDate"  ${condition=="userRegDate"?"selected='selected'":"" }>생성일</option>
+								<option value="userUpdateDate"  ${condition=="userUpdateDate"?"selected='selected'":"" }>수정일</option>
 							</select>
 							<input type="text" name="keyword" value="${keyword}" class="form-control">
 
 							<button type="button" class="btn" onclick="searchList();">검색</button>
 						</form>
 					</td>
+					
 					<td align="right" width="100">
-						<button type="button" class="btn" onclick="btnDeleteMate();">삭제 하기</button>
+						<button type="button" class="btn" onclick="btnDeleteUser();">삭제 하기</button>
 						<script type="text/javascript">
-						function btnDeleteMate() {
-							let cnt = $("input[name=nums]:checked").length;
+						function btnDeleteUser() {
+							let cnt = $("input[name=userId]:checked").length;
 							if(cnt === 0) {
-								alert("삭제할 메이트를 먼저 선택하세요.");
+								alert("삭제할 유저를 먼저 선택하세요.");
 								return false;
 							}
 
-							if(confirm("선택한 메이트를 삭제 하시겠습니까 ?")) {
+							if(confirm("선택한 유저를 삭제 하시겠습니까 ?")) {
 								const f = document.listForm;
-								f.action="${pageContext.request.contextPath}/mypage/deleteMate.do";
+								f.action="${pageContext.request.contextPath}/mypage/deleteUser.do";
 								f.submit();
 							}
 						}
-							
+						
 						</script>
 					</td>
 				</tr>
