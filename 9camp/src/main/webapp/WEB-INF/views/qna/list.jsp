@@ -213,13 +213,13 @@ function searchList() {
 						<tr>
 							<td>${dataCount - (page-1) * size - status.index}</td>
 							<td class="left">
-								<a href="${articleUrl}&rentNum=${dto.rentNum}">${dto.rentSubject}</a>
+								<a href="${articleUrl}&qnaNum=${dto.qnaNum}">${dto.qnaSubject}</a>
 							</td>
 							<td>${sessionScope.member.userNickName}</td>
-							<td>${dto.rentRegDate}</td>
-							<td>${dto.rentHitCount}</td>
+							<td>${dto.qnaRegDate}</td>
+							<td>${dto.qnaHitCount}</td>
 							<td>
-								<c:if test="${not empty dto.rentPhotoName}">
+								<c:if test="${not empty dto.qnaFileName}">
 									<i class="far fa-file"></i>
 								</c:if>
 							</td>
@@ -235,16 +235,15 @@ function searchList() {
 			<table class="table">
 				<tr>
 					<td width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/rent/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/qna/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
 					</td>
 					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/rent/list.do" method="post">
+						<form name="searchForm" action="${pageContext.request.contextPath}/qna/list.do" method="post">
 							<select name="condition" class="form-select">
 								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
 								<option value="userName" ${condition=="userName"?"selected='selected'":"" }>작성자</option>
 								<option value="reg_date" ${condition=="reg_date"?"selected='selected'":"" }>등록일</option>
 								<option value="subject"  ${condition=="subject"?"selected='selected'":"" }>제목</option>
-								<option value="object"  ${condition=="object"?"selected='selected'":"" }>품목</option>
 								<option value="content"  ${condition=="content"?"selected='selected'":"" }>내용</option>
 							</select>
 							<input type="text" name="keyword" value="${keyword}" class="form-control">
@@ -252,7 +251,7 @@ function searchList() {
 						</form>
 					</td>
 					<td align="right" width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/rent/write.do';">글올리기</button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/qna/write.do';">글올리기</button>
 					</td>
 				</tr>
 			</table>

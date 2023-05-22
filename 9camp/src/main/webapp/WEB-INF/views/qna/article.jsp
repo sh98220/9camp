@@ -245,8 +245,8 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 <c:if test="${sessionScope.member.userId==dto.hostId || sessionScope.member.userId=='admin'}">
 	function deleterentBoard() {
 	    if(confirm("게시글을 삭제 하시 겠습니까 ? ")) {
-		    let query = "rentNum=${dto.rentNum}&page=${page}";
-		    let url = "${pageContext.request.contextPath}/rent/delete.do?" + query;
+		    let query = "qnaNum=${dto.qnaNum}&page=${page}";
+		    let url = "${pageContext.request.contextPath}/qna/delete.do?" + query;
 	    	location.href = url;
 	    }
 	}
@@ -305,7 +305,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 렌트  </h2>
+			<h2><i class="fas fa-graduation-cap"></i> Q & A </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
@@ -313,7 +313,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 				<thead>
 					<tr>
 						<td colspan="2" align="center">
-							${dto.rentSubject}
+							${dto.qnaSubject}
 						</td>
 					</tr>
 				</thead>
@@ -324,15 +324,17 @@ function ajaxFun(url, method, query, dataType, fn) {
 							이름 : ${sessionScope.member.userNickName}
 						</td>
 						<td align="right">
-							${dto.rentRegDate} | 조회 ${dto.rentHitCount}
+							${dto.qnaRegDate} | 조회 ${dto.qnaHitCount}
 						</td>
 					</tr>
 					
 					<tr>
 						<td colspan="2" valign="top" height="200">
-							${dto.rentContent}
+							${dto.qnaContent}
 						</td>
 					</tr>
+					
+					<c:forEach var="vo" items="${listFile}">
 		
 					<tr>
 						<td colspan="2" height="110">
@@ -345,6 +347,17 @@ function ajaxFun(url, method, query, dataType, fn) {
 							</div>
 						</td>
 					</tr>
+					
+					</c:forEach>
+		
+					<c:forEach var="vo" items="${listFile}">
+							<tr>
+								<td colspan="2">
+									파&nbsp;&nbsp;일 :
+									<a href="${pageContext.request.contextPath}/notice/download.do?fileNum=${vo.fileNum}">${vo.originalFilename}</a>
+								</td>
+							</tr>
+						</c:forEach>
 		
 					<tr>
 						<td colspan="2">

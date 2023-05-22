@@ -186,7 +186,7 @@
 				</div>
 			</div>
 			<button type="button" class="btn" onclick="sendOk();"> 보내기 </button>
-			<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/message/listRecMsg.do';"> 취소 </button>
+			<button type="button" class="btn" onclick="history.back();"> 취소 </button>
 		</form> 
 	</div>
   

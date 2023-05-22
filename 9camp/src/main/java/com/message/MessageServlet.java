@@ -1,6 +1,7 @@
 package com.message;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
@@ -10,6 +11,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.json.JSONObject;
 
 import com.member.SessionInfo;
 import com.util.MyServlet;
@@ -50,6 +53,10 @@ public class MessageServlet extends MyServlet {
 			sendArticle(req, resp);
 		} else if(uri.indexOf("sendDelete.do") != -1) {
 			sendDelete(req, resp);
+		} else if(uri.indexOf("complete.do") != -1) {
+			complete(req, resp);
+		} else if(uri.indexOf("countNoReadMsg.do") != -1) {
+			countNoReadMsg(req, resp);
 		}
 	}
 	
@@ -153,6 +160,7 @@ public class MessageServlet extends MyServlet {
 		SessionInfo info = (SessionInfo)session.getAttribute("member");
 		
 		String cp = req.getContextPath();
+		String url = cp + "/message/complete.do";
 		
 		if(req.getMethod().equalsIgnoreCase("GET")) {
 			resp.sendRedirect(cp + "/message/listSendMsg.do");
@@ -166,13 +174,20 @@ public class MessageServlet extends MyServlet {
 			dto.setMsgWriterId(info.getUserId());
 			dto.setMsgSenderId(req.getParameter("msgSenderId"));
 			
-			dao.sendMsg(dto);
+			session.setAttribute("rcId", dto.getMsgSenderId());
+			
+			int result = dao.sendMsg(dto);
+			
+			if(result == 0) {
+				url += "?fail";
+			}
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			// e.printStackTrace();
+			url += "?fail";
 		}
 		
-		resp.sendRedirect(cp + "/message/listSendMsg.do");
+		resp.sendRedirect(url);
 	}
 	
 	protected void recArticle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -442,6 +457,46 @@ public class MessageServlet extends MyServlet {
 		}
 		
 		resp.sendRedirect(cp + "/message/listSendMsg.do?" + query);
+	}
+	
+	protected void complete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		HttpSession session = req.getSession();
+		String fail = req.getParameter("fail");
+		
+		String rcId = (String)session.getAttribute("rcId");
+		session.removeAttribute("rcId");
+		
+		String msg = "<span style='color:blue;'>" + rcId + "</span> 님에게 <br>";
+		if(fail == null) {
+			msg += "쪽지를 성공적으로 보냈습니다.";
+		} else {
+			msg += "쪽지 전송이 실패했습니다.";
+		}
+		
+		req.setAttribute("message", msg);
+		
+		forward(req, resp, "/WEB-INF/views/message/completeSend.jsp");
+	}
+	
+	protected void countNoReadMsg(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		MessageDAO dao = new MessageDAO();
+		int count = 0;
+
+		try {
+			HttpSession session = req.getSession();
+			SessionInfo info = (SessionInfo) session.getAttribute("member");
+			
+			count = dao.dataNoReadCount(info.getUserId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		JSONObject job = new JSONObject();
+		job.put("count", count);
+
+		resp.setContentType("text/html;charset=utf-8");
+		PrintWriter out = resp.getWriter();
+		out.print(job.toString());
 	}
 	
 }
