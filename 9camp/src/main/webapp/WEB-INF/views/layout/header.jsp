@@ -132,7 +132,7 @@
 							<a href="${pageContext.request.contextPath}/notice/list.do">공지사항</a>
 						</li>
 						<li>
-							<a href="#">Q &amp; A</a>
+							<a href="${pageContext.request.contextPath}/qna/list.do">Q &amp; A</a>
 						</li>
 						<li>
 							<a href="#">정보수정요청</a>
