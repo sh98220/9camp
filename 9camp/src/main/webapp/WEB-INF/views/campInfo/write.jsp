@@ -303,6 +303,41 @@ function sendOk() {
     
     str = f.camKeyWord.value.trim();
 
+    str = f.camPhoneNum.value.trim();
+    if(!str) {
+    	alert("전화번호를 입력하세요");
+    	f.camPhoneNum.focus();
+    	return;
+    }
+    
+    str = f.camNomalWeekDayPrice.value.trim();
+    if(!str) {
+    	alert("평상시 평일 가격을 입력하세요");
+    	f.camNomalWeekDayPrice.focus();
+    	return;
+    }
+    
+    str = f.camNomalWeekEndPrice.value.trim();
+    if(!str) {
+    	alert("평상시 주말 가격을 입력하세요");
+    	f.camNomalWeekEndPrice.focus();
+    	return;
+    }
+    
+    str = f.camPeakWeekDayPrice.value.trim();
+    if(!str) {
+    	alert("성수기 평일 가격을 입력하세요");
+    	f.camPeakWeekDayPrice.focus();
+    	return;
+    }
+    
+    str = f.camPeakWeekEndPrice.value.trim();
+    if(!str) {
+    	alert("성수기 주말 가격을 입력하세요");
+    	f.camPeakWeekEndPrice.focus();
+    	return;
+    }
+    
     let mode = "${mode}";
     if( (mode === "write") && (!f.selectFile.value) ) {
         alert("이미지 파일을 추가 하세요. ");
@@ -391,6 +426,48 @@ function sendOk() {
 					</tr>
 					
 					<tr>
+						<td>전화번호</td>
+						<td> 
+							<input type="text" name="camPhoneNum" maxlength="100" class="form-control" value="${dto.camPhoneNum}">
+						</td>		
+					</tr>
+					
+					<tr>
+						<td>평상시평일</td>
+						<td> 
+							<input type="text" name="camNomalWeekDayPrice" maxlength="100" class="form-control" value="${dto.camNomalWeekDayPrice}">
+						</td>		
+					</tr>
+					
+					<tr>
+						<td>평상시주말</td>
+						<td> 
+							<input type="text" name="camNomalWeekEndPrice" maxlength="100" class="form-control" value="${dto.camNomalWeekEndPrice}">
+						</td>		
+					</tr>
+					
+					<tr>
+						<td>성수기평일</td>
+						<td> 
+							<input type="text" name="camPeakWeekDayPrice" maxlength="100" class="form-control" value="${dto.camPeakWeekDayPrice}">
+						</td>		
+					</tr>
+					
+					<tr>
+						<td>성수기주말</td>
+						<td> 
+							<input type="text" name="camPeakWeekEndPrice" maxlength="100" class="form-control" value="${dto.camPeakWeekEndPrice}">
+						</td>		
+					</tr>
+					
+					<tr>
+						<td>캠핑장시설</td>
+						<td> 
+							<input type="text" name="camFacility" maxlength="100" class="form-control" value="${dto.camFacility}">
+						</td>		
+					</tr>
+					
+					<tr>
 						<td>키워드</td>
 					
 						<td><!-- 검색 버튼 -->
@@ -475,7 +552,7 @@ $(function(){
 	      selectedKeywords.push($(this).val());
 	    });
 	 
-	    $("#selected-keywords").val(selectedKeywords.join(", "));
+	    $("#selected-keywords").val(selectedKeywords.join("#"));
 	  
 	    modalClose();
 	 });

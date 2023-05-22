@@ -36,8 +36,9 @@ public class CampInfoDAO {
 			rs = null;
 			pstmt = null;
 			
-			sql = "INSERT INTO campInfo(camInfoNum, userId, camInfoSubject, camInfoContent, camInfoAddr, camInfoHitCount, camInfoRegDate, camThemaName, camKeyword) "
-					+ " VALUES (?, 'admin',  ?, ?, ?, 0, SYSDATE, ?, ?)";
+			sql = "INSERT INTO campInfo(camInfoNum, userId, camInfoSubject, camInfoContent, camInfoAddr, camInfoHitCount, camInfoRegDate, camThemaName, camKeyword ,"
+					+ " camPhoneNum, camNomalWeekDayPrice, camNomalWeekEndPrice, camPeakWeekDayPrice, camPeakWeekEndPrice, camFacility ) "
+					+ " VALUES (?, 'admin',  ?, ?, ?, 0, SYSDATE, ?, ?, ?, ?, ?, ?, ?, ?)";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -47,6 +48,12 @@ public class CampInfoDAO {
 			pstmt.setString(4, dto.getCamInfoAddr());
 			pstmt.setString(5, dto.getCamThemaName());
 			pstmt.setString(6, dto.getCamKeyWord());
+			pstmt.setString(7, dto.getCamPhoneNum());
+			pstmt.setString(8, dto.getCamNomalWeekDayPrice());
+			pstmt.setString(9, dto.getCamNomalWeekEndPrice());
+			pstmt.setString(10, dto.getCamPeakWeekDayPrice());
+			pstmt.setString(11, dto.getCamPeakWeekEndPrice());
+			pstmt.setString(12, dto.getCamFacility());
 			
 			pstmt.executeUpdate();	
 			
@@ -309,7 +316,8 @@ public class CampInfoDAO {
 
 		try {
 			sql = "SELECT c.camInfoNum, camInfoSubject, camInfoContent, camInfoAddr, "
-					+ " camInfoHitCount, TO_CHAR(camInfoRegDate, 'YYYY-MM-DD') camInfoRegDate, camThemaName, NVL(wishCount, 0) wishCount, camKeyWord "
+					+ " camInfoHitCount, TO_CHAR(camInfoRegDate, 'YYYY-MM-DD') camInfoRegDate, camThemaName, NVL(wishCount, 0) wishCount, camKeyWord, "
+					+ "  camPhoneNum, camNomalWeekDayPrice, camNomalWeekEndPrice, camPeakWeekDayPrice, camPeakWeekEndPrice, camFacility "
 					+ " FROM campInfo c "
 					+ " LEFT OUTER JOIN("
 					+ " SELECT camInfoNum, COUNT(*) wishCount"
@@ -335,6 +343,12 @@ public class CampInfoDAO {
 				dto.setCamThemaName(rs.getString("camThemaName"));
 				dto.setWishCount(rs.getInt("wishCount"));	
 				dto.setCamKeyWord(rs.getString("camKeyWord"));
+				dto.setCamPhoneNum(rs.getString("camPhoneNum"));
+				dto.setCamNomalWeekDayPrice(rs.getString("camNomalWeekDayPrice"));
+				dto.setCamNomalWeekEndPrice(rs.getString("camNomalWeekEndPrice"));
+				dto.setCamPeakWeekDayPrice(rs.getString("camPeakWeekDayPrice"));
+				dto.setCamPeakWeekEndPrice(rs.getString("camPeakWeekEndPrice"));
+				dto.setCamFacility(rs.getString("camFacility"));
 			}
 			
 		} catch (SQLException e) {
@@ -483,7 +497,7 @@ public class CampInfoDAO {
 		String sql;
 		
 		try {
-			sql = "UPDATE campInfo SET camInfoSubject=?, camInfoContent=?, camInfoAddr = ?, camThemaName = ?, camKeyWord = ? WHERE camInfoNum=?";
+			sql = "UPDATE campInfo SET camInfoSubject=?, camInfoContent=?, camInfoAddr = ?, camThemaName = ?, camKeyWord = ? camPhoneNum = ? , camNomalWeekDayPrice = ?, camNomalWeekEndPrice = ?, camPeakWeekDayPrice = ? , camPeakWeekEndPrice = ?, camFacility = ? WHERE camInfoNum=?";
 			pstmt = conn.prepareStatement(sql);
 
 			pstmt.setString(1, dto.getCamInfoSubject());
@@ -492,7 +506,13 @@ public class CampInfoDAO {
 			pstmt.setString(4, dto.getCamThemaName());
 			pstmt.setString(5, dto.getCamKeyWord());
 			pstmt.setLong(6, dto.getCamInfoNum());
-
+			pstmt.setString(7, dto.getCamPhoneNum());
+			pstmt.setString(8, dto.getCamNomalWeekDayPrice());
+			pstmt.setString(9, dto.getCamNomalWeekEndPrice());
+			pstmt.setString(10, dto.getCamPeakWeekDayPrice());
+			pstmt.setString(11, dto.getCamPeakWeekEndPrice());
+			pstmt.setString(12, dto.getCamFacility());
+			
 			pstmt.executeUpdate();
 			
 			pstmt.close();

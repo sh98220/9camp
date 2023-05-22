@@ -168,12 +168,124 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	    max-width: 750px;
 	}
 }
+
+#cont_inner {
+    width: 100%;
+    position: relative;
+    height: auto;
+    clear: both;
+    padding: 15px 0 95px 0;
+    background: #fff;
+}
+
+@media (max-width: 1219px){
+	.layout {
+	    display: block;
+	    position: relative;
+	    width: 97%;
+	    margin: 0 auto;
+	}
+}
+
+#section1 {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+#cont_inner .title_w {
+    width: 100%;
+    height: 50px;
+    border-bottom: 1px solid #dedede;
+    margin-bottom: 30px;
+    padding-top: 20px;
+}
+
+.title_w.mb_0 {
+    margin-bottom: 0 !important;
+    border-bottom: 0px !important;
+}
+
+#cont_inner .title_w h2.title2 {
+    display: inline-block;
+    font-size: 22px;
+    font-weight: normal;
+    color: #000;
+    padding: 0;
+    float: left;
+}
+
+.em_org {
+    color: #eb831d !important;
+}
+
+#contents {
+    clear: both;
+    position: relative;
+    color: #626262;
+    letter-spacing: -0.5px;
+}
+
+.search_list_gr {
+    position: relative;
+    width: 100%;
+    height: auto;
+    padding: 15px 20px 15px 0;
+    box-sizing: border-box;
+    min-height: 31px;
+    background: #f4f4f4;
+    border-top: 1px solid #dbdbdb;
+    border-bottom: 2px solid #000000;
+    overflow: hidden;
+}
+
+div.select_box {
+    position: relative;
+    width: 160px;
+    height: 31px;
+    line-height: 31px;
+    background: url(/img/2018/layout/arr2.png) no-repeat right 10px center;
+    border: 0;
+    margin: 10px 0;
+}
+
+.array_select {
+    margin: 0 10px 0 20px !important;
+    float: left !important;
+}
+
+.select_map {
+    float: right;
+}
+
+
+.camp_search_list {
+    position: relative;
+    width: 100%;
+    height: auto;
+    clear: both;
+}
+
+.camp_search_list .c_list {
+    position: relative;
+    padding: 25px 20px;
+    height: auto;
+    overflow: hidden;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+.camp_search_list .c_list.update {
+    background: #f8fcfe;
+}
+
 </style>
 <script type="text/javascript">
 function searchList() {
 	const f = document.searchForm;
 	f.submit();
 }
+
+
 
 </script>
 </head>
@@ -185,6 +297,72 @@ function searchList() {
 	
 <main>
 	<div class="container body-container">
+	    <div id="cont_inner">
+	    	<div class="sub_layout layout">
+	    		<section id="section1" style="right: 0px">
+	    			<header class="title _w mb_0">
+	    				<h2 class="title2">
+	    					총
+	    					<span class="em_org">${dataCount}개</span>
+	    					캠핑장이 검색되었습니다.
+	    				</h2>		
+	    		 	</header>	
+	    		</section>
+	    	
+	    	<div id="contents">
+	    		<div class="search_list_gr">
+	    			<div class="select_box array_select">
+	    				<select class="detail_select" id="" title="">
+	    					<option value="">업데이트순</option>
+	    					<option value="">등록일순</option>
+	    					<option value="">조회순</option>
+	    					<option value="">추천순</option>    				
+	    				</select>	    			
+	    			</div>
+	    			<div class="select_map">
+	    				<button type="button">지도로보기</button>
+	    			</div>	    			
+	    		</div>	    	
+	    	</div>
+	    	
+	    	<div class="camp_search_list">
+	    		<ul>
+	    			<li>
+	    				<div class="c_list_update">
+	    				
+	    				</div>
+	    			
+	    			
+	    			
+	    			</li>
+	    			
+	    			
+	    		
+	    		
+	    		
+	    		
+	    		</ul>
+	    	</div>
+	    	
+	    	
+	    	</div>
+	    
+	    
+	    
+	    </div>
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
 	    <div class="body-title">
 			<h2><i class="fas fa-graduation-cap"></i> 캠핑장 둘러보기 </h2>
 	    </div>
