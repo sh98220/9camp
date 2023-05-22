@@ -24,7 +24,7 @@
 		<ul class="icon-cont">
 			<c:if test="${not empty sessionScope.member}">
 				<li class="point-li">
-					<a href="#"><span class="point-tit">보유 포인트</span> <span class="point-val">100,000</span> Point</a>
+					<a href="${pageContext.request.contextPath}/point/list.do"><span class="point-tit">보유 포인트</span> <span class="point-val">100,000</span> Point</a>
 				</li>
 			</c:if>
 			<c:if test="${not empty sessionScope.member}">	
@@ -129,7 +129,7 @@
 					<a href="#">고객센터</a>
 					<ul class="sub-menu">
 						<li>
-							<a href="#">공지사항</a>
+							<a href="${pageContext.request.contextPath}/notice/list.do">공지사항</a>
 						</li>
 						<li>
 							<a href="#">Q &amp; A</a>
