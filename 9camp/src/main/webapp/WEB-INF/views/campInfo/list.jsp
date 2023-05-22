@@ -326,7 +326,7 @@ function searchList() {
 	    			<li>
 	    				<div class="c_list_update">
 	    					<div class="img_box">
-	    						<a href="${articleUrl}&num=${dto.camInfoNum}"><img src=""></a>
+	    					
 	    					</div>
 	    				
 	    				</div>

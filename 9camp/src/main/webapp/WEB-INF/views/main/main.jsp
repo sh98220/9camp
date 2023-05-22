@@ -246,6 +246,14 @@
 	}
 }
 </style>
+<script type="text/javascript">
+function searchList() {
+	const f = document.searchForm;
+	f.submit();
+}
+</script>
+
+
 </head>
 
 <body>
@@ -281,55 +289,25 @@
 					
 					<!--//타이틀-->
 					<div class="search_box">
+						<form name="searchForm" action="${pageContext.request.contextPath}/campInfo/list.do" method="post">
+							<select name="condition" class="form-select">
+								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
+								<option value="camInfoRegDate"  ${condition=="camInfoRegDate"?"selected='selected'":"" }>등록일</option>
+								<option value="camInfoSubject"  ${condition=="camInfoSubject"?"selected='selected'":"" }>제목</option>
+								<option value="camInfoContent"  ${condition=="camInfoContent"?"selected='selected'":"" }>내용</option>
+								<option value="camThemaName"  ${condition=="camThemaName"?"selected='selected'":"" }>테마</option>
+								<option value="caminfoAddr" 	${condition=="camInfoAddr"?"selected='selected'":"" }>지역</option>
+							</select>
+							
 						
-						<!--검색박스-->
-						<div class="search_box_form">
+							
+							<input type="text" name="keyword" value="${keyword}" class="form-control">
 						
-							<div class="form1_1">
-								<p class="tt" style="color: white; margin-bottom: 5px;">캠핑장 이름</p>
-								
-								<label class="skip" for="searchKrwd_f"></label> 
-								<input type="text" name="campId" id="campId" class="form-control" 
-								style="width: 100%; height: 40px; border-radius: 5px; padding-left: 10px;">
-							</div>
 							
-							<br>
-							
-							<div class="form1_2">
-								<p class="tt"  style="color: white; margin-bottom: 5px;">지역별</p>
-								<label class="skip" for="c_do"></label> 
-								
-					
-									<select name="sido1" id="sido1" class="select_01" style="width: 40%; height: 40px; border-radius: 5px; padding-left: 10px;"></select>
-									<select name="gugun1" id="gugun1" class="select_02" style="width: 40%; height: 40px; border-radius: 5px; padding-left: 10px;"></select>
-							</div>
-							
-							<br>
-							
-							<div class="form1_2">
-								<p class="tt"  style="color: white; margin-bottom: 5px;">테마별</p>
-								<label class="skip" for="searchLctCl"></label> 
-								
-								<select name="searchLctCl" id="searchLctCl" class="select_03" title="검색할 테마를 선택하세요."
-															style="width: 40%; height: 40px; border-radius: 5px; padding-left: 10px;">
-									<option value="">전체테마</option>
-									<option value="47">바다</option>
-									<option value="48">강</option>
-									<option value="49">호수</option>
-									<option value="50">숲</option>
-									<option value="51">계곡</option>
-									<option value="52">산</option>
-									<option value="53">도심</option>
-									<option value="54">섬</option>
-								</select>
-								
-								<button type="submit" class="btnSearch"> 검색
-								</button>
-								
-							</div>
-						</div>
-						<!--//검색박스-->
-							
+						
+							<input type="hidden" name="category" value="${category}">
+							<button type="button" class="btn" onclick="searchList();">검색</button>
+						</form>
 					</div>
 				</section>
 			</div>
