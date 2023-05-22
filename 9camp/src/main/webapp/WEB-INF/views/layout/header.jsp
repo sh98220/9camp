@@ -3,6 +3,52 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<script type="text/javascript">
+function login(){
+	location.href = "${pageContext.request.contextPath}/member/login.do";
+}
+
+$(function(){
+	countNoReadMsg();
+});
+
+
+//쪽지 개수
+function countNoReadMsg() {
+	let url = "${pageContext.request.contextPath}/message/countNoReadMsg.do";
+	//let query = "count=" + count;
+	
+	const fn = function(data){
+		let count = data.count;
+		let selector = ".msg_count";
+		$(selector).html(count);
+	};
+	
+	$.ajax({
+		type:"POST",		// 메소드(get, post, put, delete)
+		url:url,			// 요청 받을 서버주소
+		// data:query,			// 서버에 전송할 파라미터
+		dataType:"json",	// 서버에서 응답하는 형식(json, xml, text)
+		success:function(data) {
+			fn(data);
+		},
+		beforeSend:function(jqXHR) { 
+			jqXHR.setRequestHeader("AJAX", true); // 사용자 정의 헤더
+		},
+		error:function(jqXHR) {
+			if(jqXHR.status === 403) {
+				login();
+				return false;
+			} else if(jqXHR.status === 400) {
+				alert("요청 처리가 실패 했습니다.");
+				return false;
+			}
+			//console.log(jqXHR.responseText);
+		}
+	});
+}
+</script>
+
 	<!-- 메뉴바 위 -->
 	<div class="top-cont">
 		<div class="today-cont">

@@ -270,7 +270,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 					</tr>
 				</table>
 			</div>
-			<!--// noter-read -->	
+			<!--// note-read -->	
 			
 		</div>
 	</div>
