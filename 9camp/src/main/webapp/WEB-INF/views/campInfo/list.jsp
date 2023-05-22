@@ -266,18 +266,14 @@ div.select_box {
     clear: both;
 }
 
-.camp_search_list .c_list {
-    position: relative;
-    padding: 25px 20px;
-    height: auto;
-    overflow: hidden;
-    border-bottom: 1px solid #dbdbdb;
+@media (max-width: 1219px){
+	.camp_search_list .c_list .img_box {
+	    width: 275px;
+	    height: 195px;
+	    position: relative;
+	    float: left;
+	}
 }
-
-.camp_search_list .c_list.update {
-    background: #f8fcfe;
-}
-
 </style>
 <script type="text/javascript">
 function searchList() {
@@ -329,6 +325,9 @@ function searchList() {
 	    		<ul>
 	    			<li>
 	    				<div class="c_list_update">
+	    					<div class="img_box">
+	    						<a href="${articleUrl}&num=${dto.camInfoNum}"><img src=""></a>
+	    					</div>
 	    				
 	    				</div>
 	    			
