@@ -473,7 +473,7 @@ $(function(){
 						<td width="50%">
 							작성자 :
 							<div class="writer_info">
-								<a href="#">
+								<a style="cursor: pointer;">
 									${dto.userNickName}
 								</a>
 								<div id="writer_modal">
