@@ -245,7 +245,59 @@
 		
 	}
 }
+
+.btn {
+  border: none;
+  display: block;
+  text-align: center;
+  cursor: pointer;
+  text-transform: uppercase;
+  outline: none;
+  overflow: hidden;
+  position: relative;
+  color: #000;
+  font-weight: 700;
+  font-size: 15px;
+  background-color: #fff;
+  padding: 17px 60px;
+  margin: 12px auto;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.20);
+
+}
+
+.btn span {
+  position: relative; 
+  z-index: 1;
+}
+
+.btn:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 490%;
+  width: 140%;
+  background: #FFC107;
+  -webkit-transition: all .5s ease-in-out;
+  transition: all .5s ease-in-out;
+  -webkit-transform: translateX(-98%) translateY(-25%) rotate(45deg);
+  transform: translateX(-98%) translateY(-25%) rotate(45deg);
+}
+
+.btn:hover:after {
+  -webkit-transform: translateX(-9%) translateY(-25%) rotate(45deg);
+  transform: translateX(-9%) translateY(-25%) rotate(45deg);
+}
+
 </style>
+<script type="text/javascript">
+function searchList() {
+	const f = document.searchForm;
+	f.submit();
+}
+</script>
+
+
 </head>
 
 <body>
@@ -281,55 +333,25 @@
 					
 					<!--//타이틀-->
 					<div class="search_box">
+						<form name="searchForm" action="${pageContext.request.contextPath}/campInfo/list.do" method="post">
 						
-						<!--검색박스-->
-						<div class="search_box_form">
-						
-							<div class="form1_1">
-								<p class="tt" style="color: white; margin-bottom: 5px;">캠핑장 이름</p>
-								
-								<label class="skip" for="searchKrwd_f"></label> 
-								<input type="text" name="campId" id="campId" class="form-control" 
-								style="width: 100%; height: 40px; border-radius: 5px; padding-left: 10px;">
-							</div>
-							
-							<br>
-							
-							<div class="form1_2">
-								<p class="tt"  style="color: white; margin-bottom: 5px;">지역별</p>
-								<label class="skip" for="c_do"></label> 
-								
-					
-									<select name="sido1" id="sido1" class="select_01" style="width: 40%; height: 40px; border-radius: 5px; padding-left: 10px;"></select>
-									<select name="gugun1" id="gugun1" class="select_02" style="width: 40%; height: 40px; border-radius: 5px; padding-left: 10px;"></select>
-							</div>
-							
-							<br>
-							
-							<div class="form1_2">
-								<p class="tt"  style="color: white; margin-bottom: 5px;">테마별</p>
-								<label class="skip" for="searchLctCl"></label> 
-								
-								<select name="searchLctCl" id="searchLctCl" class="select_03" title="검색할 테마를 선택하세요."
-															style="width: 40%; height: 40px; border-radius: 5px; padding-left: 10px;">
-									<option value="">전체테마</option>
-									<option value="47">바다</option>
-									<option value="48">강</option>
-									<option value="49">호수</option>
-									<option value="50">숲</option>
-									<option value="51">계곡</option>
-									<option value="52">산</option>
-									<option value="53">도심</option>
-									<option value="54">섬</option>
+								<select name="condition" class="form-select" class="form-control" style="width: 16%; height: 35px; border-radius: 3px;">
+									<option value="all"      ${condition=="all"?"selected='selected'":"" }>모든내용</option>
+									<option value="camInfoSubject"  ${condition=="camInfoSubject"?"selected='selected'":"" }>제목</option>
+									<option value="camInfoContent"  ${condition=="camInfoContent"?"selected='selected'":"" }>내용</option>
+									<option value="camThemaName"  ${condition=="camThemaName"?"selected='selected'":"" }>테마</option>
+									<option value="caminfoAddr" 	${condition=="camInfoAddr"?"selected='selected'":"" }>지역</option>
 								</select>
 								
-								<button type="submit" class="btnSearch"> 검색
-								</button>
+						
 								
-							</div>
-						</div>
+								<input type="text" name="keyword" value="${keyword}" class="form-control" style="width: 83%; height: 35px; border-radius: 3px; padding-left: 10px;">
+								<input type="hidden" name="category" value="${category}">
+								<button type="button" class="btn" onclick="searchList();"><span>SEARCH</span></button>
+							<!--검색박스-->
+						
 						<!--//검색박스-->
-							
+						</form>
 					</div>
 				</section>
 			</div>

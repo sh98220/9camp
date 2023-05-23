@@ -2,11 +2,15 @@ package com.notice;
 
 public class NoticeDTO {
 	private int noticeNum;
-	private String adminId;
+	private String userId;
 	private String noticeSubject;
 	private String noticeContent;
-	private String noticeHitCount;
+	private int noticeHitCount;
 	private String noticeRegDate;
+	
+	private int noticePhotoNum;
+	private String noticePhotoName;
+	private String[] imageFiles;
 	
 	public int getNoticeNum() {
 		return noticeNum;
@@ -14,11 +18,11 @@ public class NoticeDTO {
 	public void setNoticeNum(int noticeNum) {
 		this.noticeNum = noticeNum;
 	}
-	public String getAdminId() {
-		return adminId;
+	public String getuserId() {
+		return userId;
 	}
-	public void setAdminId(String adminId) {
-		this.adminId = adminId;
+	public void setuserId(String userId) {
+		this.userId = userId;
 	}
 	public String getNoticeSubject() {
 		return noticeSubject;
@@ -32,10 +36,10 @@ public class NoticeDTO {
 	public void setNoticeContent(String noticeContent) {
 		this.noticeContent = noticeContent;
 	}
-	public String getNoticeHitCount() {
+	public int getNoticeHitCount() {
 		return noticeHitCount;
 	}
-	public void setNoticeHitCount(String noticeHitCount) {
+	public void setNoticeHitCount(int noticeHitCount) {
 		this.noticeHitCount = noticeHitCount;
 	}
 	public String getNoticeRegDate() {
@@ -43,6 +47,25 @@ public class NoticeDTO {
 	}
 	public void setNoticeRegDate(String noticeRegDate) {
 		this.noticeRegDate = noticeRegDate;
+	}
+	
+	public int getNoticePhotoNum() {
+		return noticePhotoNum;
+	}
+	public void setNoticePhotoNum(int noticePhotoNum) {
+		this.noticePhotoNum = noticePhotoNum;
+	}
+	public String getNoticePhotoName() {
+		return noticePhotoName;
+	}
+	public void setNoticePhotoName(String noticePhotoName) {
+		this.noticePhotoName = noticePhotoName;
+	}
+	public String[] getImageFiles() {
+		return imageFiles;
+	}
+	public void setImageFiles(String[] imageFiles) {
+		this.imageFiles = imageFiles;
 	}
 	
 	

@@ -13,25 +13,20 @@
 a {display: inline-block;}
 
 .body-main {
-	max-width: 700px;
-	padding-top: 15px;
-}
-
-
-.body-main {
-	max-width: 700px;
+	max-width: 901px;
+	padding-top: 10px;
 }
 
 /* form-control */
 .btn {
 	border: 1px solid #999;
-	padding: 5px 10px;
-	border-radius: 4px;
+	padding: 5px 56px;
 	font-weight: 500;
 	cursor:pointer;
 	font-size: 14px;
 	font-family: "맑은 고딕", 나눔고딕, 돋움, sans-serif;
 	vertical-align: baseline;
+	text-align: center;
 }
 .btn:active, .btn:focus, .btn:hover {
 	background-color: #333;
@@ -72,7 +67,7 @@ input[type=checkbox], input[type=radio] { vertical-align: middle; }
 .table { width: 100%; border-spacing: 0; border-collapse: collapse; }
 .table th, .table td { padding-top: 10px; padding-bottom: 10px; }
 
-.table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
+.table-border thead > tr { border-top: 1px solid #666; border-bottom: 1px solid #666; }
 .table-border tbody > tr { border-bottom: 1px solid #ff5522; }
 .td-border td { border: 1px solid #ced4da; }
 
@@ -129,13 +124,9 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     border-bottom: 3px solid #ff5522;
 }
 
-.body-title h2 i {
-	
-}
-
 .body-main {
 	display: block;
-	padding-bottom: 15px;
+	padding-bottom: 40px;
 }
 
 .inner-page{
@@ -171,7 +162,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 }
 @media (min-width: 1200px) {
 	.container {
-	    max-width: 750px;
+	    max-width: 883px;
 	}
 }
 
@@ -251,17 +242,18 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 .s_title2 {
 	width: 100%;
     margin-top: 30px;
-    text-align: center;
+    text-align: left;
     color: #fff;
-    text-shadow: 2px 0px 3px #FF9800;
+    text-shadow: 2px 0px 3px #000000;
     padding-bottom: 20px;
+    border-bottom: 1px solid #000;
 }
 
 .s_title2 > .camp_name {
     font-size: 35px;
     font-family: BM_dh;
     line-height: 40px;
-    color: #FF9800 !important;
+    color: #000000; !important;
 }
 
 .s_title2 .camp_s_tt {
@@ -310,7 +302,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     height: auto;
     overflow: hidden;
     clear: both;
-    margin-bottom: 100px;
+    margin-bottom: 30px;
 }
 .camp_info_box .cont_tb {
     width: 45%;
@@ -328,18 +320,19 @@ table {
     border-collapse: collapse;
 }
 
-.camp_info_box .cont_tb table tr th {
-    padding: 11px 6px;
+.camp_info_box .cont_tb table tr th  {
+    padding: 0px 6px;
     border-bottom: 1px solid #c8c8c8;
     text-align: left;
     color: #000;
-    line-height: 25px;
+    line-height: 50px;
 }
 
 tbody {
     display: table-row-group;
     vertical-align: middle;
     border-color: inherit;
+    width: 100%;
 }
 
 #sub_title_wrap2 {
@@ -356,6 +349,96 @@ tbody {
 	    padding-top: 10px;
 	}
 }
+
+.btn_w {
+    width: 100%;
+    position: relative;
+    height: auto;
+    padding: 10px 0 0 0;
+    clear: both;
+}
+
+.btn_w button {
+    margin: 0;
+    display: inline-block;
+}
+
+.best {
+    width: 32%;
+    padding-left: 20px;
+}
+
+#contents {
+    clear: both;
+    position: relative;
+    color: #626262;
+    letter-spacing: -0.5px;
+}
+
+.camp_cont_w {
+    width: 100%;
+    position: relative;
+    height: auto;
+    clear: both;
+}
+
+@media (max-width: 1219px) {
+	.layout {
+	    display: block;
+	    position: relative;
+	    width: 97%;
+	    margin: 0 auto;
+	}
+}
+
+.camp_cont_w ul.camp_tab05 {
+    width: 100%;
+    height: 53px;
+    margin-bottom: 36px;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.camp_intro {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.camp_intro > ul li.img_box:first-child {
+    margin-left: 0 !important;
+}
+
+.camp_intro > ul li.img_box {
+    height: 235px;
+    box-sizing: border-box;
+    border: 1px solid #dedede;
+    margin-bottom: 3%;
+    margin-top: 3%;
+}
+
+.camp_intro > ul li.col_03 {
+    width: 32%;
+    float: left;
+}
+
+.imgFit {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.camp_intro_txt {
+    width: 100%;
+    padding: 4px 0;
+    border-top: 1px solid #000;
+    overflow: hidden;
+    margin-top: 20px;
+    display: block;
+    clear: both;
+}
+
+
 </style>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resource/jquery/js/jquery-ui.min.js"></script>
 <script type="text/javascript">
@@ -467,8 +550,8 @@ function imageViewer(img) {
 				</div>
 				<div class="camp_tag">
 					<p class="tag_tt">키워드</p>
-					<p style="float: left">${dto.camKeyWord}</p>
-					<p style="float: right; padding-right: 0px" >${dto.camInfoRegDate} &nbsp;&nbsp;|   조회수 &nbsp;&nbsp;${dto.camInfoHitCount} &nbsp;&nbsp;| 찜하기 수&nbsp;&nbsp; ${dto.wishCount}   &nbsp;&nbsp;| 찜하기 &nbsp;&nbsp;<button type="button" class="btn btnSendCampWish" title="좋아요"> <i class="fa-solid fa-star" style="color:${isUserWish?'orange':'black'}"></i></button>
+					<p style="float: left">#${dto.camKeyWord}</p>
+					<p style="float: right; padding-right: 0px" >${dto.camInfoRegDate} &nbsp;|   조회수 &nbsp;${dto.camInfoHitCount} &nbsp;| 찜하기 수&nbsp;${dto.wishCount}
 					 </p>			
 				</div>
 		    </div>
@@ -477,8 +560,10 @@ function imageViewer(img) {
 	    <div id="cont_inner">
 	    	<div class="camp_info_box">
 	    		<div class="img_b">
-					<c:forEach var="vo" items="${listFile}">
-						<img src="${pageContext.request.contextPath}/uploads/campInfo/${vo.camInfoPhotoName}">
+					<c:forEach var="vo" items="${listFile}" varStatus="loop">
+					  <c:if test="${loop.index == 0}">
+					    <img src="${pageContext.request.contextPath}/uploads/campInfo/${vo.camInfoPhotoName}">
+					  </c:if>
 					</c:forEach>
 	    		</div>
 	    		<div class="cont_tb">
@@ -489,21 +574,68 @@ function imageViewer(img) {
 	    				</colgroup>
 	    				<tbody>
 	    					<tr>
-	    						<th scope="col" style = "border-top: 2px solid #FF9800;">주소</th>
-	    						<td style = "border-top: 2px solid #000;">${dto.camInfoAddr}</td>
+	    						<th scope="col" style = "border-top: 1px solid #FF9800;">주소</th>
+	    						<td style = "border-top: 1px solid #000; border-bottom: 1px solid #c8c8c8;">${dto.camInfoAddr}</td>
 	    					</tr>
 	    					<tr>
 	    						<th scope="col">캠핑장테마</th>
-	    							<td>${dto.camThemaName}</td>
+	    							<td style="border-bottom: 1px solid #c8c8c8;">${dto.camThemaName}</td>
 	    					</tr>
+	    					<tr>
+	    						<th scope="col">키워드</th>
+	    							<td style="border-bottom: 1px solid #c8c8c8;">#${dto.camKeyWord}</td>
+	    					
+	    					</tr>
+	    					
+	    					<tr>
+	    						<th scope="col">전화번호</th>
+	    							<td style="border-bottom: 1px solid #c8c8c8;">${dto.camPhoneNum}</td>
+	    					</tr>
+	    					<tr>
+	    						<th scope="col">시설정보</th>
+	    							<td style="border-bottom: 1px solid #c8c8c8;">${dto.camFacility}</td>
+	    							
+	    					</tr>	
+	    		
 	    				</tbody>
 	    				
 	    			
 	    			</table>
+	    			
+	    			<div class="btn_w">
+	    				<button type="button" class="btn btnSendCampWish" title="찜하기"> <i class="fa-solid fa-star" style="color:${isUserWish?'orange':'black'}"></i>&nbsp;&nbsp;찜하기</button>	    				    			
+	    				<button type="button" class="btn btnSendChange" title="정보수정요청" style="background: white;">정보수정요청</button>	    				    			    			
+	    			</div>
 	    		
 	    		</div>
 	    		
 	    	</div>
+	    </div>
+	    
+	    <div id="contents">
+	    	<div class="camp_cont_w">
+	    		<div class="layout">
+	    			<h3 style="border-bottom: 1px solid #000; border-top: 1px solid #000; color: black; padding-bottom: 8px;  padding-top: 8px;"><i style="color: black" class="fa-solid fa-play"></i>&nbsp;&nbsp;캠핑장 사진</h3>
+	    		<div class="camp_intro">
+	    			<ul>		    			
+		    			<c:forEach var="vo" items="${listFile}">
+		    				<li class="col_03 img_box">
+									<img class="imgFit" src="${pageContext.request.contextPath}/uploads/campInfo/${vo.camInfoPhotoName}"
+										onclick="imageViewer('${pageContext.request.contextPath}/uploads/campInfo/${vo.camInfoPhotoName}');">
+							</li>
+						</c:forEach>		
+	    			</ul>
+	    			<p class="camp_intro_txt">
+	    				<h3 style="border-bottom: 1px solid #000; color: black; padding-bottom: 8px;"><i style="color: black" class="fa-solid fa-play"></i>&nbsp;&nbsp;캠핑장 내용</h3>
+	    			<div style="border-bottom: 1px solid #000; padding-bottom: 9px; padding-top: 9px">
+	    				<span>${dto.camInfoContent}</span>    		
+	    			</div>
+	    		</div>
+	    		</div>
+	    	
+	    	</div>
+	    
+	    
 	    </div>
 	    
 	    
@@ -511,46 +643,25 @@ function imageViewer(img) {
 	    
 	    
 	    <div class="body-main mx-auto">
-			<table class="table table-border table-article">
-				<tbody>					
-					<tr>
-						<td colspan="2" height="200">
-							사&nbsp;&nbsp;진 :
-							<div class="img-box">
-								<c:forEach var="vo" items="${listFile}">
-									<img src="${pageContext.request.contextPath}/uploads/campInfo/${vo.camInfoPhotoName}"
-										onclick="imageViewer('${pageContext.request.contextPath}/uploads/campInfo/${vo.camInfoPhotoName}');">
-								</c:forEach>
-							</div>
-						</td>
-					</tr>
-				</tbody>
-				
+			<div style="float: left" >
+				<c:choose>
+					<c:when test="${sessionScope.member.userId=='admin'}">
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/campInfo/update.do?num=${dto.camInfoNum}&page=${page}';">수정</button>
+					</c:when>
+				</c:choose>
+		    	
+				<c:choose>
+		    		<c:when test="${sessionScope.member.userId=='admin'}">
+		    			<button type="button" class="btn" onclick="deletecampInfo();">삭제</button>
+		    		</c:when>
+		    	</c:choose>	
+			</div>
+			<div style="float: right;">
+				<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/campInfo/list.do?${query}';">리스트</button>					
+			</div>
 			
-				
-				
-			</table>
-			
-			<table class="table">
-				<tr>
-					<td width="50%">
-						<c:choose>
-							<c:when test="${sessionScope.member.userId=='admin'}">
-								<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/campInfo/update.do?num=${dto.camInfoNum}&page=${page}';">수정</button>
-							</c:when>
-						</c:choose>
-				    	
-						<c:choose>
-				    		<c:when test="${sessionScope.member.userId=='admin'}">
-				    			<button type="button" class="btn" onclick="deletecampInfo();">삭제</button>
-				    		</c:when>
-				    	</c:choose>
-					</td>
-					<td align="right">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/campInfo/list.do?${query}';">리스트</button>
-					</td>
-				</tr>
-			</table>
+		
+		
 	       
 	    </div>
 	</div>

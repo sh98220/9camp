@@ -1,14 +1,16 @@
-﻿<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8"%>
 <%@ page trimDirectiveWhitespaces="true" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>캠핑메이트</title>
+<title>공지사항</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resource/css/paginate.css" type="text/css">
+
 <style type="text/css">
 
 .body-main {
@@ -168,121 +170,12 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	    max-width: 750px;
 	}
 }
-
-#cont_inner {
-    width: 100%;
-    position: relative;
-    height: auto;
-    clear: both;
-    padding: 15px 0 95px 0;
-    background: #fff;
-}
-
-@media (max-width: 1219px){
-	.layout {
-	    display: block;
-	    position: relative;
-	    width: 97%;
-	    margin: 0 auto;
-	}
-}
-
-#section1 {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-}
-
-#cont_inner .title_w {
-    width: 100%;
-    height: 50px;
-    border-bottom: 1px solid #dedede;
-    margin-bottom: 30px;
-    padding-top: 20px;
-}
-
-.title_w.mb_0 {
-    margin-bottom: 0 !important;
-    border-bottom: 0px !important;
-}
-
-#cont_inner .title_w h2.title2 {
-    display: inline-block;
-    font-size: 22px;
-    font-weight: normal;
-    color: #000;
-    padding: 0;
-    float: left;
-}
-
-.em_org {
-    color: #eb831d !important;
-}
-
-#contents {
-    clear: both;
-    position: relative;
-    color: #626262;
-    letter-spacing: -0.5px;
-}
-
-.search_list_gr {
-    position: relative;
-    width: 100%;
-    height: auto;
-    padding: 15px 20px 15px 0;
-    box-sizing: border-box;
-    min-height: 31px;
-    background: #f4f4f4;
-    border-top: 1px solid #dbdbdb;
-    border-bottom: 2px solid #000000;
-    overflow: hidden;
-}
-
-div.select_box {
-    position: relative;
-    width: 160px;
-    height: 31px;
-    line-height: 31px;
-    background: url(/img/2018/layout/arr2.png) no-repeat right 10px center;
-    border: 0;
-    margin: 10px 0;
-}
-
-.array_select {
-    margin: 0 10px 0 20px !important;
-    float: left !important;
-}
-
-.select_map {
-    float: right;
-}
-
-
-.camp_search_list {
-    position: relative;
-    width: 100%;
-    height: auto;
-    clear: both;
-}
-
-@media (max-width: 1219px){
-	.camp_search_list .c_list .img_box {
-	    width: 275px;
-	    height: 195px;
-	    position: relative;
-	    float: left;
-	}
-}
 </style>
 <script type="text/javascript">
 function searchList() {
 	const f = document.searchForm;
 	f.submit();
 }
-
-
-
 </script>
 </head>
 <body>
@@ -290,80 +183,11 @@ function searchList() {
 <header>
 	<jsp:include page="/WEB-INF/views/layout/header.jsp"></jsp:include>
 </header>
-	
+
 <main>
 	<div class="container body-container">
-	    <div id="cont_inner">
-	    	<div class="sub_layout layout">
-	    		<section id="section1" style="right: 0px">
-	    			<header class="title _w mb_0">
-	    				<h2 class="title2">
-	    					총
-	    					<span class="em_org">${dataCount}개</span>
-	    					캠핑장이 검색되었습니다.
-	    				</h2>		
-	    		 	</header>	
-	    		</section>
-	    	
-	    	<div id="contents">
-	    		<div class="search_list_gr">
-	    			<div class="select_box array_select">
-	    				<select class="detail_select" id="" title="">
-	    					<option value="">업데이트순</option>
-	    					<option value="">등록일순</option>
-	    					<option value="">조회순</option>
-	    					<option value="">추천순</option>    				
-	    				</select>	    			
-	    			</div>
-	    			<div class="select_map">
-	    				<button type="button">지도로보기</button>
-	    			</div>	    			
-	    		</div>	    	
-	    	</div>
-	    	
-	    	<div class="camp_search_list">
-	    		<ul>
-	    			<li>
-	    				<div class="c_list_update">
-	    					<div class="img_box">
-	    					
-	    					</div>
-	    				
-	    				</div>
-	    			
-	    			
-	    			
-	    			</li>
-	    			
-	    			
-	    		
-	    		
-	    		
-	    		
-	    		</ul>
-	    	</div>
-	    	
-	    	
-	    	</div>
-	    
-	    
-	    
-	    </div>
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
 	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 캠핑장 둘러보기 </h2>
+			<h2><i class="fas fa-graduation-cap"></i> 공지사항 </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
@@ -379,12 +203,11 @@ function searchList() {
 			<table class="table table-border table-list">
 				<thead>
 					<tr>
-						<th class="caminfonum">번호</th>
-						<th class="caminfosubject">캠핑장 이름</th>
-						<th class="caminfoaddr">주소</th>
-						<th class="caminfohitcount">조회수</th>
-						<th class="wishCount">찜</th>
-						<th class="caminforegdate">작성일</th>
+						<th class="num">번호</th>
+						<th class="subject">제목</th>
+						<th class="name">작성자</th>
+						<th class="date">작성일</th>
+						<th class="hit">조회수</th>
 					</tr>
 				</thead>
 				
@@ -393,17 +216,11 @@ function searchList() {
 						<tr>
 							<td>${dataCount - (page-1) * size - status.index}</td>
 							<td class="left">
-								<a href="${articleUrl}&num=${dto.camInfoNum}">${dto.camInfoSubject}</a>
+								<a href="${articleUrl}&num=${dto.noticeNum}">${dto.noticeSubject}</a>
 							</td>
-							<td>${dto.camInfoAddr}</td>
-							<td>${dto.camInfoHitCount}</td>
-							<td>${dto.wishCount}</td>
-							<td>${dto.camInfoRegDate}</td>
-							<td>
-								<c:if test="">
-									<a href="${pageContext.request.contextPath}/"><i class="far fa-file"></i></a>
-								</c:if>
-							</td>
+							<td>${dto.userId}</td>
+							<td>${dto.noticeRegDate}</td>
+							<td>${dto.noticeHitCount}</td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -413,33 +230,27 @@ function searchList() {
 				${dataCount == 0 ? "등록된 게시물이 없습니다." : paging}
 			</div>
 			
-			<table class="table">			
-				<tr>	
+			<table class="table">
+				<tr>
 					<td width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/campInfo/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
 					</td>
 					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/campInfo/list.do" method="post">
+						<form name="searchForm" action="${pageContext.request.contextPath}/notice/list.do" method="post">
 							<select name="condition" class="form-select">
 								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
-								<option value="camInfoRegDate"  ${condition=="camInfoRegDate"?"selected='selected'":"" }>등록일</option>
-								<option value="camInfoSubject"  ${condition=="camInfoSubject"?"selected='selected'":"" }>제목</option>
-								<option value="camInfoContent"  ${condition=="camInfoContent"?"selected='selected'":"" }>내용</option>
-								<option value="camThemaName"  ${condition=="camThemaName"?"selected='selected'":"" }>테마명</option>
-								
+								<option value="userId" ${condition=="userId"?"selected='selected'":"" }>작성자</option>
+								<option value="noticeRegDate"  ${condition=="noticeRegDate"?"selected='selected'":"" }>등록일</option>
+								<option value="noticeSubject"  ${condition=="noticeSubject"?"selected='selected'":"" }>제목</option>
+								<option value="noticeContent"  ${condition=="noticeContent"?"selected='selected'":"" }>내용</option>
 							</select>
 							<input type="text" name="keyword" value="${keyword}" class="form-control">
 							<input type="hidden" name="category" value="${category}">
 							<button type="button" class="btn" onclick="searchList();">검색</button>
 						</form>
 					</td>
-					
 					<td align="right" width="100">
-						<c:choose>
-				    		<c:when test="${sessionScope.member.userId=='admin'}">
-				 			   <button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/campInfo/write.do';">글올리기</button>	
-				 			</c:when>
-				   		</c:choose>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/write.do';">글올리기</button>
 					</td>
 				</tr>
 			</table>
@@ -454,3 +265,35 @@ function searchList() {
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

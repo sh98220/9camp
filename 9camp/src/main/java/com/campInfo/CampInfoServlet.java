@@ -191,6 +191,12 @@ public class CampInfoServlet extends MyUploadServlet {
 			dto.setCamInfoAddr(req.getParameter("camInfoAddr"));
 			dto.setCamKeyWord(req.getParameter("camKeyWord"));
 			dto.setCamThemaName(req.getParameter("camThemaName"));
+			dto.setCamPhoneNum(req.getParameter("camPhoneNum"));
+			dto.setCamNomalWeekDayPrice(req.getParameter("camNomalWeekDayPrice"));
+			dto.setCamNomalWeekEndPrice(req.getParameter("camNomalWeekEndPrice"));
+			dto.setCamPeakWeekDayPrice(req.getParameter("camPeakWeekDayPrice"));
+			dto.setCamPeakWeekEndPrice(req.getParameter("camPeakWeekEndPrice"));
+			dto.setCamFacility(req.getParameter("camFacility"));
 			
 			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);
 			if(map != null) {

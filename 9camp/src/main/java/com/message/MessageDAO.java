@@ -58,9 +58,11 @@ public class MessageDAO {
 		return list;
 	}
 	
-	public void sendMsg(MessageDTO dto) throws SQLException {
+	// 쪽지 보내기
+	public int sendMsg(MessageDTO dto) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
+		int result;
 		
 		try {
 			sql = "INSERT INTO message(msgNum, msgWriterId, msgSenderId, msgContent, msgRegDate, msgReadDate, msgRead, msgWriEnabled, msgSenEnabled) "
@@ -72,7 +74,7 @@ public class MessageDAO {
 			pstmt.setString(2, dto.getMsgSenderId());
 			pstmt.setString(3, dto.getMsgContent());
 
-			pstmt.executeUpdate();
+			result = pstmt.executeUpdate();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -85,6 +87,8 @@ public class MessageDAO {
 				}
 			}
 		}
+		
+		return result;
 	}
 	
 	/*보낸쪽지함 쪽지 개수 카운트*/
@@ -138,6 +142,46 @@ public class MessageDAO {
 			sql = "SELECT NVL(COUNT(*),0) "
 					+ " FROM message msg "
 					+ " WHERE msg.msgSenderId = ? AND msgSenEnabled=1";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, userId);
+			
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				result = rs.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e2) {
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e2) {
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	// 받은쪽지함 안 읽은 쪽지 개수 카운트
+	public int dataNoReadCount(String userId) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = "SELECT NVL(COUNT(*),0) "
+					+ " FROM message msg "
+					+ " WHERE msg.msgSenderId = ? AND msgSenEnabled=1 AND msgRead=0";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -691,6 +735,8 @@ public class MessageDAO {
 			}
 		}
 	}
+	
+	
 	
 	
 }

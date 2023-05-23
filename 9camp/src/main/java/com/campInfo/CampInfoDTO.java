@@ -13,7 +13,50 @@ public class CampInfoDTO {
 	private String keyWordName;
 	private String camKeyWord;
 	private String themaName;
+	private String camPhoneNum;
+	public String getCamPhoneNum() {
+		return camPhoneNum;
+	}
+	public void setCamPhoneNum(String camPhoneNum) {
+		this.camPhoneNum = camPhoneNum;
+	}
+	private String camNomalWeekDayPrice;
+	private String camNomalWeekEndPrice;
+	private String camPeakWeekDayPrice;
+	private String camPeakWeekEndPrice;
+	private String camFacility;
 	
+
+	public String getCamNomalWeekDayPrice() {
+		return camNomalWeekDayPrice;
+	}
+	public void setCamNomalWeekDayPrice(String camNomalWeekDayPrice) {
+		this.camNomalWeekDayPrice = camNomalWeekDayPrice;
+	}
+	public String getCamNomalWeekEndPrice() {
+		return camNomalWeekEndPrice;
+	}
+	public void setCamNomalWeekEndPrice(String camNomalWeekEndPrice) {
+		this.camNomalWeekEndPrice = camNomalWeekEndPrice;
+	}
+	public String getCamPeakWeekDayPrice() {
+		return camPeakWeekDayPrice;
+	}
+	public void setCamPeakWeekDayPrice(String camPeakWeekDayPrice) {
+		this.camPeakWeekDayPrice = camPeakWeekDayPrice;
+	}
+	public String getCamPeakWeekEndPrice() {
+		return camPeakWeekEndPrice;
+	}
+	public void setCamPeakWeekEndPrice(String camPeakWeekEndPrice) {
+		this.camPeakWeekEndPrice = camPeakWeekEndPrice;
+	}
+	public String getCamFacility() {
+		return camFacility;
+	}
+	public void setCamFacility(String camFacility) {
+		this.camFacility = camFacility;
+	}
 	private int camInfoPhotoNum;
 	private String camInfoPhotoName;
 	private String[] imageFiles;
