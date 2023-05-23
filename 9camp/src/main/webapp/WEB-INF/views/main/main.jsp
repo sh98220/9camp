@@ -245,6 +245,50 @@
 		
 	}
 }
+
+.btn {
+  border: none;
+  display: block;
+  text-align: center;
+  cursor: pointer;
+  text-transform: uppercase;
+  outline: none;
+  overflow: hidden;
+  position: relative;
+  color: #000;
+  font-weight: 700;
+  font-size: 15px;
+  background-color: #fff;
+  padding: 17px 60px;
+  margin: 12px auto;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.20);
+
+}
+
+.btn span {
+  position: relative; 
+  z-index: 1;
+}
+
+.btn:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 490%;
+  width: 140%;
+  background: #FFC107;
+  -webkit-transition: all .5s ease-in-out;
+  transition: all .5s ease-in-out;
+  -webkit-transform: translateX(-98%) translateY(-25%) rotate(45deg);
+  transform: translateX(-98%) translateY(-25%) rotate(45deg);
+}
+
+.btn:hover:after {
+  -webkit-transform: translateX(-9%) translateY(-25%) rotate(45deg);
+  transform: translateX(-9%) translateY(-25%) rotate(45deg);
+}
+
 </style>
 <script type="text/javascript">
 function searchList() {
@@ -290,23 +334,23 @@ function searchList() {
 					<!--//타이틀-->
 					<div class="search_box">
 						<form name="searchForm" action="${pageContext.request.contextPath}/campInfo/list.do" method="post">
-							<select name="condition" class="form-select">
-								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
-								<option value="camInfoRegDate"  ${condition=="camInfoRegDate"?"selected='selected'":"" }>등록일</option>
-								<option value="camInfoSubject"  ${condition=="camInfoSubject"?"selected='selected'":"" }>제목</option>
-								<option value="camInfoContent"  ${condition=="camInfoContent"?"selected='selected'":"" }>내용</option>
-								<option value="camThemaName"  ${condition=="camThemaName"?"selected='selected'":"" }>테마</option>
-								<option value="caminfoAddr" 	${condition=="camInfoAddr"?"selected='selected'":"" }>지역</option>
-							</select>
-							
 						
-							
-							<input type="text" name="keyword" value="${keyword}" class="form-control">
+								<select name="condition" class="form-select" class="form-control" style="width: 16%; height: 35px; border-radius: 3px;">
+									<option value="all"      ${condition=="all"?"selected='selected'":"" }>모든내용</option>
+									<option value="camInfoSubject"  ${condition=="camInfoSubject"?"selected='selected'":"" }>제목</option>
+									<option value="camInfoContent"  ${condition=="camInfoContent"?"selected='selected'":"" }>내용</option>
+									<option value="camThemaName"  ${condition=="camThemaName"?"selected='selected'":"" }>테마</option>
+									<option value="caminfoAddr" 	${condition=="camInfoAddr"?"selected='selected'":"" }>지역</option>
+								</select>
+								
 						
-							
+								
+								<input type="text" name="keyword" value="${keyword}" class="form-control" style="width: 83%; height: 35px; border-radius: 3px; padding-left: 10px;">
+								<input type="hidden" name="category" value="${category}">
+								<button type="button" class="btn" onclick="searchList();"><span>SEARCH</span></button>
+							<!--검색박스-->
 						
-							<input type="hidden" name="category" value="${category}">
-							<button type="button" class="btn" onclick="searchList();">검색</button>
+						<!--//검색박스-->
 						</form>
 					</div>
 				</section>

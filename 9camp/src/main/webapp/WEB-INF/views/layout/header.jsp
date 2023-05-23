@@ -53,7 +53,7 @@ function countNoReadMsg() {
 	<div class="top-cont">
 		<div class="today-cont">
 			<div class="today-txt">TODAY 캠핑러</div>
-			<div><span>10,000</span>명</div>
+			<div><span>${toDayCount}</span>명</div>
 		</div>
 		
 		<div class="logo-cont">
