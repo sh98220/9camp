@@ -246,79 +246,48 @@
 	}
 }
 
-.custom-btn {
-  width: 130px;
-  height: 40px;
-  padding: 10px 25px;
-  border: 2px solid #000;
-  font-family: 'Lato', sans-serif;
-  font-weight: 500;
-  background: transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  display: inline-block;
-}
-
-.btn-12{
-  position: relative;
-  right: 20px;
-  bottom: 20px;
-  border:none;
-  width: 130px;
-  height: 40px;
-  line-height: 40px;
-  -webkit-perspective: 230px;
-  perspective: 230px;
-}
-.btn-12 span {
+.btn {
+  border: none;
   display: block;
-  position: absolute;
-  width: 130px;
-  height: 40px;
-  border: 2px solid #000;
-  margin:0;
   text-align: center;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  -webkit-transition: all .3s;
-  transition: all .3s;
-}
-.btn-12 span:nth-child(1) {
-  box-shadow:
-   -7px -7px 20px 0px #fff9,
-   -4px -4px 5px 0px #fff9,
-   7px 7px 20px 0px #0002,
-   4px 4px 5px 0px #0001;
-  -webkit-transform: rotateX(90deg);
-  -moz-transform: rotateX(90deg);
-  transform: rotateX(90deg);
-  -webkit-transform-origin: 50% 50% -20px;
-  -moz-transform-origin: 50% 50% -20px;
-  transform-origin: 50% 50% -20px;
-}
-.btn-12 span:nth-child(2) {
-  -webkit-transform: rotateX(0deg);
-  -moz-transform: rotateX(0deg);
-  transform: rotateX(0deg);
-  -webkit-transform-origin: 50% 50% -20px;
-  -moz-transform-origin: 50% 50% -20px;
-  transform-origin: 50% 50% -20px;
-}
-.btn-12:hover span:nth-child(1) {
-  -webkit-transform: rotateX(0deg);
-  -moz-transform: rotateX(0deg);
-  transform: rotateX(0deg);
-}
-.btn-12:hover span:nth-child(2) {
-  background: #e0e5ec;
-  color: #e0e5ec;
-  -webkit-transform: rotateX(-90deg);
-  -moz-transform: rotateX(-90deg);
-  transform: rotateX(-90deg);
+  cursor: pointer;
+  text-transform: uppercase;
+  outline: none;
+  overflow: hidden;
+  position: relative;
+  color: #000;
+  font-weight: 700;
+  font-size: 15px;
+  background-color: #fff;
+  padding: 17px 60px;
+  margin: 12px auto;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.20);
+
 }
 
+.btn span {
+  position: relative; 
+  z-index: 1;
+}
+
+.btn:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 490%;
+  width: 140%;
+  background: #FFC107;
+  -webkit-transition: all .5s ease-in-out;
+  transition: all .5s ease-in-out;
+  -webkit-transform: translateX(-98%) translateY(-25%) rotate(45deg);
+  transform: translateX(-98%) translateY(-25%) rotate(45deg);
+}
+
+.btn:hover:after {
+  -webkit-transform: translateX(-9%) translateY(-25%) rotate(45deg);
+  transform: translateX(-9%) translateY(-25%) rotate(45deg);
+}
 
 </style>
 <script type="text/javascript">
@@ -366,7 +335,7 @@ function searchList() {
 					<div class="search_box">
 						<form name="searchForm" action="${pageContext.request.contextPath}/campInfo/list.do" method="post">
 						
-								<select name="condition" class="form-select">
+								<select name="condition" class="form-select" class="form-control" style="width: 16%; height: 35px; border-radius: 3px;">
 									<option value="all"      ${condition=="all"?"selected='selected'":"" }>모든내용</option>
 									<option value="camInfoSubject"  ${condition=="camInfoSubject"?"selected='selected'":"" }>제목</option>
 									<option value="camInfoContent"  ${condition=="camInfoContent"?"selected='selected'":"" }>내용</option>
@@ -376,9 +345,9 @@ function searchList() {
 								
 						
 								
-								<input type="text" name="keyword" value="${keyword}" class="form-control">
+								<input type="text" name="keyword" value="${keyword}" class="form-control" style="width: 83%; height: 35px; border-radius: 3px; padding-left: 10px;">
 								<input type="hidden" name="category" value="${category}">
-								<button type="button" class="btn" onclick="searchList();"><span>Hover me!</span></button>
+								<button type="button" class="btn" onclick="searchList();"><span>SEARCH</span></button>
 							<!--검색박스-->
 						
 						<!--//검색박스-->
