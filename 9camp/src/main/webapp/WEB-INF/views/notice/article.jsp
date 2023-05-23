@@ -1,13 +1,13 @@
-﻿<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8"%>
 <%@ page trimDirectiveWhitespaces="true" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>자유게시판</title>
+<title>공지사항</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 <style type="text/css">
 .body-main {
@@ -239,115 +239,6 @@ function ajaxFun(url, method, query, dataType, fn) {
 	});
 }
 
-// 게시글 공감 여부
-$(function(){
-	$(".btnSendFreeboardLike").click(function(){
-		const $i = $(this).find("i");
-
-		let isNoLike = $i.css("color") == "rgb(0, 0, 0)";
-		let msg = isNoLike ? "게시글에 공감하십니까 ?" : "게시글 공감을 취소하시겠습니까 ?";		
-		
-		if(! confirm(msg)){
-			return false;
-		}
-		
-		let url = "${pageContext.request.contextPath}/freeboard/insertFreeBoardLike.do";
-		let num = "${dto.camChatNum}";
-		let qs = "camChatNum=" + num + "&isNoLike=" + isNoLike;
-		
-		const fn = function(data){
-			let state = data.state;
-			if(state === "true"){
-				let color = "black";
-				if( isNoLike ){
-					color = "blue";
-				}
-				$i.css("color", color);
-				
-				let count = data.freeboardLikeCount;
-				$("#freeboardLikeCount").text(count);
-			} else if(state === "liked"){
-				alert("좋아요는 한번만 가능합니다.");				
-			}
-		};
-		
-		ajaxFun(url, "post", qs, "json", fn);
-	});
-});
-
-// 댓글 리스트 및 페이징
-$(function(){
-	listPage(1);
-});
-
-function listPage(page) {
-	let url = "${pageContext.request.contextPath}/freeboard/listReply.do";
-	let qs = "camChatNum=${dto.camChatNum}&pageNo="+page;
-	let selector = "#listReply";
-	
-	const fn = function(data){
-		$(selector).html(data);
-	}
-	
-	ajaxFun(url, "get", qs, "text", fn);
-	//	ajaxFun(url, "get", qs, "html", fn); // 가능
-	
-}
-
-// 댓글 등록
-$(function(){
-	$(".btnSendReply").click(function(){
-		let num = "${dto.camChatNum}";
-		const $tb = $(this).closest("table");
-		let content = $tb.find("textarea").val().trim();
-		
-		if(! content) {
-			$tb.find("textarea").focus();
-			return false;
-		}
-		content = encodeURIComponent(content);
-		
-		let url = "${pageContext.request.contextPath}/freeboard/insertReply.do";
-		let qs = "camChatNum="+num+"&camChatRepContent="+content;
-		
-		const fn = function(data){
-			$tb.find("textarea").val("");
-			
-			let state = data.state;
-			if(state === "true"){
-				listPage(1);
-			} else {
-				alert("댓글을 추가하지 못했습니다.");
-			}
-		}
-		
-		ajaxFun(url, "post", qs, "json", fn);
-		
-	});
-});
-
-//댓글 삭제
-$(function(){
-	$("#listReply").on("click", ".deleteReply", function(){
-		if(! confirm("게시글을 삭제하시겠습니까 ? ")){
-			return false;
-		}
-		
-		let camChatRepNum = $(this).attr("data-camChatRepNum");
-		let page = $(this).attr("data-pageNo");
-		
-		let url = "${pageContext.request.contextPath}/freeboard/deleteReply.do";
-		let qs = "camChatRepNum="+camChatRepNum;
-		
-		const fn = function(data){
-			listPage(page);
-		};
-		
-		ajaxFun(url, "post", qs, "json", fn);
-	});
-});
-
-
 </script>
 
 </head>
@@ -356,11 +247,11 @@ $(function(){
 <header>
 	<jsp:include page="/WEB-INF/views/layout/header.jsp"></jsp:include>
 </header>
-	
+
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 자유게시판 </h2>
+			<h2><i class="fas fa-graduation-cap"></i> 공지사항 </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
@@ -368,7 +259,7 @@ $(function(){
 				<thead>
 					<tr>
 						<td colspan="2" align="center">
-							${dto.camChatSubject}
+							${dto.noticeSubject}
 						</td>
 					</tr>
 				</thead>
@@ -376,30 +267,24 @@ $(function(){
 				<tbody>
 					<tr>
 						<td width="50%">
-							이름 : ${dto.userNickName}
+							이름 : ${dto.userId}
 						</td>
 						<td align="right">
-							${dto.camChatRegDate} | 조회 ${dto.camChatHitCount}
+							${dto.noticeRegDate} | 조회 ${dto.noticeHitCount}
 						</td>
 					</tr>
 					
 					<tr>
 						<td colspan="2" valign="top" height="200">
-							${dto.camChatContent}
+							${dto.noticeContent}
 						</td>
 					</tr>
 					
 					<tr>
-						<td colspan="2" align="center" style="border-bottom: 20px; ">
-							<button type="button" class="btn btnSendFreeboardLike" title="좋아요"> <i class="fas fa-thumbs-up" style="color:${isUserLike?'blue':'black'}"></i>&nbsp;&nbsp;<span id="freeboardLikeCount">${dto.freeboardLikeCount}</span></button>
-						</td>
-					</tr>
-		
-					<tr>
 						<td colspan="2">
 							이전글 :
 							<c:if test="${not empty preReadDto}"> 
-								<a href="${pageContext.request.contextPath}/freeboard/article.do?${query}&num=${preReadDto.camChatNum}">${preReadDto.camChatSubject}</a>
+								<a href="${pageContext.request.contextPath}/notice/article.do?${query}&num=${preReadDto.noticeNum}">${preReadDto.noticeSubject}</a>
 							</c:if>
 						</td>
 					</tr>
@@ -407,7 +292,7 @@ $(function(){
 						<td colspan="2">
 							다음글 :
 							<c:if test="${not empty nextReadDto}">
-								<a href="${pageContext.request.contextPath}/freeboard/article.do?${query}&num=${nextReadDto.camChatNum}">${nextReadDto.camChatSubject}</a>
+								<a href="${pageContext.request.contextPath}/notice/article.do?${query}&num=${nextReadDto.noticeNum}">${nextReadDto.noticeSubject}</a>
 							</c:if>
 						</td>
 					</tr>
@@ -419,7 +304,7 @@ $(function(){
 					<td width="50%">
 						<c:choose>
 							<c:when test="${sessionScope.member.userId==dto.userId}">
-								<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/freeboard/update.do?num=${dto.camChatNum}&page=${page}';">수정</button>
+								<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/update.do?num=${dto.noticeNum}&page=${page}';">수정</button>
 							</c:when>
 							<c:otherwise>
 								<button type="button" class="btn" disabled="disabled">수정</button>
@@ -436,32 +321,11 @@ $(function(){
 				    	</c:choose>
 					</td>
 					<td align="right">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/freeboard/list.do?${query}';">리스트</button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/list.do?${query}';">리스트</button>
 					</td>
 				</tr>
 			</table>
-    	       <div class="reply">
-				<form name="replyForm" method="post">
-					<div class='form-header'>
-						<span class="bold">댓글쓰기</span><span> - 타인을 비방하거나 개인정보를 유출하는 글의 게시를 삼가해 주세요.</span>
-					</div>
-					
-					<table class="table reply-form">
-						<tr>
-							<td>
-								<textarea class='form-control' name="camChatRepContent"></textarea>
-							</td>
-						</tr>
-						<tr>
-						   <td align='right'>
-								<button type='button' class='btn btnSendReply'>댓글 등록</button>
-							</td>
-						 </tr>
-					</table>
-				</form>
-				
-				<div id="listReply"></div>
-			</div>
+    	       
 	    </div>
 	</div>
 </main>

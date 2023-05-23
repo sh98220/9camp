@@ -9,9 +9,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>공지사항</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resource/css/paginate.css" type="text/css">
-
 <style type="text/css">
+.body-main {
+	max-width: 700px;
+	padding-top: 15px;
+}
+
 
 .body-main {
 	max-width: 700px;
@@ -19,7 +22,9 @@
 
 /* form-control */
 .btn {
+	color: #333;
 	border: 1px solid #999;
+	background-color: #eee;
 	padding: 5px 10px;
 	border-radius: 4px;
 	font-weight: 500;
@@ -68,7 +73,8 @@ input[type=checkbox], input[type=radio] { vertical-align: middle; }
 .table th, .table td { padding-top: 10px; padding-bottom: 10px; }
 
 .table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
-.table-border tbody > tr { border-bottom: 1px solid #ff5522; }
+.table-border tbody > tr { border-bottom: 1px solid #666; }
+
 .td-border td { border: 1px solid #ced4da; }
 
 tr.hover:hover { cursor: pointer; background: #f5fffa; }
@@ -83,13 +89,6 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 .clear:after { content:''; display:block; clear: both; }
 
 .mx-auto { margin-left: auto; margin-right: auto; }
-
-
-.btnConfirm {
-	background-color:#507cd1; border:none;
-	width: 100%; padding: 15px 0;
-	font-size: 15px; color:#ffffff; font-weight: 700;  cursor: pointer; vertical-align: baseline;
-}
 
 .container {
     width: 100%;
@@ -110,7 +109,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     padding-top: 35px;
     padding-bottom: 7px;
     margin: 0 0 25px 0;
-    border-bottom: 2px solid #eee;
+    border-bottom: 2px solid #eee;;
 }
 
 .body-title h2 {
@@ -125,10 +124,6 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     border-bottom: 3px solid #ff5522;
 }
 
-.body-title h2 i {
-	
-}
-
 .body-main {
 	display: block;
 	padding-bottom: 15px;
@@ -139,17 +134,28 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	padding-top: 35px;
 }
 
-.table-list thead > tr:first-child { color: #4e4e4e; }
+.table-list thead > tr:first-child { background: skyblue; }
 .table-list th, .table-list td { text-align: center; }
 .table-list .left { text-align: left; padding-left: 5px; }
 
-.table-list .num { width: 60px; }
-.table-list .subject {  }
-.table-list .name { width: 100px; }
-.table-list .date { width: 100px; }
-.table-list .hit { width: 70px; }
-.table-list .file { width: 50px; }
+.table-list .num { width: 60px; color: #ff5522; }
+.table-list .subject { color: #ff5522; }
+.table-list .name { width: 100px; color: #ff5522; }
+.table-list .date { width: 100px; color: #ff5522; }
+.table-list .hit { width: 70px; color: #ff5522; }
+.table-list .file { width: 50px; color: #ff5522; }
 
+.table-form td { padding: 7px 0; }
+.table-form p { line-height: 200%; }
+.table-form tr:first-child { border-top: 2px solid #666;  }
+.table-form tr > td:first-child { width: 110px; text-align: center; background: #eee; }
+.table-form tr > td:nth-child(2) { padding-left: 10px; }
+
+.table-form input[type=text], .table-form input[type=file], .table-form textarea {
+	border: 1px solid #999;
+	width: 96%;
+}
+	
 @media (min-width: 576px) {
 	.container {
 	    max-width: 540px;
@@ -170,12 +176,32 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	    max-width: 750px;
 	}
 }
+	
 </style>
+
 <script type="text/javascript">
-function searchList() {
-	const f = document.searchForm;
-	f.submit();
+function sendOk() {
+    const f = document.boardForm;
+	let str;
+	
+    str = f.noticeSubject.value.trim();
+    if(!str) {
+        alert("제목을 입력하세요. ");
+        f.noticeSubject.focus();
+        return;
+    }
+
+    str = f.noticeContent.value.trim();
+    if(!str) {
+        alert("내용을 입력하세요. ");
+        f.noticeContent.focus();
+        return;
+    }
+
+    f.action = "${pageContext.request.contextPath}/notice/${mode}_ok.do";
+    f.submit();
 }
+
 </script>
 </head>
 <body>
@@ -184,80 +210,7 @@ function searchList() {
 	<jsp:include page="/WEB-INF/views/layout/header.jsp"></jsp:include>
 </header>
 
-<main>
-	<div class="container body-container">
-	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 공지사항 </h2>
-	    </div>
-	    
-	    <div class="body-main mx-auto">
-			<table class="table">
-				<tr>
-					<td width="50%">
-						${dataCount}개(${page}/${total_page} 페이지)
-					</td>
-					<td align="right">&nbsp;</td>
-				</tr>
-			</table>
-			
-			<table class="table table-border table-list">
-				<thead>
-					<tr>
-						<th class="num">번호</th>
-						<th class="subject">제목</th>
-						<th class="name">작성자</th>
-						<th class="date">작성일</th>
-						<th class="hit">조회수</th>
-					</tr>
-				</thead>
-				
-				<tbody>
-					<c:forEach var="dto" items="${list}" varStatus="status">
-						<tr>
-							<td>${dataCount - (page-1) * size - status.index}</td>
-							<td class="left">
-								<a href="${articleUrl}&num=${dto.noticeNum}">${dto.noticeSubject}</a>
-							</td>
-							<td>${dto.userId}</td>
-							<td>${dto.noticeRegDate}</td>
-							<td>${dto.noticeHitCount}</td>
-						</tr>
-					</c:forEach>
-				</tbody>
-			</table>
-			
-			<div class="page-navigation">
-				${dataCount == 0 ? "등록된 게시물이 없습니다." : paging}
-			</div>
-			
-			<table class="table">
-				<tr>
-					<td width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
-					</td>
-					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/notice/list.do" method="post">
-							<select name="condition" class="form-select">
-								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
-								<option value="userId" ${condition=="userId"?"selected='selected'":"" }>작성자</option>
-								<option value="noticeRegDate"  ${condition=="noticeRegDate"?"selected='selected'":"" }>등록일</option>
-								<option value="noticeSubject"  ${condition=="noticeSubject"?"selected='selected'":"" }>제목</option>
-								<option value="noticeContent"  ${condition=="noticeContent"?"selected='selected'":"" }>내용</option>
-							</select>
-							<input type="text" name="keyword" value="${keyword}" class="form-control">
-							<input type="hidden" name="category" value="${category}">
-							<button type="button" class="btn" onclick="searchList();">검색</button>
-						</form>
-					</td>
-					<td align="right" width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/write.do';">글올리기</button>
-					</td>
-				</tr>
-			</table>
 
-	    </div>
-	</div>
-</main>
 
 <footer>
 	<jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
@@ -265,4 +218,3 @@ function searchList() {
 
 </body>
 </html>
-
