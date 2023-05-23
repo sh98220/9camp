@@ -245,6 +245,81 @@
 		
 	}
 }
+
+.custom-btn {
+  width: 130px;
+  height: 40px;
+  padding: 10px 25px;
+  border: 2px solid #000;
+  font-family: 'Lato', sans-serif;
+  font-weight: 500;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+}
+
+.btn-12{
+  position: relative;
+  right: 20px;
+  bottom: 20px;
+  border:none;
+  width: 130px;
+  height: 40px;
+  line-height: 40px;
+  -webkit-perspective: 230px;
+  perspective: 230px;
+}
+.btn-12 span {
+  display: block;
+  position: absolute;
+  width: 130px;
+  height: 40px;
+  border: 2px solid #000;
+  margin:0;
+  text-align: center;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transition: all .3s;
+  transition: all .3s;
+}
+.btn-12 span:nth-child(1) {
+  box-shadow:
+   -7px -7px 20px 0px #fff9,
+   -4px -4px 5px 0px #fff9,
+   7px 7px 20px 0px #0002,
+   4px 4px 5px 0px #0001;
+  -webkit-transform: rotateX(90deg);
+  -moz-transform: rotateX(90deg);
+  transform: rotateX(90deg);
+  -webkit-transform-origin: 50% 50% -20px;
+  -moz-transform-origin: 50% 50% -20px;
+  transform-origin: 50% 50% -20px;
+}
+.btn-12 span:nth-child(2) {
+  -webkit-transform: rotateX(0deg);
+  -moz-transform: rotateX(0deg);
+  transform: rotateX(0deg);
+  -webkit-transform-origin: 50% 50% -20px;
+  -moz-transform-origin: 50% 50% -20px;
+  transform-origin: 50% 50% -20px;
+}
+.btn-12:hover span:nth-child(1) {
+  -webkit-transform: rotateX(0deg);
+  -moz-transform: rotateX(0deg);
+  transform: rotateX(0deg);
+}
+.btn-12:hover span:nth-child(2) {
+  background: #e0e5ec;
+  color: #e0e5ec;
+  -webkit-transform: rotateX(-90deg);
+  -moz-transform: rotateX(-90deg);
+  transform: rotateX(-90deg);
+}
+
+
 </style>
 <script type="text/javascript">
 function searchList() {
@@ -290,23 +365,23 @@ function searchList() {
 					<!--//타이틀-->
 					<div class="search_box">
 						<form name="searchForm" action="${pageContext.request.contextPath}/campInfo/list.do" method="post">
-							<select name="condition" class="form-select">
-								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
-								<option value="camInfoRegDate"  ${condition=="camInfoRegDate"?"selected='selected'":"" }>등록일</option>
-								<option value="camInfoSubject"  ${condition=="camInfoSubject"?"selected='selected'":"" }>제목</option>
-								<option value="camInfoContent"  ${condition=="camInfoContent"?"selected='selected'":"" }>내용</option>
-								<option value="camThemaName"  ${condition=="camThemaName"?"selected='selected'":"" }>테마</option>
-								<option value="caminfoAddr" 	${condition=="camInfoAddr"?"selected='selected'":"" }>지역</option>
-							</select>
-							
 						
-							
-							<input type="text" name="keyword" value="${keyword}" class="form-control">
+								<select name="condition" class="form-select">
+									<option value="all"      ${condition=="all"?"selected='selected'":"" }>모든내용</option>
+									<option value="camInfoSubject"  ${condition=="camInfoSubject"?"selected='selected'":"" }>제목</option>
+									<option value="camInfoContent"  ${condition=="camInfoContent"?"selected='selected'":"" }>내용</option>
+									<option value="camThemaName"  ${condition=="camThemaName"?"selected='selected'":"" }>테마</option>
+									<option value="caminfoAddr" 	${condition=="camInfoAddr"?"selected='selected'":"" }>지역</option>
+								</select>
+								
 						
-							
+								
+								<input type="text" name="keyword" value="${keyword}" class="form-control">
+								<input type="hidden" name="category" value="${category}">
+								<button type="button" class="btn" onclick="searchList();"><span>Hover me!</span></button>
+							<!--검색박스-->
 						
-							<input type="hidden" name="category" value="${category}">
-							<button type="button" class="btn" onclick="searchList();">검색</button>
+						<!--//검색박스-->
 						</form>
 					</div>
 				</section>

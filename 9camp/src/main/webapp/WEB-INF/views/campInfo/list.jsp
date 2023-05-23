@@ -425,6 +425,8 @@ function searchList() {
 								<option value="camInfoRegDate"  ${condition=="camInfoRegDate"?"selected='selected'":"" }>등록일</option>
 								<option value="camInfoSubject"  ${condition=="camInfoSubject"?"selected='selected'":"" }>제목</option>
 								<option value="camInfoContent"  ${condition=="camInfoContent"?"selected='selected'":"" }>내용</option>
+								<option value="camThemaName"  ${condition=="camThemaName"?"selected='selected'":"" }>테마명</option>
+								
 							</select>
 							<input type="text" name="keyword" value="${keyword}" class="form-control">
 							<input type="hidden" name="category" value="${category}">

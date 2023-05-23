@@ -247,9 +247,6 @@ public class CampInfoDAO {
 			sb.append(" FROM campInfo ");
 			if(condition.equals("all")) {
 				sb.append("WHERE INSTR(camInfoSubject, ?) >= 1 OR INSTR(camInfoContent, ?) >= 1 ");
-			} else if (condition.equals("camInfoRegDate")) {
-				keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
-				sb.append(" WHERE TO_CHAR(camInfoRegDate, 'YYYYMMDD') = ?");
 			} else {
 				sb.append(" WHERE INSTR(" + condition + ", ?) >= 1 ");
 			}
