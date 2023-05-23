@@ -12,7 +12,20 @@
 	<c:forEach var="vo" items="${listReply}">	
 		<tr class='list-header'>
 			<td width='50%'>
-				<span class='bold'>${vo.userName}</span>
+				<div class="writer_info">
+					<a style="cursor: pointer;">
+						<span class='bold'>
+							${vo.userName}
+						</span>
+					</a>
+					<div id="writer_modal">
+						<ul class="writer_submenu">
+							<li>
+								<a href="${pageContext.request.contextPath}/message/write.do?msgRecId=${vo.userId}">쪽지보내기</a>
+							</li>
+						</ul>
+					</div>
+				</div>
 			</td>
 			<td width='50%' align='right'>
 				<span>${vo.camRevRepregdate}</span> |
@@ -37,4 +50,4 @@
 
 <div class="page-navigation">
 	${paging}
-</div>			
+</div>	
