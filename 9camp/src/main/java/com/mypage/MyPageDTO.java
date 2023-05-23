@@ -48,6 +48,11 @@ public class MyPageDTO {
 	private String camMateAppConfirm; 
 	
 	
+	//restrictedMember
+	private String restContent;
+	private String restStartDate;
+	private String restEndDate;
+	
 	public String getUserId() {
 		return userId;
 	}
@@ -270,5 +275,22 @@ public class MyPageDTO {
 	public void setCamMateAppConfirm(String camMateAppConfirm) {
 		this.camMateAppConfirm = camMateAppConfirm;
 	}
-	
+	public String getRestContent() {
+		return restContent;
+	}
+	public void setRestContent(String restContent) {
+		this.restContent = restContent;
+	}
+	public String getRestStartDate() {
+		return restStartDate;
+	}
+	public void setRestStartDate(String restStartDate) {
+		this.restStartDate = restStartDate;
+	}
+	public String getRestEndDate() {
+		return restEndDate;
+	}
+	public void setRestEndDate(String restEndDate) {
+		this.restEndDate = restEndDate;
+	}
 }

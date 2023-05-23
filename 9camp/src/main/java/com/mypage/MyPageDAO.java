@@ -58,13 +58,13 @@ public class MyPageDAO {
 		String sql;
 
 		try {
-			sql = "SELECT NVL(COUNT(*), 0) " + " FROM campWish, member, campInfo "
+			sql = "SELECT NVL(COUNT(*), 0)  FROM campWish, member, campInfo "
 					+ " WHERE campWish.userId = member.userId AND campInfo.camInfoNum = campWish.camInfoNum AND "
-					+ " campWish.userId = ? OR 'admin' = ? ";
+					+ " (campWish.userId = ? OR 'admin' = ?) ";
 			pstmt = conn.prepareStatement(sql);
 
 			pstmt.setString(1, userId);
-			pstmt.setString(1, userId);
+			pstmt.setString(2, userId);
 
 			rs = pstmt.executeQuery();
 
@@ -99,15 +99,17 @@ public class MyPageDAO {
 		String sql;
 
 		try {
-			sql = "SELECT NVL(COUNT(*), 0) " + " FROM campWish, member, campInfo "
+			sql = "SELECT NVL(COUNT(*), 0) FROM campWish, member, campInfo "
 					+ " WHERE campWish.userId = member.userId AND campInfo.camInfoNum = campWish.camInfoNum AND "
-					+ " campWish.userId = ? AND OR 'admin' = ? ";
+					+ " (campWish.userId = ? OR 'admin' = ?) AND ";
 
 			if (condition.equals("all")) {
 				sql += " INSTR(campInfo.camInfoSubject, ?) >= 1 OR INSTR(campInfo.camInfoContent, ?) >= 1 ";
 			} else if (condition.equals("reg_date")) {
 				keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
 				sql += " TO_CHAR(campInfo.camInfoRegDate, 'YYYYMMDD') = ? ";
+			} else if (condition.equals("userId")) {
+				sql += " INSTR(campWish.userId, ?) >= 1 ";
 			} else {
 				sql += " INSTR(" + condition + ", ?) >= 1 ";
 			}
@@ -153,22 +155,20 @@ public class MyPageDAO {
 		StringBuilder sb = new StringBuilder();
 
 		try {
-			sb.append(
-					" SELECT campWish.camInfoNum, campInfo.camInfoSubject, campInfo.camInfoRegDate, campInfo.camThemaName, campWish.userId, campInfo.camInfoAddr, campInfo.camInfoContent  ");
-			sb.append(" FROM campWish, campInfo, campInfoKeyword, keywordName, member ");
-			sb.append(" WHERE campInfoKeyword.keywordName = keywordName.keywordName AND ");
-			sb.append(" campInfoKeyword.camInfoNum = campInfo.camInfoNum AND ");
-			sb.append(" campWish.camInfoNum = campInfo.camInfoNum AND ");
+			sb.append(" SELECT campWish.camInfoNum, campInfo.camInfoSubject, campInfo.camInfoRegDate, campInfo.camThemaName, campWish.userId, campInfo.camInfoAddr, campInfo.camInfoContent  ");
+			sb.append(" FROM campWish, campInfo, member ");
+			sb.append(" WHERE campWish.camInfoNum = campInfo.camInfoNum AND ");
 			sb.append(" member.userId = campWish.userId AND ");
-			sb.append(" (campWish.userId = ? OR admin = ?) ");
+			sb.append(" (campWish.userId = ? OR 'admin' = ?) ");
 			sb.append(" ORDER BY campWish.camInfoNum DESC ");
 			sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
 
 			pstmt = conn.prepareStatement(sb.toString());
 
 			pstmt.setString(1, userId);
-			pstmt.setInt(2, offset);
-			pstmt.setInt(3, size);
+			pstmt.setString(2, userId);
+			pstmt.setInt(3, offset);
+			pstmt.setInt(4, size);
 
 			rs = pstmt.executeQuery();
 
@@ -213,13 +213,11 @@ public class MyPageDAO {
 		StringBuilder sb = new StringBuilder();
 
 		try {
-			sb.append(
-					" SELECT campWish.camInfoNum, campInfo.camInfoSubject, campInfo.camInfoRegDate, campInfo.camThemaName, campWish.userId, campInfo.camInfoAddr, campInfo.camInfoContent  ");
-			sb.append(" FROM campWish, campInfo, campInfoKeyword, keywordName, member ");
-			sb.append(" WHERE campInfoKeyword.keywordName = keywordName.keywordName AND ");
-			sb.append(" campInfoKeyword.camInfoNum = campInfo.camInfoNum AND ");
-			sb.append(" campWish.camInfoNum = campInfo.camInfoNum AND ");
+			sb.append(" SELECT campWish.camInfoNum, campInfo.camInfoSubject, campInfo.camInfoRegDate, campInfo.camThemaName, campWish.userId, campInfo.camInfoAddr, campInfo.camInfoContent  ");
+			sb.append(" FROM campWish, campInfo, member ");
+			sb.append(" WHERE campWish.camInfoNum = campInfo.camInfoNum AND ");
 			sb.append(" member.userId = campWish.userId AND ");
+			//sb.append(" keywordName.keywordName = campInfo.camKeyword AND ");
 			sb.append(" (campWish.userId = ? OR 'admin' = ?) AND ");
 
 			if (condition.equals("all")) {
@@ -227,6 +225,8 @@ public class MyPageDAO {
 			} else if (condition.equals("reg_date")) {
 				keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
 				sb.append(" TO_CHAR(campInfo.camInfoRegDate, 'YYYYMMDD') = ? ");
+			}  else if (condition.equals("userId")) {
+				sb.append(" INSTR(campWish.userId , ?) >= 1 ");
 			} else {
 				sb.append(" INSTR(" + condition + ", ?) >= 1 ");
 			}
@@ -237,16 +237,17 @@ public class MyPageDAO {
 			pstmt = conn.prepareStatement(sb.toString());
 
 			pstmt.setString(1, userId);
-
+			pstmt.setString(2, userId);
+			
 			if (condition.equals("all")) {
-				pstmt.setString(2, keyword);
+				pstmt.setString(3, keyword);
+				pstmt.setString(4, keyword);
+				pstmt.setInt(5, offset);
+				pstmt.setInt(6, size);
+			} else {
 				pstmt.setString(3, keyword);
 				pstmt.setInt(4, offset);
 				pstmt.setInt(5, size);
-			} else {
-				pstmt.setString(2, keyword);
-				pstmt.setInt(3, offset);
-				pstmt.setInt(4, size);
 			}
 
 			rs = pstmt.executeQuery();
@@ -290,7 +291,7 @@ public class MyPageDAO {
 		String sql;
 
 		try {
-			sql = "DELETE FROM campWish WHERE userId = ? AND" + " camInfoNum IN (";
+			sql = "DELETE FROM campWish WHERE userId = ? AND camInfoNum IN (";
 			for (int i = 0; i < nums.length; i++) {
 				sql += "?,";
 			}
@@ -493,7 +494,7 @@ public class MyPageDAO {
 
 		try {
 			sb.append(
-					" SELECT DISTINCT campMate.camMateNum, campMate.camInfoNum, campMate.userId, campMate.camMateSubject, member.userNickName, ");
+					" SELECT campMate.camMateNum, campMate.camInfoNum, campMate.userId, campMate.camMateSubject, member.userNickName, ");
 			sb.append(
 					" campMate.camMateStartDate, campMate.camMateEndDate, campMate.camMateDues, campInfo.camInfoSubject ");
 			sb.append(" FROM campMate, campInfo, member,campMateApply ");
@@ -509,9 +510,9 @@ public class MyPageDAO {
 			else if (condition.equals("camMateNum")) {
 				sb.append(" campMate.camMateNum = ? ");
 			} else if (condition.equals("userNickName")) {
-				sb.append(" INSTR(LOWERmember.userNickName), LOWER(?)) >= 1 ");
+				sb.append(" INSTR(LOWER(member.userNickName), LOWER(?)) >= 1 ");
 			} else {
-				sb.append(" INSTR(" + condition + ", ?) >= 1 ");
+				sb.append(" INSTR(LOWER(" + condition + "), LOWER(?)) >= 1 ");
 			}
 
 			sb.append(" ORDER BY campMate.camMateNum DESC ");
@@ -1148,8 +1149,10 @@ public class MyPageDAO {
 
 		try {
 			sb.append(
-					" SELECT userId, userName, userTel, TO_CHAR(TO_DATE(userBirth), 'YYYY-MM-DD') userBirth, userNickName, userEmail, userPoint, TO_CHAR(TO_DATE(userRegDate), 'YYYY-MM-DD') userRegDate, TO_CHAR(TO_DATE(userUpdateDate), 'YYYY-MM-DD') userUpdateDate ");
+					" SELECT member.userId, userName, userTel, TO_CHAR(TO_DATE(userBirth), 'YYYY-MM-DD') userBirth, userNickName, userEmail, userPoint, "
+					+ "TO_CHAR(TO_DATE(userRegDate), 'YYYY-MM-DD') userRegDate, TO_CHAR(TO_DATE(userUpdateDate), 'YYYY-MM-DD') userUpdateDate, NVL(TO_CHAR(TO_DATE(restEndDate), 'YYYY-MM-DD'),' ') restEndDate ");
 			sb.append(" FROM member ");
+			sb.append(" LEFT OUTER JOIN restrictedMember on member.userId = restrictedMember.userId ");
 			sb.append(" ORDER BY userRegDate DESC ");
 			sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
 
@@ -1172,6 +1175,7 @@ public class MyPageDAO {
 				dto.setUserPoint(rs.getLong("userPoint"));
 				dto.setUserRegDate(rs.getString("userRegDate"));
 				dto.setUserUpdateDate(rs.getString("userUpdateDate"));
+				dto.setRestEndDate(rs.getString("restEndDate"));
 
 				list.add(dto);
 			}
@@ -1381,5 +1385,90 @@ public class MyPageDAO {
 		}
 
 	}
+	
+	
+	
+	public MyPageDTO confine(String userId) {
+		MyPageDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StringBuilder sb = new StringBuilder();
 
-}
+		try {
+			sb.append(" SELECT restrictedmember.userId, restEndDate ");
+			sb.append(" FROM restrictedmember, member ");
+			sb.append(" WHERE restrictedmember.userId = member.userId AND restrictedmember.userId = ? ");
+
+			pstmt = conn.prepareStatement(sb.toString());
+			pstmt.setString(1, userId);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				dto = new MyPageDTO();
+
+				dto.setUserId(rs.getString("userId"));
+				dto.setRestEndDate(rs.getString("restEndDate"));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		return dto;
+	}
+	
+
+	//테이블에 데이터가 있으면 해당 데이터 수정, 없으면 새로운 데이터 추가
+	public void cofineMember(String userId, String content, String endDate) throws SQLException {
+		PreparedStatement pstmt = null;
+		StringBuilder sb = new StringBuilder();
+
+		try {
+			sb.append(" MERGE INTO restrictedMember ");
+			sb.append(" USING DUAL ON (userId = ?) ");
+			sb.append(" WHEN MATCHED THEN ");
+			sb.append(" UPDATE SET restContent = ?, reststartDate = SYSDATE, restEndDate = ? WHERE userId = ? ");
+			sb.append(" WHEN NOT MATCHED THEN ");
+			sb.append(" INSERT (userId, restContent, restStartDate, restEndDate) VALUES (?, ?, sysdate, ?) ");
+
+
+			pstmt = conn.prepareStatement(sb.toString());
+
+			pstmt.setString(1, userId);
+			pstmt.setString(2, content);
+			pstmt.setString(3, endDate);
+			pstmt.setString(4, userId);
+			pstmt.setString(5, userId);
+			pstmt.setString(6, content);
+			pstmt.setString(7, endDate);
+			
+			pstmt.executeQuery();
+
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+	}
+	
+}	

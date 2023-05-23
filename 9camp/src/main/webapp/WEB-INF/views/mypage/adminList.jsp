@@ -84,6 +84,8 @@ function searchList() {
 							<th class="point">포인트</th>
 							<th class="regDate">생성일</th>
 							<th class="updateDate">수정일</th>
+							<th class="restEndDate">현재 정지 날짜</th>
+							<th class="confine">정지</th>
 							<th class="chk">
 								<input type="checkbox" name="chkAll" id="chkAll">
 							</th>
@@ -102,6 +104,9 @@ function searchList() {
 							<td>${member.userPoint}</td>
 							<td>${member.userRegDate}</td>
 							<td>${member.userUpdateDate}</td>
+							<td>${member.restEndDate}</td>
+							<td><button type="button" class="btn" onclick="location.href='${ConfineUrl}&userId=${member.userId}'">정지 시키기</button></td>
+							
 							<td>
 								<input type="checkbox" name="userId" value="${member.userId}">
 							</td>

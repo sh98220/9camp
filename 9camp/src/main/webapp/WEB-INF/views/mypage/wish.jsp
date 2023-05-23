@@ -78,6 +78,9 @@ function searchList() {
 				<table class="table table-border table-list">
 					<thead>
 						<tr>
+							<c:if test="${sessionScope.member.userId=='admin'}">
+								<th class="id">아이디</th>
+							</c:if>
 							<th class="num">번호</th>
 							<th class="subject">제목</th>
 							<th class="date">작성일</th>
@@ -92,16 +95,22 @@ function searchList() {
 					<tbody>
 						<c:forEach var="dto" items="${list}" varStatus="status">
 						<tr>
+							<c:if test="${sessionScope.member.userId=='admin'}">
+								<td>${dto.userId}</td>
+							</c:if>
 							<td>${dto.camInfoNum}</td>
 							<td>${dto.camInfoSubject}</td>
 							<td>${dto.camInfoRegDate}</td>
 							<td>${dto.camInfoAddr}</td>
 							<td>${dto.camThemaName}</td>
+	
 							<td>
 								<input type="checkbox" name="nums" value="${dto.camInfoNum}">
 							</td>
 						</tr>
 						</c:forEach>
+
+						
 					</tbody>
 				</table>
 			</form>
@@ -118,13 +127,15 @@ function searchList() {
 					<td align="center">
 						<form name="searchForm" action="${pageContext.request.contextPath}/mypage/wish.do" method="post">
 							<select name="condition" class="form-select">
-								<!-- <option value="all" ${condition=="all"?"selected='selected'":"" }>제목+내용</option> -->
-								<option value="camThemaName" ${condition=="camThemaName"?"selected='selected'":"" }>테마</option>
+								<c:if test="${sessionScope.member.userId=='admin'}">
+									<option value="userId" ${condition=="userId"?"selected='selected'":"" }>아이디</option>
+								</c:if>
 								<option value="campWish.camInfoNum" ${condition=="campWish.camInfoNum"?"selected='selected'":"" }>번호</option>
-								<!-- <option value="camInfoRegDate"  ${condition=="camInfoRegDate "?"selected='selected'":"" }>번호</option> -->
+								<option value="camInfoSubject"  ${condition=="camInfoSubject"?"selected='selected'":"" }>제목</option>
+								<option value="camInfoRegDate"  ${condition=="camInfoRegDate"?"selected='selected'":"" }>작성일</option>
 								<option value="camInfoAddr"  ${condition=="camInfoAddr"?"selected='selected'":"" }>주소</option>
-								<option value="camInfoSubject"  ${condition=="camInfoSubject "?"selected='selected'":"" }>제목</option>
-								<option value="camInfoContent"  ${condition=="camInfoContent "?"selected='selected'":"" }>내용</option>
+								<option value="camThemaName" ${condition=="camThemaName"?"selected='selected'":"" }>테마</option>
+								<option value="camInfoContent"  ${condition=="camInfoContent"?"selected='selected'":"" }>내용</option>
 							</select>
 							<input type="text" name="keyword" value="${keyword}" class="form-control">
 							<input type="hidden" name="size" value="${size}">

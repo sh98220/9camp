@@ -178,14 +178,24 @@
 			<div id="normalMode">
 				<div class="tf_tit">
 					<label for="who" class="recipient">아이디</label>
-					<input type="text" id="who" name="msgSenderId" value="${msgRecId}" placeholder="아이디 입력">
+					<input type="text" id="who" name="userId" id="userId" value="${userId}" placeholder="아이디 입력">
+				</div>
+				
+				<div class="tf_tit">
+					<label for="who" class="recipient">현재 정지 날짜</label>
+					<input type="text" name="endDate" id="endDate" value="${dto.restEndDate}" readonly="readonly">
 				</div>
 				<div>
-					<label for="date">날짜를 선택하세요:
+					<label for="date">정지 날짜 등록하기
  					<input type="date" name="confineDate"
-         				id="confineDate"
-        				value="">
+         				id="date"
+        				value="" oninput="onInputHandler()">
 					</label>
+				</div>
+				<div>
+					<button type="button" id = "tomorrowBtn" onclick="tomorrowFun()">1일</button>
+					<button type="button" id = "weekBtn" onclick="weekFun()">7일</button>
+					<button type="button" id = "monthBtn" onclick="monthFun()">30일</button>
 				</div>
 					<script>
 						let today = new Date();
@@ -193,28 +203,68 @@
 						let week = new Date(today.setDate(today.getDate() + 7));
 						let month = new Date(today.setDate(today.getDate() + 30));
 						
-						document.getElementById('confineDate').valueAsDate = tomorrow;
-					</script>
-					
+						function tomorrowFun(){
+							document.getElementById('date').valueAsDate = tomorrow;
+						}
+						
+						function weekFun(){
+							document.getElementById('date').valueAsDate = week;
+						}
+						
+						function monthFun(){
+							document.getElementById('date').valueAsDate = month;
+						}
+						
+						
+						
+						let date = document.querySelector("#date");
+						let warning = document.querySelector(".warning");
 
-				
-				
-				<div class="row mb-3">
-				        <label class="col-sm-2 col-form-label" for="birth">생년월일</label>
-				        <div class="col-sm-10">
-				            <input type="date" name="birth" id="birth" class="form-control" value="${dto.birth}" placeholder="생년월일">
-				            <small class="form-control-plaintext">생년월일은 2000-01-01 형식으로 입력 합니다.</small>
-				        </div>
-				 </div>
-				
-				
+						const onInputHandler = () => {
+						    let val = date.value.replace(/\D/g, "");
+						    let leng = val.length;
+						    let result = '';
+
+						    if(leng < 6) result = val;
+						    else if(leng < 8){
+						        result += val.substring(0,4);
+						        result += "-";
+						        result += val.substring(4);
+						    } else{
+						        result += val.substring(0,4);
+						        result += "-";
+						        result += val.substring(4,6);
+						        result += "-";
+						        result += val.substring(6);
+						    }
+						    date.value = result;
+						}
+
+						const checkValidDate = (value) => {
+						    let result = true;
+						    try {
+						        let date = value.split("-");
+						        let y = parseInt(date[0], 10),
+						            m = parseInt(date[1], 10),
+						            d = parseInt(date[2], 10);
+
+						        let dateRegex = /^(?=\d)(?:(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:\x20|$))|(?:2[0-8]|1\d|0?[1-9]))([-.\/])(?:1[012]|0?[1-9])\1(?:1[6-9]|[2-9]\d)?\d\d(?:(?=\x20\d)\x20|$))?(((0?[1-9]|1[012])(:[0-5]\d){0,2}(\x20[AP]M))|([01]\d|2[0-3])(:[0-5]\d){1,2})?$/;
+						        result = dateRegex.test(d+'-'+m+'-'+y);
+						    } catch (err) {
+						        result = false;
+						    }
+						    return result;
+						}
+						
+					</script>
+						
 				
 				<div class="writing_area">
-					<textarea id="writeNote" name="msgContent" style="resize:none;" rows="5" cols="55" title="내용을 입력해 주세요."></textarea>
+					<textarea id="content" name="content" style="resize:none;" rows="5" cols="55" title="내용을 입력해 주세요."></textarea>
 				</div>
 			</div>
-			<button type="button" class="btn" onclick="sendOk();"> 보내기 </button>
-			<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/message/listRecMsg.do';"> 취소 </button>
+			<button type="button" class="btn" onclick="sendOk();"> 확인 </button>
+			<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mypage/adminList.do';"> 취소 </button>
 		</form> 
 	</div>
   
@@ -289,21 +339,23 @@ function sendOk() {
 	const f = document.msgForm;
 	let str;
 	
-	str = f.msgSenderId.value.trim();
+	str = f.userId.value.trim();
 	if(!str) {
-	    alert("받는 사람 아이디를 입력하세요. ");
-	    f.msgSenderId.focus();
+	    alert("아이디를 입력하세요. ");
+	    f.userId.focus();
 		return;
 	}
 	
-    str = f.msgContent.value.trim();
-    if(!str) {
-        alert("내용을 입력하세요. ");
-        f.msgContent.focus();
-        return;
-    }
-
-    f.action = "${pageContext.request.contextPath}/message/write_ok.do";
+	str = f.date.value.trim();
+	if(!str){
+		alert("날짜를 입력하세요.")
+		f.date.focus();
+		return;
+	}
+	
+	
+	
+    f.action = "${pageContext.request.contextPath}/mypage/confine.do";
     f.submit();
 }
 
