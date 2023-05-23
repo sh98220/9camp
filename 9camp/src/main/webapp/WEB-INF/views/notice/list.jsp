@@ -218,7 +218,7 @@ function searchList() {
 							<td class="left">
 								<a href="${articleUrl}&num=${dto.noticeNum}">${dto.noticeSubject}</a>
 							</td>
-							<td>${dto.userId}</td>
+							<td>관리자</td>
 							<td>${dto.noticeRegDate}</td>
 							<td>${dto.noticeHitCount}</td>
 						</tr>
@@ -239,7 +239,7 @@ function searchList() {
 						<form name="searchForm" action="${pageContext.request.contextPath}/notice/list.do" method="post">
 							<select name="condition" class="form-select">
 								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
-								<option value="userId" ${condition=="userId"?"selected='selected'":"" }>작성자</option>
+								<option value="userName" ${condition=="userName"?"selected='selected'":"" }>작성자</option>
 								<option value="noticeRegDate"  ${condition=="noticeRegDate"?"selected='selected'":"" }>등록일</option>
 								<option value="noticeSubject"  ${condition=="noticeSubject"?"selected='selected'":"" }>제목</option>
 								<option value="noticeContent"  ${condition=="noticeContent"?"selected='selected'":"" }>내용</option>

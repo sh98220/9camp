@@ -3,6 +3,7 @@ package com.notice;
 public class NoticeDTO {
 	private int noticeNum;
 	private String userId;
+	private String userName;
 	private String noticeSubject;
 	private String noticeContent;
 	private int noticeHitCount;
@@ -18,11 +19,17 @@ public class NoticeDTO {
 	public void setNoticeNum(int noticeNum) {
 		this.noticeNum = noticeNum;
 	}
-	public String getuserId() {
+	public String getUserId() {
 		return userId;
 	}
-	public void setuserId(String userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	public String getNoticeSubject() {
 		return noticeSubject;
@@ -67,6 +74,7 @@ public class NoticeDTO {
 	public void setImageFiles(String[] imageFiles) {
 		this.imageFiles = imageFiles;
 	}
+	
 	
 	
 }

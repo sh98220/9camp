@@ -201,8 +201,8 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 <c:if test="${sessionScope.member.userId==dto.userId || sessionScope.member.userId=='admin'}">
 	function deleteBoard() {
 	    if(confirm("게시글을 삭제 하시겠습니까 ? ")) {
-		    let query = "num=${dto.camChatNum}&${query}";
-		    let url = "${pageContext.request.contextPath}/freeboard/delete.do?" + query;
+		    let query = "num=${dto.noticeNum}&${query}";
+		    let url = "${pageContext.request.contextPath}/notice/delete.do?" + query;
 	    	location.href = url;
 	    }
 	}
@@ -267,7 +267,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 				<tbody>
 					<tr>
 						<td width="50%">
-							이름 : ${dto.userId}
+							이름 : 관리자
 						</td>
 						<td align="right">
 							${dto.noticeRegDate} | 조회 ${dto.noticeHitCount}
@@ -277,6 +277,18 @@ function ajaxFun(url, method, query, dataType, fn) {
 					<tr>
 						<td colspan="2" valign="top" height="200">
 							${dto.noticeContent}
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="2" height="200">
+							사&nbsp;&nbsp;진 :
+							<div class="img-box">
+								<c:forEach var="vo" items="${listFile}">
+									<img src="${pageContext.request.contextPath}/uploads/notice/${vo.noticePhotoName}"
+										onclick="imageViewer('${pageContext.request.contextPath}/uploads/notice/${vo.noticePhotoName}');">
+								</c:forEach>
+							</div>
 						</td>
 					</tr>
 					

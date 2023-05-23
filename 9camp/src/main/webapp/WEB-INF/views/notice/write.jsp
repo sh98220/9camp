@@ -181,7 +181,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 
 <script type="text/javascript">
 function sendOk() {
-    const f = document.boardForm;
+    const f = document.noticeForm;
 	let str;
 	
     str = f.noticeSubject.value.trim();
@@ -197,10 +197,34 @@ function sendOk() {
         f.noticeContent.focus();
         return;
     }
+    
+    let mode = "${mode}";
+    if( (mode === "write") && (!f.selectFile.value) ) {
+        alert("이미지 파일을 추가 하세요. ");
+        f.selectFile.focus();
+        return;
+    }
 
     f.action = "${pageContext.request.contextPath}/notice/${mode}_ok.do";
     f.submit();
 }
+
+<c:if test="${mode == 'update'}">
+function deleteFile(camRevphotonum) {
+	let cnt = $(".img-box").find("img").length;
+	if(cnt == 1){
+		alert('이미지가 한개면 삭제할 수 없습니다.')
+		return;
+	}
+	
+	if(confirm('이미지를 삭제하시겠습니까 ?')){
+		let query = "noticeNum=${dto.noticeNum}&noticePhotoNum=" + noticePhotoNum + "&page=${page}";
+		let url = "${pageContext.request.contextPath}/notice/deleteFile.do";
+		location.href = url + "?" + query;
+	}
+	
+}
+</c:if>
 
 </script>
 </head>
@@ -210,7 +234,72 @@ function sendOk() {
 	<jsp:include page="/WEB-INF/views/layout/header.jsp"></jsp:include>
 </header>
 
+<main>
+	<div class="container body-container">
+	    <div class="body-title">
+			<h2><i class="fa-solid fa-tent fa-bounce"></i> 공지사항 </h2>
+	    </div>
+	    
+	    <div class="body-main mx-auto">
+			<form name="noticeForm" method="post" enctype="multipart/form-data">
+				<table class="table table-border table-form">
+					<tr> 
+						<td>제&nbsp;&nbsp;&nbsp;&nbsp;목</td>
+						<td> 
+							<input type="text" name="noticeSubject" maxlength="100" class="form-control" value="${dto.noticeSubject}">
+						</td>
+					</tr>
+					
+				
+					
+					<tr> 
+						<td valign="top">내&nbsp;&nbsp;&nbsp;&nbsp;용</td>
+						<td> 
+							<textarea name="noticeContent" class="form-control">${dto.noticeContent}</textarea>
+						</td>
+					</tr>
+					
+					<tr>
+						<td>첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
+						<td> 
+							<input type="file" name="selectFile" accept="image/*" multiple="multiple" class="form-control">
+						</td>
+					</tr>
+					
+					<c:if test="${mode == 'update' }">
+						<tr>
+							<td>등록이미지</td>
+							<td>
+								<div class="img-box">
+									<c:forEach var="vo" items="${listFile}">
+										<img src="${pageContext.request.contextPath}/uploads/notice/${vo.noticePhotoName}"
+											onclick="deleteFile('${vo.noticePhotoNum}');">
+									</c:forEach>
+								</div>
+							</td>
+						</tr>
+					</c:if>
+				</table>
+					
+				<table class="table">
+					<tr> 
+						<td align="center">
+							<button type="button" class="btn" onclick="sendOk();">${mode=="update"?"수정완료":"등록완료"}</button>
+							<button type="reset" class="btn">다시입력</button>
+							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/list.do';">${mode=="update"?"수정취소":"등록취소"}</button>
+							<c:if test="${mode=='update' }">
+								<input type="hidden" name="noticeNum" value="${dto.noticeNum}">
+								<input type="hidden" name="page" value="${page}">
+							</c:if>							
+						</td>
+					</tr>
+				</table>
+		
+			</form>
 
+	    </div>
+	</div>
+</main>
 
 <footer>
 	<jsp:include page="/WEB-INF/views/layout/footer.jsp"/>

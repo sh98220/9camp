@@ -36,12 +36,13 @@ public class NoticeDAO {
 			pstmt = null;
 			
 			sql = "INSERT INTO notice(noticeNum, userId, noticeSubject, noticeContent ,noticeHitcount, noticeRegdate) "
-					+ " VALUES (notice_seq.NEXTVAL, ?, ?, ?, 0, SYSDATE)";
-			pstmt = conn.prepareStatement(sql);
+					+ " VALUES (?, ?, ?, ?, 0, SYSDATE)";
 			
-			pstmt.setString(1, dto.getuserId());
-			pstmt.setString(2, dto.getNoticeSubject());
-			pstmt.setString(3, dto.getNoticeContent());
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setLong(1, dto.getNoticeNum());
+			pstmt.setString(2, dto.getUserId());
+			pstmt.setString(3, dto.getNoticeSubject());
+			pstmt.setString(4, dto.getNoticeContent());
 			
 			pstmt.executeUpdate();
 			
@@ -49,7 +50,7 @@ public class NoticeDAO {
 			pstmt = null;
 			
 			if (dto.getImageFiles() != null) {
-				sql = "INSERT INTO noticephoto(noticePhotoNum, noticeNum, noticePhoteName) VALUES "
+				sql = "INSERT INTO noticephoto(noticePhotoNum, noticeNum, noticePhotoName) VALUES "
 						+ " (noticePhoto_SEQ.NEXTVAL, ?, ?)";
 				pstmt = conn.prepareStatement(sql);
 				
@@ -192,7 +193,7 @@ public class NoticeDAO {
 				dto.setNoticeSubject(rs.getString("noticeSubject"));
 				dto.setNoticeHitCount(rs.getInt("noticeHitCount"));
 				dto.setNoticeRegDate(rs.getString("noticeRegDate"));
-				dto.setuserId(rs.getString("userId"));
+				dto.setUserId(rs.getString("userId"));
 
 				list.add(dto);
 			}
@@ -216,7 +217,7 @@ public class NoticeDAO {
 
 		return list;
 	}
-/*	
+	
 	public List<NoticeDTO> listNotice(int offset, int size, String condition, String keyword) {
 		List<NoticeDTO> list = new ArrayList<NoticeDTO>();
 		PreparedStatement pstmt = null;
@@ -224,19 +225,19 @@ public class NoticeDAO {
 		StringBuilder sb = new StringBuilder();
 
 		try {
-			sb.append(" SELECT camRevnum, usernickname, username, camRevsubject, camRevhitcount, ");
-			sb.append("      TO_CHAR(camRevregdate, 'YYYY-MM-DD') camRevregdate ");
+			sb.append(" SELECT noticeNum, username, noticeSubject, noticeHitCount, ");
+			sb.append("      TO_CHAR(noticeRegDate, 'YYYY-MM-DD') noticeRegDate ");
 			sb.append(" FROM Notice n ");
 			sb.append(" JOIN member m ON n.userId = m.userId ");
 			if (condition.equals("all")) {
-				sb.append(" WHERE INSTR(camRevsubject, ?) >= 1 OR INSTR(camRevcontent, ?) >= 1 ");
-			} else if (condition.equals("camRevregdate")) {
+				sb.append(" WHERE INSTR(noticeSubject, ?) >= 1 OR INSTR(noticeContent, ?) >= 1 ");
+			} else if (condition.equals("noticeRegDate")) {
 				keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
-				sb.append(" WHERE TO_CHAR(camRevregdate, 'YYYYMMDD') = ?");
+				sb.append(" WHERE TO_CHAR(noticeRegDate, 'YYYYMMDD') = ?");
 			} else {
 				sb.append(" WHERE INSTR(" + condition + ", ?) >= 1 ");
 			}
-			sb.append(" ORDER BY camRevnum DESC ");
+			sb.append(" ORDER BY noticeNum DESC ");
 			sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
 
 			pstmt = conn.prepareStatement(sb.toString());
@@ -255,14 +256,13 @@ public class NoticeDAO {
 			rs = pstmt.executeQuery();
 			
 			while (rs.next()) {
-				ReviewsDTO dto = new ReviewsDTO();
+				NoticeDTO dto = new NoticeDTO();
 
-				dto.setCamRevnum(rs.getInt("camRevnum"));
+				dto.setNoticeNum(rs.getInt("noticeNum"));
 				dto.setUserName(rs.getString("userName"));
-				dto.setUserNickName(rs.getString("userNickName"));
-				dto.setCamRevsubject(rs.getString("camRevsubject"));
-				dto.setCamRevhitcount(rs.getInt("camRevhitcount"));
-				dto.setCamRevregdate(rs.getString("camRevregdate"));
+				dto.setNoticeSubject(rs.getString("noticeSubject"));
+				dto.setNoticeHitCount(rs.getInt("noticeHitCount"));
+				dto.setNoticeRegDate(rs.getString("noticeRegDate"));
 
 				list.add(dto);
 			}
@@ -285,5 +285,195 @@ public class NoticeDAO {
 
 		return list;
 	}
-*/	
+	
+	public NoticeDTO readNotice(long num) {
+		NoticeDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+
+		try {
+			sql = "SELECT n.noticeNum, n.userId, userName, noticeSubject, noticeContent, "
+					+ " noticeRegDate, noticeHitCount "
+					+ " FROM notice n "
+					+ " JOIN member m ON n.userId=m.userId "
+					+ " WHERE n.noticeNum = ? ";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				dto = new NoticeDTO();
+				
+				dto.setNoticeNum(rs.getInt("noticeNum"));
+				dto.setUserId(rs.getString("userId"));
+				dto.setUserName(rs.getString("userName"));
+				dto.setNoticeSubject(rs.getString("noticeSubject"));
+				dto.setNoticeContent(rs.getString("noticeContent"));
+				dto.setNoticeHitCount(rs.getInt("noticeHitCount"));
+				dto.setNoticeRegDate(rs.getString("noticeRegDate"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		return dto;
+	}
+	
+	public List<NoticeDTO> listPhotoFile(long num) {
+		List<NoticeDTO> list = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+
+		try {
+			sql = "SELECT noticePhotoNum, noticeNum, noticePhotoName FROM noticePhoto WHERE noticeNum = ?";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				NoticeDTO dto = new NoticeDTO();
+
+				dto.setNoticePhotoNum(rs.getInt("noticePhotoNum"));
+				dto.setNoticeNum(rs.getInt("noticeNum"));
+				dto.setNoticePhotoName(rs.getString("noticePhotoName"));
+				
+				list.add(dto);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		return list;
+	}
+	
+	public void deleteNotice(long num) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+
+		try {
+			sql = "DELETE FROM notice WHERE noticeNum=?";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+	}
+	
+	public void deleteNoticeFile(String mode, long num) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+
+		try {
+			if (mode.equals("all")) {
+				sql = "DELETE FROM NOTICEPHOTO WHERE noticeNum = ?";
+			} else {
+				sql = "DELETE FROM NOTICEPHOTO WHERE noticePhotoNum = ?";
+			}
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+
+			pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e2) {
+				}
+			}
+		}
+	}
+	
+	public void updateNotice(NoticeDTO dto) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+
+		try {
+			sql = "UPDATE notice SET noticeSubject=?, noticeContent=? WHERE noticeNum=?";
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setString(1, dto.getNoticeSubject());
+			pstmt.setString(2, dto.getNoticeContent());
+			pstmt.setLong(3, dto.getNoticeNum());
+
+			pstmt.executeUpdate();
+			
+			pstmt.close();
+			pstmt = null;
+
+			if (dto.getImageFiles() != null) {
+				sql = "INSERT INTO noticephoto(noticePhotoNum, noticeNum, noticePhotoName) VALUES "
+						+ " (NOTICEPHOTO_seq.NEXTVAL, ?, ?)";
+				pstmt = conn.prepareStatement(sql);
+				
+				for (int i = 0; i < dto.getImageFiles().length; i++) {
+					pstmt.setLong(1, dto.getNoticeNum());
+					pstmt.setString(2, dto.getImageFiles()[i]);
+					
+					pstmt.executeUpdate();
+				}
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+	}
+	
 }
