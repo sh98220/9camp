@@ -2,6 +2,7 @@ package com.qna;
 
 public class QnaDTO {
 	private String userId;
+	private String userNickName;
 	private long qnaNum;
 	private String qnaSubject;
 	private String qnaContent;
@@ -10,10 +11,8 @@ public class QnaDTO {
 	private String qnaRegDate;
 	private long groupNum;
 	private int orderNum;
-	
-	private long qnaPhotoNum;
-	private String qnaPhotoName;
-	private String[] qnaPhotos;
+	private int depth;
+	private long parent;
 	
     private long qnaFileNum;
 	private String qnasaveFilename;
@@ -24,6 +23,25 @@ public class QnaDTO {
 	
 	
 	
+	
+	public int getDepth() {
+		return depth;
+	}
+	public void setDepth(int depth) {
+		this.depth = depth;
+	}
+	public long getParent() {
+		return parent;
+	}
+	public void setParent(long parent) {
+		this.parent = parent;
+	}
+	public String getUserNickName() {
+		return userNickName;
+	}
+	public void setUserNickName(String userNickName) {
+		this.userNickName = userNickName;
+	}
 	public long getGroupNum() {
 		return groupNum;
 	}
@@ -78,24 +96,7 @@ public class QnaDTO {
 	public void setQnaRegDate(String qnaRegDate) {
 		this.qnaRegDate = qnaRegDate;
 	}
-	public long getQnaPhotoNum() {
-		return qnaPhotoNum;
-	}
-	public void setQnaPhotoNum(long qnaPhotoNum) {
-		this.qnaPhotoNum = qnaPhotoNum;
-	}
-	public String getQnaPhotoName() {
-		return qnaPhotoName;
-	}
-	public void setQnaPhotoName(String qnaPhotoName) {
-		this.qnaPhotoName = qnaPhotoName;
-	}
-	public String[] getQnaPhotos() {
-		return qnaPhotos;
-	}
-	public void setQnaPhotos(String[] qnaPhotos) {
-		this.qnaPhotos = qnaPhotos;
-	}
+
 	public long getQnaFileNum() {
 		return qnaFileNum;
 	}

@@ -183,7 +183,7 @@ function searchList() {
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fa-regular fa-face-smile"></i> 렌탈 </h2>
+			<h2><i class="fa-solid fa-messages-question"></i> Q & A </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
@@ -212,14 +212,21 @@ function searchList() {
 					<c:forEach var="dto" items="${list}" varStatus="status">
 						<tr>
 							<td>${dataCount - (page-1) * size - status.index}</td>
-							<td class="left">
-								<a href="${articleUrl}&qnaNum=${dto.qnaNum}">${dto.qnaSubject}</a>
-							</td>
-							<td>${sessionScope.member.userNickName}</td>
+								<td class="left">
+									<c:choose>
+									<c:when test="${dto.depth!=0}">
+									<a href="${articleUrl}&qnaNum=${dto.qnaNum}" class="text-reset">└&nbsp;${dto.qnaSubject}</a>
+									</c:when>
+									<c:otherwise>
+									<a href="${articleUrl}&qnaNum=${dto.qnaNum}" class="text-reset">${dto.qnaSubject}</a>
+									</c:otherwise>
+									</c:choose>
+								</td>
+							<td>${dto.userNickName}</td>
 							<td>${dto.qnaRegDate}</td>
 							<td>${dto.qnaHitCount}</td>
 							<td>
-								<c:if test="${not empty dto.qnaFileName}">
+								<c:if test="${not empty dto.qnaoriginalFilename}">
 									<i class="far fa-file"></i>
 								</c:if>
 							</td>
