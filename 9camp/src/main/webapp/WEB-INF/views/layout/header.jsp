@@ -69,10 +69,13 @@ function countNoReadMsg() {
 		
 		<ul class="icon-cont">
 			<c:if test="${not empty sessionScope.member}">
-				<li class="point-li">
-					<a href="${pageContext.request.contextPath}/point/list.do"><span class="point-tit">보유 포인트</span> <span class="point-val">100,000</span> Point</a>
-				</li>
-			</c:if>
+				    <li class="point-li">
+				        <a href="${pageContext.request.contextPath}/point/list.do">
+				            <span class="point-tit">보유 포인트</span>
+				            <span class="point-val">${sessionScope.member.userPoint}</span> Point
+				        </a>
+				    </li>
+				</c:if>
 			<c:if test="${not empty sessionScope.member}">	
 				<li class="point-li bar">
 					|
