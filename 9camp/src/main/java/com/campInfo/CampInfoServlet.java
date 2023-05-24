@@ -131,10 +131,12 @@ public class CampInfoServlet extends MyUploadServlet {
 		if(offset < 0) offset = 0;
 		
 		List<CampInfoDTO> list = null;
-		if(keyword.length() == 0) {
+		if(keyword.length() == 0 && key.length == 0) {
 			list = dao.listCampInfo(offset, size);
-		} else {
+		} else if (!(key.length == 0)) {
 			list = dao.listCampInfo(offset, size, condition, keyword);
+		} else {
+			list = dao.listCampInfo(offset, size, key);
 		}
 			
 		String query = "";

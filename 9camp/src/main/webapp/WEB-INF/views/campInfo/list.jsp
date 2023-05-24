@@ -499,7 +499,7 @@ function searchList() {
 					<td width="100">
 						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/campInfo/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
 					</td>
-<<<<<<< HEAD
+
 					<td align="center">
 						<form name="searchForm" action="${pageContext.request.contextPath}/campInfo/list.do" method="post">
 						<input type="text" name="key" value="${key}">
@@ -516,9 +516,6 @@ function searchList() {
 							<button type="button" class="btn" onclick="searchList();">검색</button>
 						</form>
 					</td>
-=======
-				
->>>>>>> branch 'main' of https://github.com/sh98220/9camp.git
 					
 					<td align="right" width="100">
 						<c:choose>

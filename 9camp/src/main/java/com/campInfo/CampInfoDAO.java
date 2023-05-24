@@ -923,6 +923,67 @@ public class CampInfoDAO {
 
 			return list;
 		}
+
+		public List<CampInfoDTO> listCampInfo(int offset, int size, String[] key) {
+
+				List<CampInfoDTO> list = new ArrayList<CampInfoDTO>();
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				StringBuilder sb = new StringBuilder();
+
+				try {
+					sb.append(" SELECT camInfoNum, camInfoSubject, camInfoContent, camInfoAddr, ");
+					sb.append("		camInfoHitCount, TO_CHAR(camInfoRegDate, 'YYYY-MM-DD') camInfoRegDate, camThemaName, camkeyword ");
+					sb.append(" FROM campInfo ");
+					sb.append("");
+					sb.append(" ORDER BY camInfoNum DESC ");
+					sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
+
+					pstmt = conn.prepareStatement(sb.toString());
+
+					pstmt.setInt(2, offset);
+					pstmt.setInt(3, size);
+					
+
+					rs = pstmt.executeQuery();
+					
+					while(rs.next()) {
+						CampInfoDTO dto = new CampInfoDTO();
+						
+						dto.setCamInfoNum(rs.getInt("camInfoNum"));
+						dto.setCamInfoSubject(rs.getString("camInfoSubject"));
+						dto.setCamInfoContent(rs.getString("camInfoContent"));
+						dto.setCamInfoAddr(rs.getString("camInfoAddr"));
+						dto.setCamInfoHitCount(rs.getInt("camInfoHitCount"));
+						dto.setCamInfoRegDate(rs.getString("camInfoRegDate"));
+						dto.setCamThemaName(rs.getString("camThemaName"));
+						
+						list.add(dto);		
+						
+					}
+		 
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					if (rs != null) {
+						try {
+							rs.close();
+						} catch (SQLException e2) {
+						}
+					}
+					if (pstmt != null) {
+						try {
+							pstmt.close();
+						} catch (SQLException e2) {
+						}
+					}
+				}
+
+				return list;
+				
+			
+			
+		}
 		
 		
 	
