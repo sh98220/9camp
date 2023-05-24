@@ -113,6 +113,10 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	font-size: 15px; color:#ffffff; font-weight: 700;  cursor: pointer; vertical-align: baseline;
 }
 
+.button-wrapper {
+        margin-top: 20px;
+    }
+    
 .container {
     width: 100%;
     padding-right: 15px;
@@ -204,7 +208,9 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     충전 전 잔액: ${ prebalance}point&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           충전금액: ${  amount }point  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     충전 후 잔액: ${ balance}point  
-        
+        </div>
+	 <div class="button-wrapper">
+            <button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/point/list.do';" title="돌아가기">돌아가기</button>
         </div>
     </div>
 	

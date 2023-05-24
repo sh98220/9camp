@@ -62,7 +62,9 @@
 	box-shadow: none;
 	opacity: .65;
 }
-
+ .button-wrapper {
+        margin-top: 20px; 
+    }
 
 .form-control {
 	border: 1px solid #999999; border-radius: 4px; background-color: #ffffff;
@@ -205,6 +207,9 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
           출금금액: ${  amount }point  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     출금 후 잔액: ${ balance}point  
         
+        </div>
+        <div class="button-wrapper">
+            <button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/point/list.do';" title="돌아가기">돌아가기</button>
         </div>
     </div>
 	
