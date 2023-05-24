@@ -143,6 +143,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 .table-list .subject {  }
 .table-list .name { width: 100px; }
 .table-list .date { width: 100px; }
+.table-list .which { width: 100px; }
 .table-list .hit { width: 70px; }
 .table-list .file { width: 50px; }
 
@@ -183,7 +184,7 @@ function searchList() {
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fa-solid fa-messages-question"></i> Q & A </h2>
+			<h2><i class="fa-solid fa-messages-question"></i> Q n A / 정보수정요청</h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
@@ -200,6 +201,7 @@ function searchList() {
 				<thead>
 					<tr>
 						<th class="num">번호</th>
+						<th class="which">게시글유형</th>
 						<th class="subject">제목</th>
 						<th class="name">작성자</th>
 						<th class="date">작성일</th>
@@ -212,6 +214,8 @@ function searchList() {
 					<c:forEach var="dto" items="${list}" varStatus="status">
 						<tr>
 							<td>${dataCount - (page-1) * size - status.index}</td>
+							<td>${dto.qnaOrChange}</td>
+								
 								<td class="left">
 									<c:choose>
 									<c:when test="${dto.depth!=0}">

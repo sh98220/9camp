@@ -295,6 +295,14 @@ function sendOk() {
         return;
     }
     
+    str = f.qnaOrChange.value.trim();
+    if(!str) {
+        alert("게시글 유형을 선택해주세요. ");
+        f.qnaOrChange.focus();
+        return;
+    }
+    
+    
 
 
     f.action = "${pageContext.request.contextPath}/qna/${mode}_ok.do";
@@ -323,7 +331,7 @@ function deleteFile(qnaFileNum) {
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> Q & A </h2>
+			<h2><i class="fas fa-graduation-cap"></i> Q n A / 정보수정요청</h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
@@ -342,6 +350,19 @@ function deleteFile(qnaFileNum) {
 							 <p>${sessionScope.member.userNickName}</p> 
 						</td>
 					</tr>
+					
+					<tr> 
+						<td>게시글 유형</td>
+						<td> 
+							<input type="radio" name="qnaOrChange" id="QnA" value="QnA">
+						    <label for="QnA">QnA</label>
+						  
+						  	<input type="radio" name="qnaOrChange" id="change" value="정보수정요청">
+						  	<label for="change">정보수정요청</label>
+						</td>
+					</tr>
+					
+					
 					<tr> 
 						<td valign="top">내&nbsp;&nbsp;&nbsp;&nbsp;용</td>
 						<td> 

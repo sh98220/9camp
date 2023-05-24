@@ -13,8 +13,15 @@ public class QnaDTO {
 	private int orderNum;
 	private int depth;
 	private long parent;
+	private String qnaOrChange;
 	
-    private long qnaFileNum;
+    public String getQnaOrChange() {
+		return qnaOrChange;
+	}
+	public void setQnaOrChange(String qnaOrChange) {
+		this.qnaOrChange = qnaOrChange;
+	}
+	private long qnaFileNum;
 	private String qnasaveFilename;
 	private String qnaoriginalFilename;
 	

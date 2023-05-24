@@ -427,7 +427,7 @@ function searchList() {
 					  </select>	    			
 					</div>
 	    			<div class="select_map">
-	    				<button type="button">지도로보기</button>
+	    				<button type="button" onclick="location.href='${pageContext.request.contextPath}/mapCamp/mapSearch.do';">지도로보기</button>
 	    			</div>	    			
 	    		</div>	    	
 	    	</div>
@@ -499,21 +499,7 @@ function searchList() {
 					<td width="100">
 						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/campInfo/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
 					</td>
-					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/campInfo/list.do" method="post">
-							<select name="condition" class="form-select">
-								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
-								<option value="camInfoRegDate"  ${condition=="camInfoRegDate"?"selected='selected'":"" }>등록일</option>
-								<option value="camInfoSubject"  ${condition=="camInfoSubject"?"selected='selected'":"" }>제목</option>
-								<option value="camInfoContent"  ${condition=="camInfoContent"?"selected='selected'":"" }>내용</option>
-								<option value="camThemaName"  ${condition=="camThemaName"?"selected='selected'":"" }>테마명</option>
-								
-							</select>
-							<input type="text" name="keyword" value="${keyword}" class="form-control">
-							<input type="hidden" name="category" value="${category}">
-							<button type="button" class="btn" onclick="searchList();">검색</button>
-						</form>
-					</td>
+				
 					
 					<td align="right" width="100">
 						<c:choose>
