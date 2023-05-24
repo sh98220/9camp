@@ -164,10 +164,10 @@ function countNoReadMsg() {
 					<a href="#">마이페이지</a>
 					<ul class="sub-menu">
 						<li>
-							<a href="#">찜 목록</a>
+							<a href="${pageContext.request.contextPath}/mypage/wish.do">찜 목록</a>
 						</li>
 						<li>
-							<a href="#">내 글보기</a>
+							<a href="${pageContext.request.contextPath}/mypage/mateList.do">메이트 리스트</a>
 						</li>
 						<li>
 							<a href="${pageContext.request.contextPath}/member/pwd.do">정보수정</a>

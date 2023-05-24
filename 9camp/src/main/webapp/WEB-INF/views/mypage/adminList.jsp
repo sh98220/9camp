@@ -144,6 +144,8 @@ function searchList() {
 					
 					<td align="right" width="100">
 						<button type="button" class="btn" onclick="btnDeleteUser();">삭제 하기</button>
+						<button type="button" class="btn" onclick="btnDeleteConfine();">정지 해제</button>
+						
 						<script type="text/javascript">
 						function btnDeleteUser() {
 							let cnt = $("input[name=userId]:checked").length;
@@ -155,6 +157,20 @@ function searchList() {
 							if(confirm("선택한 유저를 삭제 하시겠습니까 ?")) {
 								const f = document.listForm;
 								f.action="${pageContext.request.contextPath}/mypage/deleteUser.do";
+								f.submit();
+							}
+						}
+						
+						function btnDeleteConfine() {
+							let cnt = $("input[name=userId]:checked").length;
+							if(cnt === 0) {
+								alert("해제할 유저를 먼저 선택하세요.");
+								return false;
+							}
+
+							if(confirm("선택한 유저를 정지 해제 하시겠습니까 ?")) {
+								const f = document.listForm;
+								f.action="${pageContext.request.contextPath}/mypage/deleteConfine.do";
 								f.submit();
 							}
 						}

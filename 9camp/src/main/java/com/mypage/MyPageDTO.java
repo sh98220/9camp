@@ -36,9 +36,11 @@ public class MyPageDTO {
 	private String camMateEndDate;
 	private String camMateRegDate;
 	private int camMateDues;
+	private String campStyle;
 	
 	
 	
+
 	//campMateApply
 	private long camMateNum;
 	private String camMateAppContent;
@@ -274,6 +276,12 @@ public class MyPageDTO {
 	}
 	public void setCamMateAppConfirm(String camMateAppConfirm) {
 		this.camMateAppConfirm = camMateAppConfirm;
+	}
+	public String getCampStyle() {
+		return campStyle;
+	}
+	public void setCampStyle(String campStyle) {
+		this.campStyle = campStyle;
 	}
 	public String getRestContent() {
 		return restContent;

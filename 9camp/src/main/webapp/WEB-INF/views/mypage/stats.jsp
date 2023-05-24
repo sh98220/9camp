@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>쪽지보내기</title>
+<title>통계</title>
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 
@@ -161,6 +161,7 @@
 }
 </style>
 
+
 </head>
 <body>
 
@@ -171,56 +172,31 @@
 <main>
 	<div id="writeMessageWrap">
 		<div class="body-title">
-			<h2><i class="fa-regular fa-envelope"></i> 회원 정지시키기 </h2>
+			<h2><i class="fa-regular fa-envelope"></i> 통계 설정 </h2>
 	    </div>
 	    
 
-		<form name="msgForm" method="post">
+		<form name="msgForm" method="post" action="${pageContext.request.contextPath}/mypage/stats.do">
 			<input type="hidden" name="page" value="${page}">
 			<div id="normalMode">
-				<div class="tf_tit">
-					<label for="who" class="recipient">아이디</label>
-					<input type="text" id="who" name="userId" id="userId" value="${userId}" placeholder="아이디 입력">
-				</div>
-				
-				<div class="tf_tit">
-					<label for="who" class="recipient">현재 정지 날짜</label>
-					<input type="text" name="endDate" id="endDate" value="${dto.restEndDate}" readonly="readonly">
-				</div>
 				<div>
-					<label for="date">정지 날짜 등록하기
- 					<input type="date" name="restEndDate"
-         				id="restEndDate"
-        				value="${restEndDate}" oninput="onInputHandler()">
+					<label for="date">시작 날짜
+ 					<input type="date" name="startDate"
+         				id="startDate"
+        				value="${startDate}" oninput="onInputHandler()">
 					</label>
 				</div>
+
 				<div>
-					<button type="button" id = "tomorrowBtn" onclick="tomorrowFun()">1일</button>
-					<button type="button" id = "weekBtn" onclick="weekFun()">7일</button>
-					<button type="button" id = "monthBtn" onclick="monthFun()">30일</button>
+					<label for="date">마지막 날짜
+ 					<input type="date" name="endDate"
+         				id="endDate"
+        				value="${endDate}" oninput="onInputHandler()">
+					</label>
 				</div>
 					<script>
-						function tomorrowFun(){
-							let today = new Date();
-							let tomorrow = new Date(today.setDate(today.getDate() + 1));
-							document.getElementById('restEndDate').valueAsDate = tomorrow;
-						}
-						
-						function weekFun(){
-							let today = new Date();
-							let week = new Date(today.setDate(today.getDate() + 7));
-							document.getElementById('restEndDate').valueAsDate = week;
-						}
-						
-						function monthFun(){
-							let today = new Date();
-							let month = new Date(today.setDate(today.getDate() + 30));
-							document.getElementById('restEndDate').valueAsDate = month;
-						}
-						
-						
-						
-						let date = document.querySelector("#restEndDate");
+
+						let date = document.querySelector("#startDate");
 
 						const onInputHandler = () => {
 						    let val = date.value.replace(/\-/g, "");
@@ -259,33 +235,97 @@
 						}
 						
 					</script>
+					<script>
+						let date = document.querySelector("#endDate");
+
+						const onInputHandler = () => {
+						    let val = date.value.replace(/\-/g, "");
+						    let leng = val.length;
+						    let result = '';
+
+						    if(leng < 6) result = val;
+						    else if(leng < 8){
+						        result += val.substring(0,4);
+						        result += "-";
+						        result += val.substring(4);
+						    } else{
+						        result += val.substring(0,4);
+						        result += "-";
+						        result += val.substring(4,6);
+						        result += "-";
+						        result += val.substring(6);
+						    }
+						    date.value = result;
+						}
+
+						const checkValidDate = (value) => {
+						    let result = true;
+						    try {
+						        let date = value.split("-");
+						        let y = parseInt(date[0], 10),
+						            m = parseInt(date[1], 10),
+						            d = parseInt(date[2], 10);
+
+						        let dateRegex = /^(?=\d)(?:(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:\x20|$))|(?:2[0-8]|1\d|0?[1-9]))([-.\/])(?:1[012]|0?[1-9])\1(?:1[6-9]|[2-9]\d)?\d\d(?:(?=\x20\d)\x20|$))?(((0?[1-9]|1[012])(:[0-5]\d){0,2}(\x20[AP]M))|([01]\d|2[0-3])(:[0-5]\d){1,2})?$/;
+						        result = dateRegex.test(d+'-'+m+'-'+y);
+						    } catch (err) {
+						        result = false;
+						    }
+						    return result;
+						}
 						
+					</script>
 				
-				<div class="writing_area">
-					<textarea id="restContent" name="restContent" style="resize:none;" rows="5" cols="55" title="내용을 입력해 주세요.">${restContent}</textarea>
-				</div>
 			</div>
-			<button type="button" class="btn" onclick="sendOk();"> 확인 </button>
-			<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mypage/adminList.do';"> 취소 </button>
-		</form> 
-	</div>
-  
-	<div class="popup-wrap" id="popup">
-		<div class="popup">
-			<div class="popup-head">
-				<span class="head-title">제목</span>
-      		</div>
-			<div class="popup-body">
-				<div class="popup-content">
-					<p> 팝업 내용 입니다.</p>
-				</div>
+			<div>
+				<label for="dataCount">총 : ${dataCount} 개</label>
 			</div>
-			<div class="popup-foot">
-				<span class="pop-btn confirm" id="modal-confirm">확인</span>
-				<span class="pop-btn close" id="modal-close">창 닫기</span>
-			</div>			
-		</div>
+				
+				<table class="table table-border table-list">
+					<thead>
+						<tr>
+							<th class="id">아이디</th>
+							<th class="name">이름</th>
+							<th class="nickName">닉네임</th>
+							<th class="tel">전화번호</th>
+							<th class="birth">생일</th>
+							<th class="email">이메일</th>
+							<th class="point">포인트</th>
+							<th class="regDate">생성일</th>
+							<th class="updateDate">수정일</th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<c:forEach var="member" items="${list}" varStatus="status">
+						<tr>
+							<td>${member.userId}</td>
+							<td>${member.userName}</td>
+							<td>${member.userNickName}</td>
+							<td>${member.userTel}</td>
+							<td>${member.userBirth}</td>
+							<td>${member.userEmail}</td>
+							<td>${member.userPoint}</td>
+							<td>${member.userRegDate}</td>
+							<td>${member.userUpdateDate}</td>				
+						</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+				
+				<div class="page-navigation">
+					${dataCount == 0 ? "등록된 유저가 없습니다." : paging}
+				</div>
+			
+			
+				<button type="button" class="btn" onclick="sendOk();"> 확인 </button>
+				<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/main.do';"> 취소 </button>
+				
+			</form>
+			
+
 	</div>
+
 </main>
 
 <footer>
@@ -293,88 +333,29 @@
 </footer>
 
 <script type="text/javascript">
-/*
-$(function () {
-	$("#who").keyup(function(event) {		
-		const searchWord = $("#who").val();
-		$.ajax({
-   			url:"autocomplete.jsp"
-   			,dataType:"json"
-   			,type:"get"
-   			,data:searchWord
-   			,cache:false 
-   			,success:function(data){  //["JAMES","JONES"]
-   				//alert(data);
-   				$( "#who" ).autocomplete({
-   			      source: data //검색한 값이 소스로 들어가도록
-   			    });
-   			}
-		    ,error: function() {
-				//alert("에러");
-			}
-   		});//ajax
-		
-		
-	}); //keyup
-});
-*/
-
-$(function(){
-	$("#modal-confirm").click(function(){
-		modalClose();
-	});
-	
-	$("#modal-open").click(function(){
-		$("#popup").css('display','flex').hide().fadeIn();
-	});
-	
-	$("#modal-close").click(function(){
-		modalClose();
-	});
-	
-	function modalClose(){
-		$("#popup").fadeOut();
-	}
-});
 
 function sendOk() {
 	const f = document.msgForm;
-	let date = document.querySelector("#restEndDate");
 	let str;
 	
-	str = f.userId.value.trim();
-	if(!str) {
-	    alert("아이디를 입력하세요. ");
-	    f.userId.focus();
-		return;
-	}
-	
-	str = f.restEndDate.value.trim();
-
-	if(!str){
+	str1 = f.startDate.value.trim();
+	str2 = f.endDate.value.trim();
+	if(!str1 || !str2){
 		alert("날짜를 입력하세요.")
 		return;
 	}
 	
-	let today = new Date();
 
-	let year = today.getFullYear();
-	let month = ('0' + (today.getMonth() + 1)).slice(-2);
-	let day = ('0' + today.getDate()).slice(-2);
-	let dateString = year + '-' + month  + '-' + day;
 	
-	if(!(str > dateString)){
-		alert("내일 이후로 날짜를 선택하세요.")
+	if(str1 > str2){
+		alert("날짜 설정이 잘못 되었습니다.")
 		return;
 	}
 	
 	
-    f.action = "${pageContext.request.contextPath}/mypage/updateConfine.do";
+    f.action = "${pageContext.request.contextPath}/mypage/stats.do";
     f.submit();
 }
-
-
-
 
 </script>
 

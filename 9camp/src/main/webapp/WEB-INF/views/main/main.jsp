@@ -295,36 +295,7 @@ function searchList() {
 	const f = document.searchForm;
 	f.submit();
 }
-
-function sendOk() {
-	  var form = document.getElementById("keywordForm");
-	  var selectedKeywords = [];
-	  
-	  // 선택된 체크박스 값을 가져와서 배열에 추가합니다.
-	  var checkboxes = form.getElementsByTagName("input");
-	  for (var i = 0; i < checkboxes.length; i++) {
-	    if (checkboxes[i].checked) {
-	      selectedKeywords.push(checkboxes[i].value);
-	    }
-	  }
-	  
-	  // 선택된 키워드가 없으면 알림을 표시하고 검색을 중지합니다.
-	  if (selectedKeywords.length === 0) {
-	    alert("적어도 하나의 키워드를 선택해야 합니다.");
-	    return;
-	  }
-	  
-	  // 선택된 키워드를 문자열로 변환하여 서버로 전송합니다.
-	  var selectedKeywordsString = selectedKeywords.join(",");
-	  form.action = "${pageContext.request.contextPath}/campInfo/list.do?key=" + encodeURIComponent(selectedKeywordsString);
-	  
-	  // 폼을 서버로 제출합니다.
-	  form.submit();
-	}
-
 </script>
-
-
 </head>
 
 <body>
@@ -389,7 +360,7 @@ function sendOk() {
 	<!-- 키워드 검색 -->
 	<div id="keyword-cont">
 		<h1 class="center">키워드로 검색</h1>
-		<form name="keywordForm" action="${pageContext.request.contextPath}/campInfo/list.do" method="post">
+		<form name="keywordForm" action="${pageContext.request.contextPath}/campInfo/list.do" method="get">
 			<ul class="keyword-ul">
 				<li>
 					<input type="checkbox" name="key" id="check1" value="#반려견동반" >
@@ -513,10 +484,49 @@ function sendOk() {
 				</li>
 			</ul>
 	      
+	      
+	     
+	      
 	 		<div class="search-form"> 
 				<button type="button" class="btn" onclick="sendOk();">검색</button>
 				<button type="button" class="btn" id="reset-button">초기화</button>		 
 	 		</div>
+	 		
+	 		
+	 		 <script type="text/javascript">
+		      	function sendOk() {
+		    	  let form = document.getElementById("keywordForm");
+		    	  let selectedKeywords = [];
+		    	  let array = "";
+		    	  let cnt = $("input[name=key]:checked").length;
+		    	  let cv = $("input[name=key]:checked").val();
+		    	  
+		    	  
+		    	  $("input[name=key]:checked").each(function(){
+		    		 	let chk = $(this).val();
+		    		 	selectedKeywords.push(chk);
+		    		 	array += chk;
+		    	  });
+		    	  
+		    	  console.log(array);
+		    	  if(cnt === 0){
+		    		  alert('키워드를 하나 이상 선택하세요.');
+		    		  return false;
+		    	  }
+		    	  
+		    	  if(confirm("선택한 키워드를 검색 하시겠습니까 ?")) {
+						const f = document.keywordForm;
+						//f.action="${pageContext.request.contextPath}/campInfo/list.do?key=" + encodeURIComponent(selectedKeywordsString);
+						f.action= "${pageContext.request.contextPath}/campInfo/list.do?key=" + encodeURIComponent(array);
+						f.submit();
+					}
+		    	 
+		    	}
+	      
+	      </script>
+	 		
+	 		
+	 		
 		</form>
 	</div>
 	<!-- //키워드 검색 -->

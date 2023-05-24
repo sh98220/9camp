@@ -98,7 +98,7 @@ function searchList() {
 							<c:if test="${sessionScope.member.userId=='admin'}">
 								<td>${dto.userId}</td>
 							</c:if>
-							<td>${dto.camInfoNum}</td>
+							<td style='cursor:pointer;' onClick="location.href='${pageContext.request.contextPath}/campInfo/article.do?num=${dto.camInfoNum}'">${dto.camInfoNum}</td>
 							<td>${dto.camInfoSubject}</td>
 							<td>${dto.camInfoRegDate}</td>
 							<td>${dto.camInfoAddr}</td>

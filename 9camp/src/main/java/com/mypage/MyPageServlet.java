@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.member.SessionInfo;
-import com.notice.NoticeDTO;
 import com.util.MyServlet;
 import com.util.MyUtil;
 
@@ -63,7 +62,13 @@ public class MyPageServlet extends MyServlet {
 			confine(req, resp);
 		} else if (uri.indexOf("updateConfine.do") != -1) {
 			updateConfine(req, resp);
-		}
+		} else if (uri.indexOf("deleteConfine.do") != -1) {
+			deleteConfine(req, resp);
+		} else if (uri.indexOf("deleteConfine.do") != -1) {
+			deleteConfine(req, resp);
+		} else if (uri.indexOf("stats.do") != -1) {
+			stats(req, resp);
+		} 
 	}
 
 	protected void wish(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -740,7 +745,7 @@ public class MyPageServlet extends MyServlet {
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
 		
 		if (!info.getUserId().equals("admin")) {
-			resp.sendRedirect(cp + "/mypage/main.do");
+			resp.sendRedirect(cp + "/main.do");
 			return;
 		}
 		
@@ -773,33 +778,163 @@ public class MyPageServlet extends MyServlet {
 	
 	
 	private void updateConfine(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+		String cp = req.getContextPath();
 		MyPageDAO dao = new MyPageDAO();
+		
+		String page = req.getParameter("page");
+		String query = "page=" + page;
 
 		try {
-
-			String page = req.getParameter("page");
-
-			int current_page = 1;
-			long num = Long.parseLong(req.getParameter("num"));
 			String userId = req.getParameter("userId");
-			String content = req.getParameter("content");
-			String endDate = req.getParameter("endDate");
-
-
+			String content = req.getParameter("restContent");
+			String endDate = req.getParameter("restEndDate");
+			
+			if (content.length() == 0 ) {
+				content = " ";
+			}
 
 			dao.cofineMember(userId, content, endDate);
 
 			req.setAttribute("userId", userId);
-			req.setAttribute("page", current_page);
+			req.setAttribute("content", content);
+			req.setAttribute("endDate", endDate);
 			req.setAttribute("page", page);
-			req.setAttribute("num", num);
+
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		forward(req, resp, "/WEB-INF/views/mypage/confine.jsp");
+		resp.sendRedirect(cp + "/mypage/adminList.do?" + query);
 	}
+	
+	
+	
+	protected void deleteConfine(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
 
+		String cp = req.getContextPath();
+
+		String page = req.getParameter("page");
+		String query = "page=" + page;
+
+		String condition = req.getParameter("condition");
+		String keyword = req.getParameter("keyword");
+
+		if (keyword != null && keyword.length() != 0) {
+			query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
+		}
+		try {
+
+			// admin 아니면 조회 불가
+			if (!info.getUserId().equals("admin")) {
+				resp.sendRedirect(cp + "/main.do");
+				return;
+			}
+
+			String[] userId = req.getParameterValues("userId");
+
+			MyPageDAO dao = new MyPageDAO();
+			// 정지 삭제
+			dao.deleteConfine(userId);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp + "/mypage/adminList.do?" + query);
+	}
+	
+	
+	protected void stats(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		MyPageDAO dao = new MyPageDAO();
+		MyUtil util = new MyUtil();
+
+		String cp = req.getContextPath();
+
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+
+		try {
+			// admin 아니면 조회 불가
+			if (!info.getUserId().equals("admin")) {
+				resp.sendRedirect(cp + "/main.do");
+				return;
+			}
+			String startDate = req.getParameter("startDate");
+			String endDate = req.getParameter("endDate");
+			String page = req.getParameter("page");
+			
+			
+			
+			if(startDate == null) {
+				startDate = "0001-01-01";
+			}
+			
+			if(endDate == null) {
+				endDate = "9999-12-31";
+			}
+			
+			if(page == null || page.equals("0"))
+				page = "1";
+		
+			int current_page = 1;
+			if (page != null) {
+				current_page = Integer.parseInt(page);
+			}
+			System.out.println(page);
+			
+			// 전체데이터 개수
+			int dataCount;
+
+			dataCount = dao.dataCountStatsSwitch(startDate, endDate);
+
+
+			// 전체페이지수
+			int size = 2;
+			int total_page = util.pageCount(dataCount, size);
+			if (current_page > total_page) {
+				current_page = total_page;
+			}
+
+			// 게시물 가져오기
+			int offset = (current_page - 1) * size;
+			if (offset < 0)
+				offset = 0;
+
+			List<MyPageDTO> list = null;
+
+			list = dao.statsSwitch(startDate, endDate, offset, size);
+
+			
+			String query = "";
+			if(startDate.length() != 0 && endDate.length() != 0) {
+				query = "startDate=" + startDate + "&endDate=" + endDate;
+			}
+			
+			// 페이징 처리
+			String listUrl = cp + "/mypage/stats.do?" + query;
+
+
+			String paging = util.paging(current_page, total_page, listUrl);
+
+
+			req.setAttribute("list", list);
+			req.setAttribute("page", current_page);
+			req.setAttribute("total_page", total_page);
+			req.setAttribute("dataCount", dataCount);
+			req.setAttribute("size", size);
+			req.setAttribute("paging", paging);
+			req.setAttribute("startDate", startDate);
+			req.setAttribute("endDate", endDate);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		// JSP로 포워딩
+		forward(req, resp, "/WEB-INF/views/mypage/stats.jsp");
+	}
+	
 }

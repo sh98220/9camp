@@ -91,6 +91,21 @@ public class CampInfoServlet extends MyUploadServlet {
 			keyword = "";
 		}
 		
+		String[] key = req.getParameterValues("key");
+		
+		
+		
+		if(req.getMethod().equalsIgnoreCase("GET")) {
+			for(int i = 0; i < key.length; i++) {
+				key[i] = URLDecoder.decode(key[i], "utf-8");
+				System.out.println(key[i]);
+			}
+		}
+		
+		
+		
+
+		
 		// GET 방식인 경우 디코딩
 		if(req.getMethod().equalsIgnoreCase("GET")) {
 			keyword = URLDecoder.decode(keyword, "utf-8");
@@ -162,7 +177,7 @@ public class CampInfoServlet extends MyUploadServlet {
 		req.setAttribute("condition", condition);
 		req.setAttribute("keyword", keyword);
 		req.setAttribute("listimage", listimage);
-	
+		req.setAttribute("key", key);
 		
 		} catch (Exception e) {
 			e.printStackTrace();
