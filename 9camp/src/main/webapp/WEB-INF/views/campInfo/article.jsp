@@ -604,7 +604,7 @@ function imageViewer(img) {
 	    			
 	    			<div class="btn_w">
 	    				<button type="button" class="btn btnSendCampWish" title="찜하기"> <i class="fa-solid fa-star" style="color:${isUserWish?'orange':'black'}"></i>&nbsp;&nbsp;찜하기</button>	    				    			
-	    				<button type="button" class="btn btnSendChange" title="정보수정요청" style="background: white;">정보수정요청</button>	    				    			    			
+	    				<button type="button" class="btn btnSendChange" title="정보수정요청" style="background: white;" onclick="location.href='${pageContext.request.contextPath}/qna/write.do';">정보수정요청</button>	    				    			    			
 	    			</div>
 	    		
 	    		</div>

@@ -179,6 +179,7 @@ public class QnaServlet extends MyUploadServlet{
 			dto.setUserNickName(req.getParameter("userNickName"));
 			dto.setQnaSubject(req.getParameter("qnaSubject"));
 			dto.setQnaContent(req.getParameter("qnaContent"));
+			dto.setQnaOrChange(req.getParameter("qnaOrChange"));
 
 			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);
 			if (map != null) {

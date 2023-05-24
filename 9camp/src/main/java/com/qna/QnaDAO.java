@@ -47,8 +47,8 @@ public class QnaDAO {
 				dto.setOrderNum(dto.getOrderNum()+1);
 			}
 
-			sql = "INSERT INTO qna (qnaNum, userId, qnaSubject, qnaContent, qnaRegDate, qnaHitCount, qnaGroupNum, qnaOrderNum, qnadepth, qnaparent ) "
-					+ "VALUES(?, ?, ?, ?, SYSDATE, 0, ?, ?, ?, ? ) ";
+			sql = "INSERT INTO qna (qnaNum, userId, qnaSubject, qnaContent, qnaRegDate, qnaHitCount, qnaGroupNum, qnaOrderNum, qnadepth, qnaparent, qnaOrChange ) "
+					+ "VALUES(?, ?, ?, ?, SYSDATE, 0, ?, ?, ?, ?, ? ) ";
 
 			pstmt = conn.prepareStatement(sql);
 
@@ -60,6 +60,7 @@ public class QnaDAO {
 			pstmt.setInt(6, dto.getOrderNum());
 			pstmt.setInt(7, dto.getDepth());
 			pstmt.setLong(8, dto.getParent());
+			pstmt.setString(9, dto.getQnaOrChange());
 
 			pstmt.executeUpdate();
 
@@ -298,7 +299,7 @@ public class QnaDAO {
 		String sql;
 
 		try {
-			sql = "SELECT qnaNum, q.userId, userNickName, qnaSubject, TO_CHAR(qnaRegDate, 'YYYY-MM-DD')qnaRegDate, qnaHitCount, qnadepth, qnaOrderNum, qnaGroupNum "
+			sql = "SELECT qnaNum, q.userId, userNickName, qnaSubject, TO_CHAR(qnaRegDate, 'YYYY-MM-DD')qnaRegDate, qnaHitCount, qnadepth, qnaOrderNum, qnaGroupNum, qnaOrChange "
 					+ "FROM qna q JOIN member m ON m.userId = q.userId "
 					+ "ORDER BY qnaGroupNum DESC, qnaOrderNum ASC  "
 					+ "OFFSET ? ROWS FETCH FIRST ? ROWS ONLY";
@@ -322,6 +323,7 @@ public class QnaDAO {
 				dto.setDepth(rs.getInt("qnadepth"));
 				dto.setOrderNum(rs.getInt("qnaOrderNum"));
 				dto.setGroupNum(rs.getLong("qnaGroupNum"));
+				dto.setQnaOrChange(rs.getString("qnaOrChange"));
 
 				list.add(dto);
 			}
