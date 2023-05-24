@@ -72,10 +72,12 @@ input[type=checkbox], input[type=radio] { vertical-align: middle; }
 .table th, .table td { padding-top: 10px; padding-bottom: 10px; }
 
 .table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
-.table-border tbody > tr { border-bottom: 1px solid #ff5522; }
+.table-border tbody > tr { border-bottom: 1px solid #666; }
 .td-border td { border: 1px solid #ced4da; }
 
 tr.hover:hover { cursor: pointer; background: #f5fffa; }
+
+.photo-layout img { width: 570px; height: 450px; }
 
 
 
@@ -88,6 +90,17 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 
 .mx-auto { margin-left: auto; margin-right: auto; }
 
+.noticeImage{
+	width:200px;
+	height: 200px
+}
+
+.img-box{
+	border:1px solid black;
+	padding: 10px;
+	display:flex;
+	justify-content: flex-start;
+}
 
 .btnConfirm {
 	background-color:#507cd1; border:none;
@@ -208,11 +221,26 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	}
 </c:if>
 </script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resource/jquery/js/jquery-ui.min.js"></script>
 
 <script type="text/javascript">
 function login(){
 	location.href = "${pageContext.request.contextPath}/member/login.do";
 }
+
+function imageViewer(img) {
+	const viewer = $(".photo-layout");
+	let s="<img src='"+img+"'>";
+	viewer.html(s);
+	
+	$(".dialog-photo").dialog({
+		title:"이미지",
+		width: 600,
+		height: 530,
+		modal: true
+	});
+}
+
 
 function ajaxFun(url, method, query, dataType, fn) {
 	$.ajax({
@@ -285,7 +313,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 							사&nbsp;&nbsp;진 :
 							<div class="img-box">
 								<c:forEach var="vo" items="${listFile}">
-									<img src="${pageContext.request.contextPath}/uploads/notice/${vo.noticePhotoName}"
+									<img class = "noticeImage" src="${pageContext.request.contextPath}/uploads/notice/${vo.noticePhotoName}"
 										onclick="imageViewer('${pageContext.request.contextPath}/uploads/notice/${vo.noticePhotoName}');">
 								</c:forEach>
 							</div>
@@ -346,5 +374,36 @@ function ajaxFun(url, method, query, dataType, fn) {
     <jsp:include page="/WEB-INF/views/layout/footer.jsp"></jsp:include>
 </footer>
 
+
+<div class="dialog-photo">
+      <div class="photo-layout"></div>
+</div>
+
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

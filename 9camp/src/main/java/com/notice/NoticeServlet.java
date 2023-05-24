@@ -31,10 +31,10 @@ public class NoticeServlet extends MyUploadServlet {
 		req.setCharacterEncoding("utf-8");
 		
 		String uri = req.getRequestURI();
-		String cp = req.getContextPath();
+		//String cp = req.getContextPath();
 		
 		HttpSession session = req.getSession();
-		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		//SessionInfo info = (SessionInfo) session.getAttribute("member");
 		
 		String root = session.getServletContext().getRealPath("/");
 		pathname = root + "uploads" + File.separator + "notice";
@@ -61,90 +61,99 @@ public class NoticeServlet extends MyUploadServlet {
 	}
 	
 	protected void list(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		NoticeDAO dao = new NoticeDAO();
-		MyUtil util = new MyUtil();
+        NoticeDAO dao = new NoticeDAO();
+        MyUtil util = new MyUtil();
 
-		String cp = req.getContextPath();
-		
-		try {
-			String page = req.getParameter("page");
-			int current_page = 1;
-			if (page != null) {
-				current_page = Integer.parseInt(page);
-			}
-			
-			// 검색
-			String condition = req.getParameter("condition");
-			String keyword = req.getParameter("keyword");
-			if (condition == null) {
-				condition = "all";
-				keyword = "";
-			}
+        String cp = req.getContextPath();
 
-			// GET 방식인 경우 디코딩
-			if (req.getMethod().equalsIgnoreCase("GET")) {
-				keyword = URLDecoder.decode(keyword, "utf-8");
-			}
+        try {
+            String page = req.getParameter("page");
+            int current_page = 1;
+            if (page != null) {
+                current_page = Integer.parseInt(page);
+            }
 
-			// 전체 데이터 개수
-			int dataCount;
-			if (keyword.length() == 0) {
-				dataCount = dao.dataCount();
-			} else {
-				dataCount = dao.dataCount(condition, keyword);
-			}
-			
-			// 전체 페이지 수
-			int size = 5;
-			int total_page = util.pageCount(dataCount, size);
-			if (current_page > total_page) {
-				current_page = total_page;
-			}
+            // 검색
+            String condition = req.getParameter("condition");
+            String keyword = req.getParameter("keyword");
+            if (condition == null) {
+                condition = "all";
+                keyword = "";
+            }
 
-			// 게시물 가져오기
-			int offset = (current_page - 1) * size;
-			if(offset < 0) offset = 0;
-			
-			List<NoticeDTO> list = null;
-			if (keyword.length() == 0) {
-				list = dao.listNotice(offset, size);
-			} else {
-				list = dao.listNotice(offset, size, condition, keyword);
-			}
+            // GET 방식인 경우 디코딩
+            if (req.getMethod().equalsIgnoreCase("GET")) {
+                keyword = URLDecoder.decode(keyword, "utf-8");
+            }
 
-			String query = "";
-			if (keyword.length() != 0) {
-				query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");
-			}
+            // 전체 데이터 개수
+            int dataCount;
+            if (keyword.length() == 0) {
+                dataCount = dao.dataCount();
+            } else {
+                dataCount = dao.dataCount(condition, keyword);
+            }
 
-			// 페이징 처리
-			String listUrl = cp + "/notice/list.do";
-			String articleUrl = cp + "/notice/article.do?page=" + current_page;
-			if (query.length() != 0) {
-				listUrl += "?" + query;
-				articleUrl += "&" + query;
-			}
+            // 전체 페이지 수
+            int size = 5;
+            int total_page = util.pageCount(dataCount, size);
+            if (current_page > total_page) {
+                current_page = total_page;
+            }
 
-			String paging = util.paging(current_page, total_page, listUrl);
+            // 게시물 가져오기
+            int offset = (current_page - 1) * size;
+            if(offset < 0) offset = 0;
 
-			// 포워딩할 JSP에 전달할 속성
-			req.setAttribute("list", list);
-			req.setAttribute("page", current_page);
-			req.setAttribute("total_page", total_page);
-			req.setAttribute("dataCount", dataCount);
-			req.setAttribute("size", size);
-			req.setAttribute("articleUrl", articleUrl);
-			req.setAttribute("paging", paging);
-			req.setAttribute("condition", condition);
-			req.setAttribute("keyword", keyword);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            List<NoticeDTO> list = null;
+            if (keyword.length() == 0) {
+                list = dao.listNotice(offset, size);
+            } else {
+                list = dao.listNotice(offset, size, condition, keyword);
+            }
 
-		// JSP로 포워딩
-		forward(req, resp, "/WEB-INF/views/notice/list.jsp");
-	}
+            String query = "";
+            if (keyword.length() != 0) {
+                query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");
+            }
+
+            // 페이징 처리
+            String listUrl = cp + "/notice/list.do";
+            String articleUrl = cp + "/notice/article.do?page=" + current_page;
+            if (query.length() != 0) {
+                listUrl += "?" + query;
+                articleUrl += "&" + query;
+            }
+
+            String paging = util.paging(current_page, total_page, listUrl);
+
+            // 포워딩할 JSP에 전달할 속성
+            req.setAttribute("list", list);
+            req.setAttribute("page", current_page);
+            req.setAttribute("total_page", total_page);
+            req.setAttribute("dataCount", dataCount);
+            req.setAttribute("size", size);
+            req.setAttribute("articleUrl", articleUrl);
+            req.setAttribute("paging", paging);
+            req.setAttribute("condition", condition);
+            req.setAttribute("keyword", keyword);
+
+            try {
+                HttpSession session = req.getSession();
+                SessionInfo info = (SessionInfo) session.getAttribute("member");
+
+                req.setAttribute("memberInfo", info.getUserId());
+            }catch (NullPointerException e) {
+                req.setAttribute("memberInfo", "null");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // JSP로 포워딩
+        forward(req, resp, "/WEB-INF/views/notice/list.jsp");
+    }
 	
 	protected void writeForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setAttribute("mode", "write");
@@ -218,7 +227,7 @@ public class NoticeServlet extends MyUploadServlet {
 			}
 
 			// 조회수 증가
-			//dao.updateHitCount(num);
+			dao.updateHitCount(num);
 
 			// 게시물 가져오기
 			NoticeDTO dto = dao.readNotice(num);
@@ -229,8 +238,8 @@ public class NoticeServlet extends MyUploadServlet {
 			dto.setNoticeContent(util.htmlSymbols(dto.getNoticeContent()));
 			
 			// 이전글 다음글
-			// ReviewsDTO preReadDto = dao.preReadNotice( dto.getCamRevnum(), condition, keyword);
-			// ReviewsDTO nextReadDto = dao.nextReadNotice( dto.getCamRevnum(), condition, keyword);
+			NoticeDTO preReadDto = dao.preReadNotice( dto.getNoticeNum(), condition, keyword);
+			NoticeDTO nextReadDto = dao.nextReadNotice( dto.getNoticeNum(), condition, keyword);
 
 			List<NoticeDTO> listFile = dao.listPhotoFile(num);
 			
@@ -239,9 +248,9 @@ public class NoticeServlet extends MyUploadServlet {
 			req.setAttribute("page", page);
 			req.setAttribute("query", query);
 			req.setAttribute("listFile", listFile);
-/*			req.setAttribute("preReadDto", preReadDto);
+			req.setAttribute("preReadDto", preReadDto);
 			req.setAttribute("nextReadDto", nextReadDto);
-*/			
+			
 
 			// 포워딩 
 			forward(req, resp, "/WEB-INF/views/notice/article.jsp");
@@ -389,7 +398,7 @@ public class NoticeServlet extends MyUploadServlet {
 				return;
 			}
 			
-			NoticeDTO vo = dao.readNotice(noticePhotoNum);  // dao.readNoticeFile
+			NoticeDTO vo = dao.readNoticeFile(noticePhotoNum);  // dao.readNoticeFile
 			if(vo != null) {
 				FileManager.doFiledelete(pathname, vo.getNoticePhotoName());
 				
