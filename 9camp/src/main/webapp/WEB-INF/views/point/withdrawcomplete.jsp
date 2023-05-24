@@ -1,18 +1,40 @@
-<%@ page contentType="text/html; charset=UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page trimDirectiveWhitespaces="true" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>공지사항</title>
+<title>전국캠핑자랑</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resource/css/paginate.css" type="text/css">
 
 <style type="text/css">
+.box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
 
+.box-content {
+    border: 2px solid #333;
+    padding: 20px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    font-family: "맑은 고딕", 나눔고딕, 돋움, sans-serif;
+}
+
+
+.complete {
+    font-size: 40px;
+    color: #ff0000;
+    margin-bottom: 10px;
+}
 .body-main {
 	max-width: 700px;
 }
@@ -40,7 +62,9 @@
 	box-shadow: none;
 	opacity: .65;
 }
-
+ .button-wrapper {
+        margin-top: 20px; 
+    }
 
 .form-control {
 	border: 1px solid #999999; border-radius: 4px; background-color: #ffffff;
@@ -68,7 +92,7 @@ input[type=checkbox], input[type=radio] { vertical-align: middle; }
 .table th, .table td { padding-top: 10px; padding-bottom: 10px; }
 
 .table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
-.table-border tbody > tr { border-bottom: 1px solid #ff5522; }
+.table-border tbody > tr { border-bottom: 1px solid gray; }
 .td-border td { border: 1px solid #ced4da; }
 
 tr.hover:hover { cursor: pointer; background: #f5fffa; }
@@ -125,10 +149,6 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     border-bottom: 3px solid #ff5522;
 }
 
-.body-title h2 i {
-	
-}
-
 .body-main {
 	display: block;
 	padding-bottom: 15px;
@@ -171,92 +191,28 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	}
 }
 </style>
-<script type="text/javascript">
-function searchList() {
-	const f = document.searchForm;
-	f.submit();
-}
-</script>
+
 </head>
 <body>
 
 <header>
 	<jsp:include page="/WEB-INF/views/layout/header.jsp"></jsp:include>
 </header>
-
-<main>
-	<div class="container body-container">
-	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 공지사항 </h2>
-	    </div>
-	    
-	    <div class="body-main mx-auto">
-			<table class="table">
-				<tr>
-					<td width="50%">
-						${dataCount}개(${page}/${total_page} 페이지)
-					</td>
-					<td align="right">&nbsp;</td>
-				</tr>
-			</table>
-			
-			<table class="table table-border table-list">
-				<thead>
-					<tr>
-						<th class="num">번호</th>
-						<th class="subject">제목</th>
-						<th class="name">작성자</th>
-						<th class="date">작성일</th>
-						<th class="hit">조회수</th>
-					</tr>
-				</thead>
-				
-				<tbody>
-					<c:forEach var="dto" items="${list}" varStatus="status">
-						<tr>
-							<td>${dataCount - (page-1) * size - status.index}</td>
-							<td class="left">
-								<a href="${articleUrl}&num=${dto.noticeNum}">${dto.noticeSubject}</a>
-							</td>
-							<td>관리자</td>
-							<td>${dto.noticeRegDate}</td>
-							<td>${dto.noticeHitCount}</td>
-						</tr>
-					</c:forEach>
-				</tbody>
-			</table>
-			
-			<div class="page-navigation">
-				${dataCount == 0 ? "등록된 게시물이 없습니다." : paging}
-			</div>
-			
-			<table class="table">
-				<tr>
-					<td width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
-					</td>
-					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/notice/list.do" method="post">
-							<select name="condition" class="form-select">
-								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
-								<option value="userName" ${condition=="userName"?"selected='selected'":"" }>작성자</option>
-								<option value="noticeRegDate"  ${condition=="noticeRegDate"?"selected='selected'":"" }>등록일</option>
-								<option value="noticeSubject"  ${condition=="noticeSubject"?"selected='selected'":"" }>제목</option>
-								<option value="noticeContent"  ${condition=="noticeContent"?"selected='selected'":"" }>내용</option>
-							</select>
-							<input type="text" name="keyword" value="${keyword}" class="form-control">
-							<input type="hidden" name="category" value="${category}">
-							<button type="button" class="btn" onclick="searchList();">검색</button>
-						</form>
-					</td>
-					<td align="right" width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/write.do';">글올리기</button>
-					</td>
-				</tr>
-			</table>
-
-	    </div>
-	</div>
+	
+	<main>
+    <div class="box">
+        <span class="complete">출금이 완료되었습니다!</span><br>
+        <div class="box-content">
+    출금 전 잔액: ${ prebalance}point&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          출금금액: ${  amount }point  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    출금 후 잔액: ${ balance}point  
+        
+        </div>
+        <div class="button-wrapper">
+            <button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/point/list.do';" title="돌아가기">돌아가기</button>
+        </div>
+    </div>
+	
 </main>
 
 <footer>
@@ -265,4 +221,3 @@ function searchList() {
 
 </body>
 </html>
-

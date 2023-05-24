@@ -312,7 +312,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 }
 
 .camp_info_box .cont_tb table {
-    width: 118%;
+    width: 100%;
     font-size: 14px;
 }
 
@@ -617,13 +617,14 @@ function imageViewer(img) {
 	    		<div class="layout">
 	    			<h3 style="border-bottom: 1px solid #000; border-top: 1px solid #000; color: black; padding-bottom: 8px;  padding-top: 8px;"><i style="color: black" class="fa-solid fa-play"></i>&nbsp;&nbsp;캠핑장 사진</h3>
 	    		<div class="camp_intro">
-	    			<ul>		    			
+	    			<ul>	    			
 		    			<c:forEach var="vo" items="${listFile}">
 		    				<li class="col_03 img_box">
 									<img class="imgFit" src="${pageContext.request.contextPath}/uploads/campInfo/${vo.camInfoPhotoName}"
 										onclick="imageViewer('${pageContext.request.contextPath}/uploads/campInfo/${vo.camInfoPhotoName}');">
 							</li>
-						</c:forEach>		
+						</c:forEach>	 
+							
 	    			</ul>
 	    			<p class="camp_intro_txt">
 	    				<h3 style="border-bottom: 1px solid #000; color: black; padding-bottom: 8px;"><i style="color: black" class="fa-solid fa-play"></i>&nbsp;&nbsp;캠핑장 내용</h3>
@@ -641,7 +642,7 @@ function imageViewer(img) {
 	    
 	    
 	    
-	    
+<!-- 수정, 삭제, 리스트 버튼 -->
 	    <div class="body-main mx-auto">
 			<div style="float: left" >
 				<c:choose>
@@ -667,12 +668,12 @@ function imageViewer(img) {
 	</div>
 </main>
 
+
 <footer>
     <jsp:include page="/WEB-INF/views/layout/footer.jsp"></jsp:include>
 </footer>
 
-<div class="dialog-photo">
-      <div class="photo-layout"></div>
+
 </div>
 
 </body>

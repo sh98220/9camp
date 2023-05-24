@@ -249,21 +249,49 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	}
 </c:if>
 
-function sendOk() {
-    const f = document.auctionForm;
-	let str;
-	
-    str = f.auctionRecamount.value.trim();
-    if(!str) {
-        alert("금액을 입력하세요. ");
-        f.auctionRecamount.focus();
-        return;
-    }
-    
-    f.action = "${pageContext.request.contextPath}/auction/auctionRecamount.do";
-    f.submit();
-}
+<c:if test="${sessionScope.member.userId!=dto.auctionSaleId && sessionScope.member.userId!='admin'}">
 
+function sendOk() {
+	const f = document.auctionForm;
+	let str;
+
+	str = f.auctionRecamount.value.trim();
+	if(!str) {
+		alert("금액을 입력하세요. ");
+		f.auctionRecamount.focus();
+		return;
+	}
+
+	if (!/^[0-9]+$/.test(str)) {  
+		alert("숫자만 입력하세요.");
+		f.auctionRecamount.focus();
+		return;
+	}
+	
+	str = parseInt(str);
+
+	if (isNaN(str)) {  
+		alert("올바른 숫자를 입력하세요.");
+		f.auctionRecamount.focus();
+		return;
+	}
+
+	if (str < parseInt(f.auctionStartamount.value.trim())) {
+		alert("경매 제시 금액이 시작 금액보다 낮습니다!");
+		f.auctionRecamount.focus();
+		return;
+	}
+
+	if (str > 10000000000000000) {
+		alert("너무 큰 경매금액은 안됩니다.");
+		f.auctionRecamount.focus();
+		return;
+	}
+
+	f.action = "${pageContext.request.contextPath}/auction/auctionRecamount.do";
+	f.submit();
+}
+</c:if>
 
 function imageViewer(img) {
 	const viewer = $(".photo-layout");
@@ -371,14 +399,27 @@ function ajaxFun(url, method, query, dataType, fn) {
 					
 					<tr>
 						<td width="50%">
-							경매시작가 : ${dto.auctionStartamount}원 | 현재입찰가 : ${dto.auctionRecamount}원
+						<input type="hidden" name="auctionStartamount" maxlength="100" class="form-control" value="${dto.auctionStartamount}">
+						시작입찰가 : ${dto.auctionStartamount}원
 						</td>
 					</tr>
 					
 					<tr>
 						<td width="50%">
-							<button type="button" class="btn" onclick="sendOk();">입찰하기</button>
-							
+							 현재입찰가 : ${dto.auctionRecamount}원
+						</td>
+					</tr>
+					
+					<tr>
+						<td width="50%">
+						  <c:choose>
+					   		  <c:when test="${sessionScope.member.userId!=dto.auctionSaleId && sessionScope.member.userId!='admin'}"> 
+									<button type="button" class="btn" onclick="sendOk();">입찰하기</button>
+				     	 	</c:when>  
+				     		<c:otherwise>  
+				     			<button type="button" class="btn" disabled="disabled">입찰하기</button>  
+				     		 </c:otherwise>  	
+						  </c:choose>
 							<input type="hidden" name="auctionNum" maxlength="100" class="form-control" value="${dto.auctionNum}">
 							<input type="hidden" name="page" value="${page}">				
 							<input type="text" name="auctionRecamount" maxlength="100" class="form-control" value="${dto.auctionRecamount}">					

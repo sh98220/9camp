@@ -9,9 +9,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>공지사항</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resource/css/paginate.css" type="text/css">
-
 <style type="text/css">
+.body-main {
+	max-width: 700px;
+	padding-top: 15px;
+}
+
+a { display: inline-block;}
 
 .body-main {
 	max-width: 700px;
@@ -170,13 +174,73 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	    max-width: 750px;
 	}
 }
+
+.table-article tr>td { padding-left: 5px; padding-right: 5px; }
+.reply { clear: both; padding: 20px 0 10px; }
+.reply .bold { font-weight: 600; }
+
+.reply .form-header { padding-bottom: 7px; }
+.reply-form  tr>td { padding: 2px 0 2px; }
+.reply-form textarea { width: 100%; height: 75px; }
+.reply-form button { padding: 8px 25px; }
+
+.reply .reply-info { padding-top: 25px; padding-bottom: 7px; }
+.reply .reply-info  .reply-count { color: #3EA9CD; font-weight: 700; }
+
+.reply .reply-list tr>td { padding: 7px 5px; }
+.reply .reply-list .bold { font-weight: 600; }
+
+.reply .deleteReply, .reply .deleteReplyAnswer { cursor: pointer; }
+.reply .notifyReply { cursor: pointer; }
+
+.reply-list .list-header { border: 1px solid #ccc; background: #f8f8f8; }
+.reply-list tr>td { padding-left: 7px; padding-right: 7px; }
+
 </style>
 <script type="text/javascript">
-function searchList() {
-	const f = document.searchForm;
-	f.submit();
-}
+<c:if test="${sessionScope.member.userId==dto.userId || sessionScope.member.userId=='admin'}">
+	function deleteBoard() {
+	    if(confirm("게시글을 삭제 하시겠습니까 ? ")) {
+		    let query = "num=${dto.noticeNum}&${query}";
+		    let url = "${pageContext.request.contextPath}/notice/delete.do?" + query;
+	    	location.href = url;
+	    }
+	}
+</c:if>
 </script>
+
+<script type="text/javascript">
+function login(){
+	location.href = "${pageContext.request.contextPath}/member/login.do";
+}
+
+function ajaxFun(url, method, query, dataType, fn) {
+	$.ajax({
+		type:method,		// 메소드(get, post, put, delete)
+		url:url,			// 요청 받을 서버주소
+		data:query,			// 서버에 전송할 파라미터
+		dataType:dataType,	// 서버에서 응답하는 형식(json, xml, text)
+		success:function(data) {
+			fn(data);
+		},
+		beforeSend:function(jqXHR) { 
+			jqXHR.setRequestHeader("AJAX", true); // 사용자 정의 헤더
+		},
+		error:function(jqXHR) {
+			if(jqXHR.status === 403) {
+				login();
+				return false;
+			} else if(jqXHR.status === 400) {
+				alert("요청 처리가 실패 했습니다.");
+				return false;
+			}
+			console.log(jqXHR.responseText);
+		}
+	});
+}
+
+</script>
+
 </head>
 <body>
 
@@ -191,78 +255,96 @@ function searchList() {
 	    </div>
 	    
 	    <div class="body-main mx-auto">
-			<table class="table">
-				<tr>
-					<td width="50%">
-						${dataCount}개(${page}/${total_page} 페이지)
-					</td>
-					<td align="right">&nbsp;</td>
-				</tr>
-			</table>
-			
-			<table class="table table-border table-list">
+			<table class="table table-border table-article">
 				<thead>
 					<tr>
-						<th class="num">번호</th>
-						<th class="subject">제목</th>
-						<th class="name">작성자</th>
-						<th class="date">작성일</th>
-						<th class="hit">조회수</th>
+						<td colspan="2" align="center">
+							${dto.noticeSubject}
+						</td>
 					</tr>
 				</thead>
 				
 				<tbody>
-					<c:forEach var="dto" items="${list}" varStatus="status">
-						<tr>
-							<td>${dataCount - (page-1) * size - status.index}</td>
-							<td class="left">
-								<a href="${articleUrl}&num=${dto.noticeNum}">${dto.noticeSubject}</a>
-							</td>
-							<td>관리자</td>
-							<td>${dto.noticeRegDate}</td>
-							<td>${dto.noticeHitCount}</td>
-						</tr>
-					</c:forEach>
+					<tr>
+						<td width="50%">
+							이름 : 관리자
+						</td>
+						<td align="right">
+							${dto.noticeRegDate} | 조회 ${dto.noticeHitCount}
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="2" valign="top" height="200">
+							${dto.noticeContent}
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="2" height="200">
+							사&nbsp;&nbsp;진 :
+							<div class="img-box">
+								<c:forEach var="vo" items="${listFile}">
+									<img src="${pageContext.request.contextPath}/uploads/notice/${vo.noticePhotoName}"
+										onclick="imageViewer('${pageContext.request.contextPath}/uploads/notice/${vo.noticePhotoName}');">
+								</c:forEach>
+							</div>
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="2">
+							이전글 :
+							<c:if test="${not empty preReadDto}"> 
+								<a href="${pageContext.request.contextPath}/notice/article.do?${query}&num=${preReadDto.noticeNum}">${preReadDto.noticeSubject}</a>
+							</c:if>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							다음글 :
+							<c:if test="${not empty nextReadDto}">
+								<a href="${pageContext.request.contextPath}/notice/article.do?${query}&num=${nextReadDto.noticeNum}">${nextReadDto.noticeSubject}</a>
+							</c:if>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 			
-			<div class="page-navigation">
-				${dataCount == 0 ? "등록된 게시물이 없습니다." : paging}
-			</div>
-			
 			<table class="table">
 				<tr>
-					<td width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+					<td width="50%">
+						<c:choose>
+							<c:when test="${sessionScope.member.userId==dto.userId}">
+								<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/update.do?num=${dto.noticeNum}&page=${page}';">수정</button>
+							</c:when>
+							<c:otherwise>
+								<button type="button" class="btn" disabled="disabled">수정</button>
+							</c:otherwise>
+						</c:choose>
+				    	
+						<c:choose>
+				    		<c:when test="${sessionScope.member.userId==dto.userId || sessionScope.member.userId=='admin'}">
+				    			<button type="button" class="btn" onclick="deleteBoard();">삭제</button>
+				    		</c:when>
+				    		<c:otherwise>
+				    			<button type="button" class="btn" disabled="disabled">삭제</button>
+				    		</c:otherwise>
+				    	</c:choose>
 					</td>
-					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/notice/list.do" method="post">
-							<select name="condition" class="form-select">
-								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
-								<option value="userName" ${condition=="userName"?"selected='selected'":"" }>작성자</option>
-								<option value="noticeRegDate"  ${condition=="noticeRegDate"?"selected='selected'":"" }>등록일</option>
-								<option value="noticeSubject"  ${condition=="noticeSubject"?"selected='selected'":"" }>제목</option>
-								<option value="noticeContent"  ${condition=="noticeContent"?"selected='selected'":"" }>내용</option>
-							</select>
-							<input type="text" name="keyword" value="${keyword}" class="form-control">
-							<input type="hidden" name="category" value="${category}">
-							<button type="button" class="btn" onclick="searchList();">검색</button>
-						</form>
-					</td>
-					<td align="right" width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/write.do';">글올리기</button>
+					<td align="right">
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/list.do?${query}';">리스트</button>
 					</td>
 				</tr>
 			</table>
-
+    	       
 	    </div>
 	</div>
 </main>
 
 <footer>
-	<jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
+    <jsp:include page="/WEB-INF/views/layout/footer.jsp"></jsp:include>
 </footer>
 
 </body>
 </html>
-

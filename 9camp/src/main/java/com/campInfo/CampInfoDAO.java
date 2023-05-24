@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+ 
 import com.util.DBConn;
 
 
@@ -37,8 +38,8 @@ public class CampInfoDAO {
 			pstmt = null;
 			
 			sql = "INSERT INTO campInfo(camInfoNum, userId, camInfoSubject, camInfoContent, camInfoAddr, camInfoHitCount, camInfoRegDate, camThemaName, camKeyword ,"
-					+ " camPhoneNum, camNomalWeekDayPrice, camNomalWeekEndPrice, camPeakWeekDayPrice, camPeakWeekEndPrice, camFacility ) "
-					+ " VALUES (?, 'admin',  ?, ?, ?, 0, SYSDATE, ?, ?, ?, ?, ?, ?, ?, ?)";
+					+ " camPhoneNum, camNomalWeekDayPrice, camNomalWeekEndPrice, camPeakWeekDayPrice, camPeakWeekEndPrice, camFacility, camInfoLineContent ) "
+					+ " VALUES (?, 'admin',  ?, ?, ?, 0, SYSDATE, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -54,6 +55,7 @@ public class CampInfoDAO {
 			pstmt.setString(10, dto.getCamPeakWeekDayPrice());
 			pstmt.setString(11, dto.getCamPeakWeekEndPrice());
 			pstmt.setString(12, dto.getCamFacility());
+			pstmt.setString(13, dto.getCamInfoLineContent());
 			
 			pstmt.executeUpdate();	
 			
@@ -314,7 +316,7 @@ public class CampInfoDAO {
 		try {
 			sql = "SELECT c.camInfoNum, camInfoSubject, camInfoContent, camInfoAddr, "
 					+ " camInfoHitCount, TO_CHAR(camInfoRegDate, 'YYYY-MM-DD') camInfoRegDate, camThemaName, NVL(wishCount, 0) wishCount, camKeyWord, "
-					+ "  camPhoneNum, camNomalWeekDayPrice, camNomalWeekEndPrice, camPeakWeekDayPrice, camPeakWeekEndPrice, camFacility "
+					+ "  camPhoneNum, camNomalWeekDayPrice, camNomalWeekEndPrice, camPeakWeekDayPrice, camPeakWeekEndPrice, camFacility, camInfoLineContent "
 					+ " FROM campInfo c "
 					+ " LEFT OUTER JOIN("
 					+ " SELECT camInfoNum, COUNT(*) wishCount"
@@ -346,6 +348,8 @@ public class CampInfoDAO {
 				dto.setCamPeakWeekDayPrice(rs.getString("camPeakWeekDayPrice"));
 				dto.setCamPeakWeekEndPrice(rs.getString("camPeakWeekEndPrice"));
 				dto.setCamFacility(rs.getString("camFacility"));
+				dto.setCamInfoLineContent(rs.getString("camInfoLineContent"));
+				
 			}
 			
 		} catch (SQLException e) {
@@ -494,7 +498,7 @@ public class CampInfoDAO {
 		String sql;
 		
 		try {
-			sql = "UPDATE campInfo SET camInfoSubject=?, camInfoContent=?, camInfoAddr = ?, camThemaName = ?, camKeyWord = ? camPhoneNum = ? , camNomalWeekDayPrice = ?, camNomalWeekEndPrice = ?, camPeakWeekDayPrice = ? , camPeakWeekEndPrice = ?, camFacility = ? WHERE camInfoNum=?";
+			sql = "UPDATE campInfo SET camInfoSubject=?, camInfoContent=?, camInfoAddr = ?, camThemaName = ?, camKeyWord = ?, camPhoneNum = ? , camNomalWeekDayPrice = ?, camNomalWeekEndPrice = ?, camPeakWeekDayPrice = ? , camPeakWeekEndPrice = ?, camFacility = ?, camInfoLineContent = ? WHERE camInfoNum=?";
 			pstmt = conn.prepareStatement(sql);
 
 			pstmt.setString(1, dto.getCamInfoSubject());
@@ -502,13 +506,14 @@ public class CampInfoDAO {
 			pstmt.setString(3, dto.getCamInfoAddr());
 			pstmt.setString(4, dto.getCamThemaName());
 			pstmt.setString(5, dto.getCamKeyWord());
-			pstmt.setLong(6, dto.getCamInfoNum());
-			pstmt.setString(7, dto.getCamPhoneNum());
-			pstmt.setString(8, dto.getCamNomalWeekDayPrice());
-			pstmt.setString(9, dto.getCamNomalWeekEndPrice());
-			pstmt.setString(10, dto.getCamPeakWeekDayPrice());
-			pstmt.setString(11, dto.getCamPeakWeekEndPrice());
-			pstmt.setString(12, dto.getCamFacility());
+			pstmt.setString(6, dto.getCamPhoneNum());
+			pstmt.setString(7, dto.getCamNomalWeekDayPrice());
+			pstmt.setString(8, dto.getCamNomalWeekEndPrice());
+			pstmt.setString(9, dto.getCamPeakWeekDayPrice());
+			pstmt.setString(10, dto.getCamPeakWeekEndPrice());
+			pstmt.setString(11, dto.getCamFacility());
+			pstmt.setString(12, dto.getCamInfoLineContent());
+			pstmt.setLong(13, dto.getCamInfoNum());
 			
 			pstmt.executeUpdate();
 			
@@ -852,5 +857,73 @@ public class CampInfoDAO {
 				}
 			}
 		}
+		
+		// 사진 한장만 가지고 오고 List에 표시할 내용들 가져오기
+		public List<CampInfoDTO> listPhoto(int offset, int size) {
+			List<CampInfoDTO> list = new ArrayList<CampInfoDTO>();
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			StringBuilder sb = new StringBuilder();
+
+			try {
+				sb.append(" SELECT c.camInfoNum, camInfosubject, camInfoPhotoName, camInfoAddr,camInfoAddr camInfoAddr1, camInfoContent, camPhoneNum, camInfoHitCount, camInfoLineContent,  (SELECT COUNT(*) FROM campWish w WHERE w.camInfoNum = c.camInfoNum) AS wishCount ");
+				sb.append(" FROM campInfo c ");
+				sb.append(" LEFT OUTER JOIN ( ");
+				sb.append("     SELECT camInfoPhotoNum, camInfoNum, camInfoPhotoName FROM ( ");
+				sb.append("        SELECT camInfoPhotoNum, camInfoNum, camInfoPhotoName, ");
+				sb.append("            ROW_NUMBER() OVER (PARTITION BY camInfoNum ORDER BY camInfoPhotoNum ASC) AS RANK ");
+				sb.append("          FROM campPhoto");
+				sb.append("     ) WHERE rank = 1 ");
+				sb.append(" ) i ON c.camInfoNum = i.camInfoNum ");
+				sb.append(" ORDER BY camInfoNum DESC ");
+				sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
+
+				
+				pstmt = conn.prepareStatement(sb.toString());
+
+				pstmt.setInt(1, offset);
+				pstmt.setInt(2, size);
+
+				
+				rs = pstmt.executeQuery();
+
+				while (rs.next()) {
+					CampInfoDTO dto = new CampInfoDTO();
+					
+					dto.setCamInfoNum(rs.getLong("camInfoNum"));
+					dto.setCamInfoSubject(rs.getString("camInfoSubject"));
+					dto.setCamInfoPhotoName(rs.getString("camInfoPhotoName"));
+					dto.setCamInfoAddr(rs.getString("camInfoAddr"));
+					dto.setCamInfoAddr1(rs.getString("camInfoAddr1"));
+					dto.setCamInfoContent(rs.getString("camInfoContent"));;
+					dto.setCamPhoneNum(rs.getString("camPhoneNum"));
+					dto.setCamInfoHitCount(rs.getInt("camInfoHitCount"));
+					dto.setCamInfoLineContent(rs.getString("camInfoLineContent"));
+					dto.setWishCount(rs.getInt("wishCount"));
+					
+					list.add(dto);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException e) {
+					}
+				}
+
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e) {
+					}
+				}
+			}
+
+			return list;
+		}
+		
+		
 	
 }

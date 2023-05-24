@@ -1,17 +1,20 @@
-<%@ page contentType="text/html; charset=UTF-8"%>
+﻿<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page trimDirectiveWhitespaces="true" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>공지사항</title>
+<title>전국캠핑자랑</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resource/css/paginate.css" type="text/css">
-
 <style type="text/css">
+.body-main {
+	max-width: 700px;
+	padding-top: 15px;
+}
+
 
 .body-main {
 	max-width: 700px;
@@ -19,7 +22,9 @@
 
 /* form-control */
 .btn {
+	color: #333;
 	border: 1px solid #999;
+	background-color: #eee;
 	padding: 5px 10px;
 	border-radius: 4px;
 	font-weight: 500;
@@ -68,7 +73,8 @@ input[type=checkbox], input[type=radio] { vertical-align: middle; }
 .table th, .table td { padding-top: 10px; padding-bottom: 10px; }
 
 .table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
-.table-border tbody > tr { border-bottom: 1px solid #ff5522; }
+.table-border tbody > tr { border-bottom: 1px solid #666; }
+
 .td-border td { border: 1px solid #ced4da; }
 
 tr.hover:hover { cursor: pointer; background: #f5fffa; }
@@ -83,13 +89,6 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 .clear:after { content:''; display:block; clear: both; }
 
 .mx-auto { margin-left: auto; margin-right: auto; }
-
-
-.btnConfirm {
-	background-color:#507cd1; border:none;
-	width: 100%; padding: 15px 0;
-	font-size: 15px; color:#ffffff; font-weight: 700;  cursor: pointer; vertical-align: baseline;
-}
 
 .container {
     width: 100%;
@@ -122,11 +121,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     padding-bottom: 10px;
     display: inline-block;
     margin: 0 0 -7px 0;
-    border-bottom: 3px solid #ff5522;
-}
-
-.body-title h2 i {
-	
+    border-bottom: 3px solid #eee;
 }
 
 .body-main {
@@ -139,17 +134,28 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	padding-top: 35px;
 }
 
-.table-list thead > tr:first-child { color: #4e4e4e; }
+.table-list thead > tr:first-child { background: skyblue; }
 .table-list th, .table-list td { text-align: center; }
 .table-list .left { text-align: left; padding-left: 5px; }
 
-.table-list .num { width: 60px; }
-.table-list .subject {  }
-.table-list .name { width: 100px; }
-.table-list .date { width: 100px; }
-.table-list .hit { width: 70px; }
-.table-list .file { width: 50px; }
+.table-list .num { width: 60px; color: #ff5522; }
+.table-list .subject { color: #ff5522; }
+.table-list .name { width: 100px; color: #ff5522; }
+.table-list .date { width: 100px; color: #ff5522; }
+.table-list .hit { width: 70px; color: #ff5522; }
+.table-list .file { width: 50px; color: #ff5522; }
 
+.table-form td { padding: 7px 0; }
+.table-form p { line-height: 200%; }
+.table-form tr:first-child { border-top: 2px solid #666;  }
+.table-form tr > td:first-child { width: 110px; text-align: center; background: #eee; }
+.table-form tr > td:nth-child(2) { padding-left: 10px; }
+
+.table-form input[type=text], .table-form input[type=file], .table-form textarea {
+	border: 1px solid #999;
+	width: 96%;
+}
+	
 @media (min-width: 576px) {
 	.container {
 	    max-width: 540px;
@@ -170,90 +176,102 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	    max-width: 750px;
 	}
 }
+	
+.img-box {
+	max-width: 600px;
+	padding: 5px;
+	box-sizing: border-box;
+	display: flex; /* 자손요소를 flexbox로 변경 */
+	flex-direction: row; /* 정방향 수평나열 */
+	flex-wrap: nowrap;
+	overflow-x: auto;
+}
+.img-box img {
+	width: 37px; height: 37px;
+	margin-right: 5px;
+	flex: 0 0 auto;
+	cursor: pointer;
+}
+
 </style>
+<script src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
 <script type="text/javascript">
-function searchList() {
-	const f = document.searchForm;
-	f.submit();
+var IMP = window.IMP;
+IMP.init("imp11737131");
+
+var today = new Date();
+var hours = today.getHours();
+var minutes = today.getMinutes();
+var seconds = today.getSeconds();
+var milliseconds = today.getMilliseconds();
+var makeMerchantUid = hours + minutes + seconds + milliseconds;
+
+
+function requestPay(){
+	let amount = $("input[type=radio]:checked").val();
+	IMP.request_pay({
+		pg : 'html5_inicis.INIpayTest',
+		pay_method : 'card',
+		merchant_uid: "IMP" + makeMerchantUid,
+		name : '포인트',
+		amount : amount,
+		buyer_email : 'ljh222666@naver.com',
+		buyer_name : '나',
+		buyer_tel : '010-2326-0739',
+		buyer_addr : '서울특별시',
+		buyer_postcode : '123-456'
+	}, function (rsp) {
+		if(rsp.success){
+			// alert("success");
+			// console.log(rsp);
+			
+			const f = document.pointForm;
+			f.amount.value = amount;
+			f.action = "${pageContext.request.contextPath}/point/complete.do";
+			f.submit();
+		} else {
+			alert("fail");
+			console.log(rsp);
+		}
+	});
 }
 </script>
+
 </head>
 <body>
 
 <header>
 	<jsp:include page="/WEB-INF/views/layout/header.jsp"></jsp:include>
 </header>
-
+	
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 공지사항 </h2>
+			<h2><i class="fa-solid fa-tent fa-bounce"></i> 충전하기 </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
-			<table class="table">
-				<tr>
-					<td width="50%">
-						${dataCount}개(${page}/${total_page} 페이지)
-					</td>
-					<td align="right">&nbsp;</td>
-				</tr>
-			</table>
-			
-			<table class="table table-border table-list">
-				<thead>
-					<tr>
-						<th class="num">번호</th>
-						<th class="subject">제목</th>
-						<th class="name">작성자</th>
-						<th class="date">작성일</th>
-						<th class="hit">조회수</th>
+
+	
+				<table class="table">
+					<tr> 
+						<td align="center">
+						    <input type="radio" name="amount" value="1000" id="amount-1" checked>
+                            <label for="amount-1">1000원</label>
+                            <input type="radio" name="amount" value="5000" id="amount-2">
+                            <label for="amount-2">5000원</label>
+                            <input type="radio" name="amount" value="10000" id="amount-3">
+                            <label for="amount-3">10000원</label>
+                            <input type="radio" name="amount" value="50000" id="amount-4">
+                            <label for="amount-4">50000원</label>
+							<button type="button" class="btn" onclick="requestPay();">충전하기</button>
+						</td>
 					</tr>
-				</thead>
+				</table>
 				
-				<tbody>
-					<c:forEach var="dto" items="${list}" varStatus="status">
-						<tr>
-							<td>${dataCount - (page-1) * size - status.index}</td>
-							<td class="left">
-								<a href="${articleUrl}&num=${dto.noticeNum}">${dto.noticeSubject}</a>
-							</td>
-							<td>관리자</td>
-							<td>${dto.noticeRegDate}</td>
-							<td>${dto.noticeHitCount}</td>
-						</tr>
-					</c:forEach>
-				</tbody>
-			</table>
-			
-			<div class="page-navigation">
-				${dataCount == 0 ? "등록된 게시물이 없습니다." : paging}
-			</div>
-			
-			<table class="table">
-				<tr>
-					<td width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
-					</td>
-					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/notice/list.do" method="post">
-							<select name="condition" class="form-select">
-								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
-								<option value="userName" ${condition=="userName"?"selected='selected'":"" }>작성자</option>
-								<option value="noticeRegDate"  ${condition=="noticeRegDate"?"selected='selected'":"" }>등록일</option>
-								<option value="noticeSubject"  ${condition=="noticeSubject"?"selected='selected'":"" }>제목</option>
-								<option value="noticeContent"  ${condition=="noticeContent"?"selected='selected'":"" }>내용</option>
-							</select>
-							<input type="text" name="keyword" value="${keyword}" class="form-control">
-							<input type="hidden" name="category" value="${category}">
-							<button type="button" class="btn" onclick="searchList();">검색</button>
-						</form>
-					</td>
-					<td align="right" width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/write.do';">글올리기</button>
-					</td>
-				</tr>
-			</table>
+			<form name="pointForm" method="post">
+			<input type="hidden" name="amount" value="0">
+			</form>
 
 	    </div>
 	</div>
@@ -265,4 +283,3 @@ function searchList() {
 
 </body>
 </html>
-

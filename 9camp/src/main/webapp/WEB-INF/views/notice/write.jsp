@@ -1,14 +1,13 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8"%>
 <%@ page trimDirectiveWhitespaces="true" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<title>캠핑메이트</title>
+<title>공지사항</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 <style type="text/css">
 .body-main {
@@ -135,15 +134,6 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	padding-top: 35px;
 }
 
-/* 캠핑스타일  */
-#keyword-cont .keyword-ul > li {
-	display: inline-block;
-	margin: 3px;
-}
-
-
-
-
 .table-list thead > tr:first-child { background: skyblue; }
 .table-list th, .table-list td { text-align: center; }
 .table-list .left { text-align: left; padding-left: 5px; }
@@ -186,132 +176,56 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	    max-width: 750px;
 	}
 }
-
-
-.modal-btn-box { width:30%;  text-align:left; }
-.modal-btn-box button {
-	display: inline-block;
-	width: 134px;
-	height: 28px;
-	background-color: #ffffff;
-	border: 1px solid #e1e1e1;
-	cursor: pointer;
-}
-
-.popup-wrap {
-	background-color: rgba(0,0,0,.3);
-	justify-content: center;
-	align-items: center;
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	display: none;
-	padding: 15px;
-}
-.popup {
-	width: 100%;
-	max-width: 400px;
-	background-color: #ffffff;
-	border-radius: 10px;
-	overflow: hidden;
-	background-color: #264db5;
-	box-shadow: 5px 10px 10px 1px rgba(0,0,0,.3);
-}
-.popup-head {
-	width: 100%;
-	height: 50px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-.head-title {
-	font-size: 33px;
-	font-weight: 700;
-    text-align: center;
-}
-.popup-body {
-	width:100%;
-	background-color:#ffffff;
-}
-.popup-content{
-  width:100%;
-  padding:30px;
-}
-
-.popup-foot{
-	width: 100%;
-	height: 50px;
-}
-.pop-btn{
-	display:inline-flex;
-	width:50%;
-	height:100%;
-	float:left;
-	justify-content:center;
-	align-items:center;
-	color:#ffffff;
-	cursor:pointer;
-}
-.pop-btn.confirm {
-	border-right:1px solid #3b5fbf;
-}
-
-.img-box {
-	max-width: 600px;
-	padding: 5px;
-	box-sizing: border-box;
-	display: flex; /* 자손요소를 flexbox로 변경 */
-	flex-direction: row; /* 정방향 수평나열 */
-	flex-wrap: nowrap;
-	overflow-x: auto;
-}
-.img-box img {
-	width: 37px; height: 37px;
-	margin-right: 5px;
-	flex: 0 0 auto;
-	cursor: pointer;
-}
 	
 </style>
 
 <script type="text/javascript">
 function sendOk() {
-    const f = document.qnaForm;
+    const f = document.noticeForm;
 	let str;
 	
-    str = f.qnaSubject.value.trim();
+    str = f.noticeSubject.value.trim();
     if(!str) {
         alert("제목을 입력하세요. ");
-        f.qnaSubject.focus();
+        f.noticeSubject.focus();
         return;
     }
 
-    str = f.qnaContent.value.trim();
+    str = f.noticeContent.value.trim();
     if(!str) {
         alert("내용을 입력하세요. ");
-        f.qnaContent.focus();
+        f.noticeContent.focus();
         return;
     }
     
+    let mode = "${mode}";
+    if( (mode === "write") && (!f.selectFile.value) ) {
+        alert("이미지 파일을 추가 하세요. ");
+        f.selectFile.focus();
+        return;
+    }
 
-
-    f.action = "${pageContext.request.contextPath}/qna/${mode}_ok.do";
+    f.action = "${pageContext.request.contextPath}/notice/${mode}_ok.do";
     f.submit();
 }
 
-<c:if test="${mode=='update'}">
-function deleteFile(qnaFileNum) {
-	if(! confirm("파일을 삭제 하시겠습니까 ?")) {
+<c:if test="${mode == 'update'}">
+function deleteFile(camRevphotonum) {
+	let cnt = $(".img-box").find("img").length;
+	if(cnt == 1){
+		alert('이미지가 한개면 삭제할 수 없습니다.')
 		return;
 	}
 	
-	let query = "qnaNum=${dto.qnaNum}&qnaFileNum="+qnaFileNum+"&page=${page}";
-	let url = "${pageContext.request.contextPath}/qna/deleteFile.do"
+	if(confirm('이미지를 삭제하시겠습니까 ?')){
+		let query = "noticeNum=${dto.noticeNum}&noticePhotoNum=" + noticePhotoNum + "&page=${page}";
+		let url = "${pageContext.request.contextPath}/notice/deleteFile.do";
 		location.href = url + "?" + query;
+	}
+	
 }
 </c:if>
+
 </script>
 </head>
 <body>
@@ -319,75 +233,64 @@ function deleteFile(qnaFileNum) {
 <header>
 	<jsp:include page="/WEB-INF/views/layout/header.jsp"></jsp:include>
 </header>
-	
+
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> Q & A </h2>
+			<h2><i class="fa-solid fa-tent fa-bounce"></i> 공지사항 </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
-			<form name="qnaForm" method="post" enctype="multipart/form-data">
+			<form name="noticeForm" method="post" enctype="multipart/form-data">
 				<table class="table table-border table-form">
 					<tr> 
 						<td>제&nbsp;&nbsp;&nbsp;&nbsp;목</td>
 						<td> 
-							<input type="text" name="qnaSubject" maxlength="100" class="form-control" value="${dto.qnaSubject}">
+							<input type="text" name="noticeSubject" maxlength="100" class="form-control" value="${dto.noticeSubject}">
 						</td>
 					</tr>
 					
-					<tr> 
-						<td>작성자</td>
-						<td> 
-							 <p>${sessionScope.member.userNickName}</p> 
-						</td>
-					</tr>
+				
+					
 					<tr> 
 						<td valign="top">내&nbsp;&nbsp;&nbsp;&nbsp;용</td>
 						<td> 
-							<textarea name="qnaContent" class="form-control">${dto.qnaContent}</textarea>
+							<textarea name="noticeContent" class="form-control">${dto.noticeContent}</textarea>
 						</td>
 					</tr>
 					
 					<tr>
-						<td>파일첨부</td>
+						<td>첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
 						<td> 
-							<input type="file" name="selectFile" multiple="multiple" class="form-control">
-					</td>
+							<input type="file" name="selectFile" accept="image/*" multiple="multiple" class="form-control">
+						</td>
+					</tr>
 					
-					<c:if test="${mode=='update'}">
-							<c:forEach var="vo" items="${listFile}">
-								<tr>
-									<td class="table-light col-sm-2" scope="row">첨부된파일</td>
-									<td> 
-										<p class="form-control-plaintext">
-											<a style="display: inline-block;"  onclick="deleteFile('${vo.qnaFileNum}');"><i class="fa-sharp fa-solid fa-trash"></i></a>
-											${vo.qnaoriginalFilename}
-										</p>
-									</td>
-								</tr>
-							</c:forEach> 
-						</c:if>
+					<c:if test="${mode == 'update' }">
+						<tr>
+							<td>등록이미지</td>
+							<td>
+								<div class="img-box">
+									<c:forEach var="vo" items="${listFile}">
+										<img src="${pageContext.request.contextPath}/uploads/notice/${vo.noticePhotoName}"
+											onclick="deleteFile('${vo.noticePhotoNum}');">
+									</c:forEach>
+								</div>
+							</td>
+						</tr>
+					</c:if>
 				</table>
-	
+					
 				<table class="table">
 					<tr> 
 						<td align="center">
-							<button type="button" class="btn" onclick="sendOk();">${mode=='update'?'수정완료':(mode=='reply'? '답변완료':'등록하기')}</button>
+							<button type="button" class="btn" onclick="sendOk();">${mode=="update"?"수정완료":"등록완료"}</button>
 							<button type="reset" class="btn">다시입력</button>
-							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/qna/list.do';">${mode=='update'?'수정취소':(mode=='reply'? '답변취소':'등록취소')}</button>
-							<c:if test="${mode=='update'}">
+							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/list.do';">${mode=="update"?"수정취소":"등록취소"}</button>
+							<c:if test="${mode=='update' }">
+								<input type="hidden" name="noticeNum" value="${dto.noticeNum}">
 								<input type="hidden" name="page" value="${page}">
-								<input type="hidden" name="qnaFileNum" value="${dto.qnaFileNum}">
-								<input type="hidden" name="qnaNum" value="${dto.qnaNum}">
-							</c:if>			
-							<c:if test="${mode=='reply'}">
-									<input type="hidden" name="groupNum" value="${dto.groupNum}">
-									<input type="hidden" name="orderNum" value="${dto.orderNum}">
-									<input type="hidden" name="depth" value="${dto.depth}">
-									<input type="hidden" name="parent" value="${dto.qnaNum}">
-									<input type="hidden" name="page" value="${page}">
-							</c:if>
+							</c:if>							
 						</td>
 					</tr>
 				</table>
@@ -402,10 +305,5 @@ function deleteFile(qnaFileNum) {
 	<jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
 </footer>
 
-<script>
-
-</script>
-
-  
 </body>
 </html>

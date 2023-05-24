@@ -1,13 +1,13 @@
-<%@ page contentType="text/html; charset=UTF-8"%>
+﻿<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page trimDirectiveWhitespaces="true" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>공지사항</title>
+<title>전국캠핑자랑</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resource/css/paginate.css" type="text/css">
 
@@ -68,7 +68,7 @@ input[type=checkbox], input[type=radio] { vertical-align: middle; }
 .table th, .table td { padding-top: 10px; padding-bottom: 10px; }
 
 .table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
-.table-border tbody > tr { border-bottom: 1px solid #ff5522; }
+.table-border tbody > tr { border-bottom: 1px solid gray; }
 .td-border td { border: 1px solid #ced4da; }
 
 tr.hover:hover { cursor: pointer; background: #f5fffa; }
@@ -125,10 +125,6 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     border-bottom: 3px solid #ff5522;
 }
 
-.body-title h2 i {
-	
-}
-
 .body-main {
 	display: block;
 	padding-bottom: 15px;
@@ -183,12 +179,12 @@ function searchList() {
 <header>
 	<jsp:include page="/WEB-INF/views/layout/header.jsp"></jsp:include>
 </header>
-
+	
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 공지사항 </h2>
-	    </div>
+			<h2><i class="fa-solid fa-store fa-spin-pulse"></i> 포인트 입출금 내역 </h2>
+	    </div>  
 	    
 	    <div class="body-main mx-auto">
 			<table class="table">
@@ -204,10 +200,10 @@ function searchList() {
 				<thead>
 					<tr>
 						<th class="num">번호</th>
-						<th class="subject">제목</th>
-						<th class="name">작성자</th>
-						<th class="date">작성일</th>
-						<th class="hit">조회수</th>
+						<th class="name">금액</th>
+						<th class="name">입금/출금</th>
+						<th class="date">날짜</th>
+						<th class="date">잔액</th>
 					</tr>
 				</thead>
 				
@@ -215,42 +211,39 @@ function searchList() {
 					<c:forEach var="dto" items="${list}" varStatus="status">
 						<tr>
 							<td>${dataCount - (page-1) * size - status.index}</td>
-							<td class="left">
-								<a href="${articleUrl}&num=${dto.noticeNum}">${dto.noticeSubject}</a>
-							</td>
-							<td>관리자</td>
-							<td>${dto.noticeRegDate}</td>
-							<td>${dto.noticeHitCount}</td>
+							<td>${dto.pointAmount}</td>
+							<td>${dto.pointmode}</td>
+							<td>${dto.pointDate}</td>
+							<td>${dto.balance2}</td>
 						</tr>
 					</c:forEach>
 				</tbody>
 			</table>
 			
 			<div class="page-navigation">
-				${dataCount == 0 ? "등록된 게시물이 없습니다." : paging}
+				${dataCount == 0 ? "입출금 내역이 없습니다." : paging}
 			</div>
 			
 			<table class="table">
 				<tr>
 					<td width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/point/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
 					</td>
 					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/notice/list.do" method="post">
+						<form name="searchForm" action="${pageContext.request.contextPath}/point/list.do" method="post">
 							<select name="condition" class="form-select">
-								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
-								<option value="userName" ${condition=="userName"?"selected='selected'":"" }>작성자</option>
-								<option value="noticeRegDate"  ${condition=="noticeRegDate"?"selected='selected'":"" }>등록일</option>
-								<option value="noticeSubject"  ${condition=="noticeSubject"?"selected='selected'":"" }>제목</option>
-								<option value="noticeContent"  ${condition=="noticeContent"?"selected='selected'":"" }>내용</option>
+								<option value="pointmode"   ${condition=="pointmode"?"selected='selected'":"" }>입금, 출금</option>
+								<option value="pointdate"  ${condition=="pointdate"?"selected='selected'":"" }>날짜</option>
 							</select>
 							<input type="text" name="keyword" value="${keyword}" class="form-control">
-							<input type="hidden" name="category" value="${category}">
 							<button type="button" class="btn" onclick="searchList();">검색</button>
 						</form>
 					</td>
 					<td align="right" width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/write.do';">글올리기</button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/point/write.do';">충전하기</button>
+					</td>	
+					<td align="right" width="100">
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/point/wd.do';">출금하기</button>
 					</td>
 				</tr>
 			</table>
@@ -265,4 +258,3 @@ function searchList() {
 
 </body>
 </html>
-

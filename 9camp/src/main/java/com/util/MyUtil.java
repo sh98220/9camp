@@ -77,6 +77,65 @@ public class MyUtil {
 	
 		return sb.toString();
 	}
+	
+	/**
+	 * 페이징(paging) 처리(GET 방식)
+	 * @param current_page	현재 표시되는 페이지 번호	
+	 * @param total_page	전체 페이지 수
+	 * @param list_url		링크를 설정할 주소
+	 * @return				페이징 처리 결과
+	 */
+	public String paging2(int current_page, int total_page, String list_url) {
+		StringBuilder sb = new StringBuilder();
+		
+		int numPerBlock = 1;
+		int currentPageSetup;
+		int n, page;
+		
+		if(current_page < 1 || total_page < current_page) {
+			return "";
+		}
+		
+		if(list_url.indexOf("?") != -1) {
+			list_url += "&";
+		} else {
+			list_url += "?";
+		}
+		
+		// currentPageSetup : 표시할첫페이지-1
+		currentPageSetup = (current_page / numPerBlock) * numPerBlock;
+		if(current_page % numPerBlock == 0) {
+			currentPageSetup = currentPageSetup - numPerBlock;
+		}
+
+		sb.append("<ul>");
+		// 처음페이지, 이전(1페이지 전)
+		n = current_page - numPerBlock;
+		if(total_page > numPerBlock && currentPageSetup > 0) {
+			sb.append("<li class='prev'><a href='" + list_url + "page=" + n + "'>PREV</a></li>");
+		} else {
+			sb.append("<li class='prev noclick'>PREV</li>");
+		}
+		
+		// 페이징
+		page = currentPageSetup + 1;
+		while(page <= total_page && page <= (currentPageSetup + numPerBlock)) {
+			sb.append("<li><span class='cp_span'>" + page + "</span>/" + total_page + "</li>");
+			page++;
+		}
+		
+		// 다음(1페이지 후), 마지막페이지
+		n = current_page + numPerBlock;
+		if(n > total_page) n = total_page;
+		if(total_page - currentPageSetup > numPerBlock) {
+			sb.append("<li class='next'><a href='" + list_url + "page=" + n + "'>NEXT</a></li>");
+		} else {
+			sb.append("<li class='next noclick'>NEXT</li>");
+		}
+		sb.append("</ul>");
+	
+		return sb.toString();
+	}
 
 	/**
 	 * javascript로 페이징(paging) 처리 : javascript 지정 함수 호출

@@ -5,8 +5,17 @@ public class SessionInfo {
 	private String userName;
 	private int userRoll;
 	private String userNickName;
+	private Long userPoint;
 	
 	
+	public Long getUserPoint() {
+		return userPoint;
+	}
+
+	public void setUserPoint(Long userPoint) {
+		this.userPoint = userPoint;
+	}
+
 	public String getUserNickName() {
 		return userNickName;
 	}

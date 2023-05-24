@@ -57,7 +57,7 @@ public class RentBoardDAO {
 			pstmt = null;
 
 			if (dto.getRentPhotos() != null) {
-				sql = "INSERT INTO rentalPhoto(rentPhotoNum, rentNum, rentPhotoName) VALUES "
+				sql = "INSERT INTO rentPhoto(rentPhotoNum, rentNum, rentPhotoName) VALUES "
 						+ " (rentPhotoNum_seq.NEXTVAL, ?, ?)";
 				pstmt = conn.prepareStatement(sql);
 
@@ -202,7 +202,7 @@ public class RentBoardDAO {
 			pstmt = null;
 
 			if(dto.getRentPhotos()!= null) {
-				sql = "INSERT INTO rentalPhoto(rentNum, rentPhotoNum, rentPhotoName) VALUES (?, rentPhotoNum_seq, ?)";
+				sql = "INSERT INTO rentPhoto(rentNum, rentPhotoNum, rentPhotoName) VALUES (?, rentPhotoNum_seq, ?)";
 
 				pstmt = conn.prepareStatement(sql);
 
@@ -232,7 +232,7 @@ public class RentBoardDAO {
 		String sql;
 		
 		try {
-			sql = "DELETE FROM rentalPhoto WHERE rentNum=?";
+			sql = "DELETE FROM rentPhoto WHERE rentNum=?";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -314,10 +314,10 @@ public class RentBoardDAO {
 	}
 	public List<RentBoardDTO> listRentBoard(int offset, int size, String condition, String keyword) {
 		List<RentBoardDTO> list = new ArrayList<>();
+		RentBoardDTO dto = null;
 		PreparedStatement pstmt = null;
 		String sql;
 		ResultSet rs = null;
-		RentBoardDTO dto = null;
 
 		try {
 			sql = "SELECT rentNum, hostId, rentSubject, TO_CHAR(rentRegDate,'YYYY-MM-DD')rentRegDate , rentHitCount "
@@ -628,7 +628,7 @@ public class RentBoardDAO {
 
 		try {
 			sql = "SELECT rentNum, rentPhotoNum, rentPhotoName "
-					+ "FROM rentalPhoto WHERE rentNum =?";
+					+ "FROM rentPhoto WHERE rentNum =?";
 
 			pstmt = conn.prepareStatement(sql);
 
@@ -675,7 +675,7 @@ public class RentBoardDAO {
 
 		try {
 			sql = "SELECT rentNum, rentPhotoNum, rentPhotoName "
-					+ "FROM rentalPhoto WHERE rentPhotoNum=?";
+					+ "FROM rentPhoto WHERE rentPhotoNum=?";
 
 			pstmt = conn.prepareStatement(sql);
 
@@ -718,7 +718,7 @@ public class RentBoardDAO {
 		String sql;
 		
 		try {
-			sql = "DELETE FROM rentalPhoto WHERE rentPhotoNum=?";
+			sql = "DELETE FROM rentPhoto WHERE rentPhotoNum=?";
 			
 			pstmt = conn.prepareStatement(sql);
 			

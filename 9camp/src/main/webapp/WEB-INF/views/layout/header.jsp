@@ -69,10 +69,13 @@ function countNoReadMsg() {
 		
 		<ul class="icon-cont">
 			<c:if test="${not empty sessionScope.member}">
-				<li class="point-li">
-					<a href="${pageContext.request.contextPath}/point/list.do"><span class="point-tit">보유 포인트</span> <span class="point-val">100,000</span> Point</a>
-				</li>
-			</c:if>
+				    <li class="point-li">
+				        <a href="${pageContext.request.contextPath}/point/list.do">
+				            <span class="point-tit">보유 포인트</span>
+				            <span class="point-val">${userbalance}</span> Point
+				        </a>
+				    </li>
+				</c:if>
 			<c:if test="${not empty sessionScope.member}">	
 				<li class="point-li bar">
 					|
@@ -128,7 +131,7 @@ function countNoReadMsg() {
 							<a href="${pageContext.request.contextPath}/campInfo/list.do">캠핑장 검색</a>
 						</li>
 						<li>
-							<a href="${pageContext.request.contextPath}/mapsearch/map.html">지도 검색</a>
+							<a href="${pageContext.request.contextPath}/mapCamp/mapSearch.do">지도 검색</a>
 						</li>
 					</ul>
 				</li>
