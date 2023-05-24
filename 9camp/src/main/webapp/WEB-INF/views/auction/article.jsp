@@ -254,6 +254,13 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 function sendOk() {
 	const f = document.auctionForm;
 	let str;
+	
+	let begin = ${dto.auctionRecamount};
+	let start = ${dto.auctionStartamount};
+	
+	if (start > begin){
+		begin=start;
+	}
 
 	str = f.auctionRecamount.value.trim();
 	if(!str) {
@@ -268,6 +275,12 @@ function sendOk() {
 		return;
 	}
 	
+	if(str > ${userbalance}){
+		alert("보유 포인트보다 적게 입찰해주세요.");
+		f.auctionRecamount.focus();
+		return;
+	}
+	
 	str = parseInt(str);
 
 	if (isNaN(str)) {  
@@ -276,11 +289,12 @@ function sendOk() {
 		return;
 	}
 
-	if (str < parseInt(f.auctionStartamount.value.trim())) {
-		alert("경매 제시 금액이 시작 금액보다 낮습니다!");
+	if (begin >= str) {
+		alert("경매 제시 금액이 시작 금액이나 현재 입찰가 보다 낮습니다!");
 		f.auctionRecamount.focus();
 		return;
 	}
+	
 
 	if (str > 10000000000000000) {
 		alert("너무 큰 경매금액은 안됩니다.");

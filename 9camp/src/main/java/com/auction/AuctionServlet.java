@@ -276,7 +276,7 @@ public class AuctionServlet extends MyUploadServlet {
 				return;
 			}
 
-			if (!info.getUserId().equals(dto.getUserId())) {
+			if (!info.getUserId().equals(dto.getAuctionSaleId())) {
 				resp.sendRedirect(cp + "/auction/list.do?page=" + page);
 				return;
 			}

@@ -221,8 +221,10 @@ function sendOk() {
         return;
     }
     
+    let mode = "${mode}";
+    
     str = f.auctionStartamount.value.trim();
-    if (!str || !/^[0-9]+$/.test(str)) {
+    if ( !str || !/^[0-9]+$/.test(str)) {
         alert("경매시작가를 숫자로만 입력하세요. ");
         f.auctionStartamount.focus();
         return;
@@ -245,7 +247,6 @@ function sendOk() {
         return;
     }
     
-    let mode = "${mode}";
     if( (mode === "write") && (!f.selectFile.value) ) {
         alert("이미지 파일을 추가 하세요. ");
         f.selectFile.focus();
@@ -258,7 +259,7 @@ function sendOk() {
 }
 
 <c:if test="${mode == 'update'}">
-	function deleteFile(auctionNum) {
+	function deleteFile(auctionPhotonum) {
 		let cnt = $(".img-box").find("img").length;
 		if(cnt == 1){
 			alert('이미지가 한개면 삭제할 수 없습니다.')
@@ -267,7 +268,7 @@ function sendOk() {
 		
 		if(confirm('이미지를 삭제하시겠습니까 ?')){
 			let query = "auctionNum=${dto.auctionNum}&auctionPhotonum=" + auctionPhotonum + "&page=${page}";
-			let url = "${pageContext.request.contextPath}/aucction/deleteFile.do";
+			let url = "${pageContext.request.contextPath}/auction/deleteFile.do";
 			location.href = url + "?" + query;
 		}
 		
@@ -324,14 +325,19 @@ function sendOk() {
 						</td>
 					</tr>
 					
-					<c:if test="${mode != 'update'}">
 						<tr> 
 						<td>경매시작가</td>
 						<td> 
+						 <c:choose>
+						 	<c:when test="${mode == 'update'}">
+							<input type="text" name="auctionStartamount" disabled="disabled" maxlength="100" class="form-control" value="${dto.auctionStartamount}">						
+							</c:when>
+							<c:otherwise>
 							<input type="text" name="auctionStartamount" maxlength="100" class="form-control" value="${dto.auctionStartamount}">						
+							</c:otherwise>
+						 </c:choose>
 						</td>
 					</tr>
-					</c:if>				
 					
 					<tr> 
 						<td>경매종료일</td>

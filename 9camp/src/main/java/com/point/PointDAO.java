@@ -97,7 +97,6 @@ public class PointDAO {
 	        pstmt.close();
 	        pstmt = null;
 
-	        // 잔액 합산하여 업데이트
 	        updatedBalance = currentBalance - dto.getAmount();
 	        sql = "UPDATE member SET userpoint=? WHERE userid=?";
 	        pstmt = conn.prepareStatement(sql);
