@@ -295,6 +295,33 @@ function searchList() {
 	const f = document.searchForm;
 	f.submit();
 }
+
+function sendOk() {
+	  var form = document.getElementById("keywordForm");
+	  var selectedKeywords = [];
+	  
+	  // 선택된 체크박스 값을 가져와서 배열에 추가합니다.
+	  var checkboxes = form.getElementsByTagName("input");
+	  for (var i = 0; i < checkboxes.length; i++) {
+	    if (checkboxes[i].checked) {
+	      selectedKeywords.push(checkboxes[i].value);
+	    }
+	  }
+	  
+	  // 선택된 키워드가 없으면 알림을 표시하고 검색을 중지합니다.
+	  if (selectedKeywords.length === 0) {
+	    alert("적어도 하나의 키워드를 선택해야 합니다.");
+	    return;
+	  }
+	  
+	  // 선택된 키워드를 문자열로 변환하여 서버로 전송합니다.
+	  var selectedKeywordsString = selectedKeywords.join(",");
+	  form.action = "${pageContext.request.contextPath}/campInfo/list.do?key=" + encodeURIComponent(selectedKeywordsString);
+	  
+	  // 폼을 서버로 제출합니다.
+	  form.submit();
+	}
+
 </script>
 
 
@@ -362,126 +389,126 @@ function searchList() {
 	<!-- 키워드 검색 -->
 	<div id="keyword-cont">
 		<h1 class="center">키워드로 검색</h1>
-		<form id="keyword-form" method="post">
+		<form name="keywordForm" action="${pageContext.request.contextPath}/campInfo/list.do" method="post">
 			<ul class="keyword-ul">
 				<li>
-					<input type="checkbox" name="key" id="check1" value="101" >
+					<input type="checkbox" name="key" id="check1" value="#반려견동반" >
 	        		<label for="check1">#반려견동반</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check2" value="102" >
+					<input type="checkbox" name="key" id="check2" value="#바다가 보이는" >
 	        		<label for="check2">#바다가 보이는</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check3" value="103" >
+					<input type="checkbox" name="key" id="check3" value="#친절한" >
 	        		<label for="check3">#친절한</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check4" value="104">
+					<input type="checkbox" name="key" id="check4" value="#생태교육">
 	        		<label for="check4">#생태교육</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check5" value="105">
+					<input type="checkbox" name="key" id="check5" value=">#힐링">
 	        		<label for="check5">#힐링</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check6" value="106">
+					<input type="checkbox" name="key" id="check6" value="#문화유적">
 	        		<label for="check6">#문화유적</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check7" value="107">
+					<input type="checkbox" name="key" id="check7" value="#커플">
 	        		<label for="check7">#커플</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check8" value="108">
+					<input type="checkbox" name="key" id="check8" value="#봄">
 	        		<label for="check8">#봄</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check9" value="109">
+					<input type="checkbox" name="key" id="check9" value="#그늘이 많은">
 	        		<label for="check9">#그늘이 많은</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check10" value="110">
+					<input type="checkbox" name="key" id="check10" value="#별 보기 좋은">
 	        		<label for="check10">#별 보기 좋은</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check11" value="111">
+					<input type="checkbox" name="key" id="check11" value="#익스트림">
 	        		<label for="check11">#익스트림</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check12" value="112">
+					<input type="checkbox" name="key" id="check12" value="#재미있는">
 	        		<label for="check12">#재미있는</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check13" value="113">
+					<input type="checkbox" name="key" id="check13" value="#여유있는">
 	        		<label for="check13">#여유있는</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check14" value="114">
+					<input type="checkbox" name="key" id="check14" value="#물놀이 하기 좋은">
 	        		<label for="check14">#물놀이 하기 좋은</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check15" value="115">
+					<input type="checkbox" name="key" id="check15" value="#둘레길">
 	        		<label for="check15">#둘레길</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check16" value="116">
+					<input type="checkbox" name="key" id="check16" value="#물맑은">
 	        		<label for="check16">#물맑은</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check17" value="117">
+					<input type="checkbox" name="key" id="check17" value="#가족">
 	        		<label for="check17">#가족</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check18" value="118">
+					<input type="checkbox" name="key" id="check18" value="#캠핑카">
 	        		<label for="check18">#캠핑카</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check19" value="119">
+					<input type="checkbox" name="key" id="check19" value="#깨끗한">
 	        		<label for="check19">#깨끗한</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check20" value="120">
+					<input type="checkbox" name="key" id="check20" value="#가을">
 	        		<label for="check20">#가을</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check21" value="121">
+					<input type="checkbox" name="key" id="check21" value="#자전거 타기 좋은">
 	        		<label for="check21">#자전거 타기 좋은</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check22" value="122">
+					<input type="checkbox" name="key" id="check22" value="#수영장 있는">
 	        		<label for="check22">#수영장 있는</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check23" value="123">
+					<input type="checkbox" name="key" id="check23" value="#차대기 편한">
 	        		<label for="check23">#차대기 편한</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check24" value="124">
+					<input type="checkbox" name="key" id="check24" value="#여름">
 	        		<label for="check24">#여름</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check25" value="125">
+					<input type="checkbox" name="key" id="check25" value="#축제">
 	        		<label for="check25">#축제</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check26" value="126">
+					<input type="checkbox" name="key" id="check26" value="#계곡옆">
 	        		<label for="check26">#계곡옆</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check27" value="127">
+					<input type="checkbox" name="key" id="check27" value="#아이들 놀기 좋은">
 	        		<label for="check27">#아이들 놀기 좋은</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check28" value="128">
+					<input type="checkbox" name="key" id="check28" value="#사이트 간격이 넓은">
 	        		<label for="check28">#사이트 간격이 넓은</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check29" value="129">
+					<input type="checkbox" name="key" id="check29" value="#온수 잘 나오는">
 	        		<label for="check29">#온수 잘 나오는</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check30" value="130">
+					<input type="checkbox" name="key" id="check30" value="#겨울">
 	        		<label for="check30">#겨울</label>
 				</li>
 			</ul>

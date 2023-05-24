@@ -569,7 +569,7 @@ $(function(){
 	      selectedKeywords.push($(this).val());
 	    });
 	 
-	    $("#selected-keywords").val(selectedKeywords.join("#"));
+	    $("#selected-keywords").val('#' + selectedKeywords.join("#"));
 	  
 	    modalClose();
 	 });
