@@ -90,9 +90,8 @@ public class CampInfoServlet extends MyUploadServlet {
 			condition = "all";
 			keyword = "";
 		}
-
-		
-
+		//키워드명 배열로 넘어감
+		//String []key = req.getParameterValues("key")
 		
 		// GET 방식인 경우 디코딩
 		if(req.getMethod().equalsIgnoreCase("GET")) {
@@ -119,7 +118,11 @@ public class CampInfoServlet extends MyUploadServlet {
 		if(offset < 0) offset = 0;
 		
 		List<CampInfoDTO> list = null;
-
+		if(keyword.length() == 0) {
+			list = dao.listCampInfo(offset, size);
+		} else {
+			list = dao.listCampInfo(offset, size, condition, keyword);
+		}
 			
 		String query = "";
 		if(keyword.length() != 0) {
@@ -161,7 +164,7 @@ public class CampInfoServlet extends MyUploadServlet {
 		req.setAttribute("condition", condition);
 		req.setAttribute("keyword", keyword);
 		req.setAttribute("listimage", listimage);
-
+	
 		
 		} catch (Exception e) {
 			e.printStackTrace();

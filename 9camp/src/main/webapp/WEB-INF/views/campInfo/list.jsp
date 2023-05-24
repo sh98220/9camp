@@ -501,7 +501,6 @@ function searchList() {
 					</td>
 					<td align="center">
 						<form name="searchForm" action="${pageContext.request.contextPath}/campInfo/list.do" method="post">
-						<input type="hidden" name="key" value="${key}">
 							<select name="condition" class="form-select">
 								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
 								<option value="camInfoRegDate"  ${condition=="camInfoRegDate"?"selected='selected'":"" }>등록일</option>
