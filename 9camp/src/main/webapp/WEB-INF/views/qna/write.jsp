@@ -284,14 +284,14 @@ function sendOk() {
     str = f.qnaSubject.value.trim();
     if(!str) {
         alert("제목을 입력하세요. ");
-        f.rentSubject.focus();
+        f.qnaSubject.focus();
         return;
     }
 
     str = f.qnaContent.value.trim();
     if(!str) {
         alert("내용을 입력하세요. ");
-        f.rentContent.focus();
+        f.qnaContent.focus();
         return;
     }
     
@@ -301,23 +301,13 @@ function sendOk() {
     f.submit();
 }
 
-<c:if test="${mode == 'update'}">
-	function deletePhoto(qnaPhotoNum) {
-		if(confirm('사진을 삭제하시겠습니까 ?')){
-			let query = "qnaNum=${dto.qnaNum}&qnaPhotoNum="+qnaPhotoNum+"&page=${page}";
-			let url = "${pageContext.request.contextPath}/qna/deletePhoto.do";
-			location.href = url + "?" + query;
-		}
-	}
-</c:if>
-
 <c:if test="${mode=='update'}">
-function deleteFile(fileNum) {
+function deleteFile(qnaFileNum) {
 	if(! confirm("파일을 삭제 하시겠습니까 ?")) {
 		return;
 	}
 	
-	let query = "qnaNum=${dto.qnaNum}&qnaFileNum=" + qnaFileNum + "&page=${page}";
+	let query = "qnaNum=${dto.qnaNum}&qnaFileNum="+qnaFileNum+"&page=${page}";
 	let url = "${pageContext.request.contextPath}/qna/deleteFile.do"
 		location.href = url + "?" + query;
 }
@@ -360,42 +350,19 @@ function deleteFile(fileNum) {
 					</tr>
 					
 					<tr>
-						<td>사진첨부</td>
-						<td> 
-							<input type="file" name="selectPhoto" accept="image/*" multiple="multiple" class="form-control">
-						</td>
-					</tr>
-					
-					
-					
-					<c:if test="${mode == 'update'}">
-						<tr>
-							<td>등록이미지</td>
-							<td>
-								<div class="img-box">
-									<c:forEach var="photovo" items="${listPhoto}">
-										<img src="${pageContext.request.contextPath}/uploads/qna/${vo.rentPhotoName}"
-											onclick="deletePhoto('${vo.rentPhotoNum}');">
-									</c:forEach>
-								</div>
-							</td>
-						</tr>
-					</c:if>
-					
-					<tr>
 						<td>파일첨부</td>
 						<td> 
 							<input type="file" name="selectFile" multiple="multiple" class="form-control">
 					</td>
 					
 					<c:if test="${mode=='update'}">
-							<c:forEach var="filevo" items="${listFile}">
+							<c:forEach var="vo" items="${listFile}">
 								<tr>
 									<td class="table-light col-sm-2" scope="row">첨부된파일</td>
 									<td> 
 										<p class="form-control-plaintext">
-											<a href="javascript:deleteFile('${vo.qnaFileNum}');"><i class="bi bi-trash"></i></a>
-											${vo.qnaoriginalFileName}
+											<a style="display: inline-block;"  onclick="deleteFile('${vo.qnaFileNum}');"><i class="fa-sharp fa-solid fa-trash"></i></a>
+											${vo.qnaoriginalFilename}
 										</p>
 									</td>
 								</tr>
@@ -406,17 +373,21 @@ function deleteFile(fileNum) {
 				<table class="table">
 					<tr> 
 						<td align="center">
-							<button type="button" class="btn" onclick="sendOk();">${mode =="update"?"수정완료":"등록완료"}</button>
+							<button type="button" class="btn" onclick="sendOk();">${mode=='update'?'수정완료':(mode=='reply'? '답변완료':'등록하기')}</button>
 							<button type="reset" class="btn">다시입력</button>
-							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/qna/list.do';">${mode=="update"?"수정취소":"등록취소"}</button>
+							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/qna/list.do';">${mode=='update'?'수정취소':(mode=='reply'? '답변취소':'등록취소')}</button>
 							<c:if test="${mode=='update'}">
-								<input type="hidden" name="qnaPhotoNum" value="${dto.qnaPhotoNum}">
-								<input type="hidden" name="qnaPhotoName" value="${dto.qnaPhotoName}">
-								<input type="hidden" name="qnaFileNum" value="${dto.qnaFileNum}">
-								<input type="hidden" name="qnaFileName" value="${dto.qnaFileName}">
 								<input type="hidden" name="page" value="${page}">
+								<input type="hidden" name="qnaFileNum" value="${dto.qnaFileNum}">
 								<input type="hidden" name="qnaNum" value="${dto.qnaNum}">
-							</c:if>							
+							</c:if>			
+							<c:if test="${mode=='reply'}">
+									<input type="hidden" name="groupNum" value="${dto.groupNum}">
+									<input type="hidden" name="orderNum" value="${dto.orderNum}">
+									<input type="hidden" name="depth" value="${dto.depth}">
+									<input type="hidden" name="parent" value="${dto.qnaNum}">
+									<input type="hidden" name="page" value="${page}">
+							</c:if>
 						</td>
 					</tr>
 				</table>

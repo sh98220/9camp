@@ -246,7 +246,7 @@
 	}
 }
 
-.btn {
+.btn1 {
   border: none;
   display: block;
   text-align: center;
@@ -265,12 +265,12 @@
 
 }
 
-.btn span {
+.btn1 span {
   position: relative; 
   z-index: 1;
 }
 
-.btn:after {
+.btn1:after {
   content: "";
   position: absolute;
   left: 0;
@@ -284,7 +284,7 @@
   transform: translateX(-98%) translateY(-25%) rotate(45deg);
 }
 
-.btn:hover:after {
+.btn1:hover:after {
   -webkit-transform: translateX(-9%) translateY(-25%) rotate(45deg);
   transform: translateX(-9%) translateY(-25%) rotate(45deg);
 }
@@ -345,9 +345,9 @@ function searchList() {
 								
 						
 								
-								<input type="text" name="keyword" value="${keyword}" class="form-control" style="width: 83%; height: 35px; border-radius: 3px; padding-left: 10px;">
+								<input type="text" name="keyword" value="${keyword}" class="form-control" style="width: 83%; height: 35px; border-radius: 3px; padding-left: 10px;" placeholder="내용을 입력해주세요.">
 								<input type="hidden" name="category" value="${category}">
-								<button type="button" class="btn" onclick="searchList();"><span>SEARCH</span></button>
+								<button type="button" class="btn1" onclick="searchList();"><span>SEARCH</span></button>
 							<!--검색박스-->
 						
 						<!--//검색박스-->

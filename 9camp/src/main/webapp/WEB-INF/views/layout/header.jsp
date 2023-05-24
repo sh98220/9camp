@@ -131,7 +131,7 @@ function countNoReadMsg() {
 							<a href="${pageContext.request.contextPath}/campInfo/list.do">캠핑장 검색</a>
 						</li>
 						<li>
-							<a href="${pageContext.request.contextPath}/mapsearch/map.html">지도 검색</a>
+							<a href="${pageContext.request.contextPath}/mapCamp/mapSearch.do">지도 검색</a>
 						</li>
 					</ul>
 				</li>

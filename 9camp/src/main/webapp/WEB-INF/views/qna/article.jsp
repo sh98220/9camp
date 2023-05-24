@@ -242,8 +242,8 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 
 <script type="text/javascript">
 
-<c:if test="${sessionScope.member.userId==dto.hostId || sessionScope.member.userId=='admin'}">
-	function deleterentBoard() {
+<c:if test="${sessionScope.member.userId==dto.userId || sessionScope.member.userId=='admin'}">
+	function deleteqnaBoard() {
 	    if(confirm("게시글을 삭제 하시 겠습니까 ? ")) {
 		    let query = "qnaNum=${dto.qnaNum}&page=${page}";
 		    let url = "${pageContext.request.contextPath}/qna/delete.do?" + query;
@@ -252,18 +252,6 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	}
 </c:if>
 
-function imageViewer(img) {
-	const viewer = $(".photo-layout");
-	let s="<img src='"+img+"'>";
-	viewer.html(s);
-	
-	$(".dialog-photo").dialog({
-		title:"이미지",
-		width: 600,
-		height: 530,
-		modal: true
-	});
-}
 
 function login(){
 	location.href = "${pageContext.request.contextPath}/member/login.do";
@@ -335,43 +323,26 @@ function ajaxFun(url, method, query, dataType, fn) {
 					</tr>
 					
 					<c:forEach var="vo" items="${listFile}">
-		
-					<tr>
-						<td colspan="2" height="110">
-							파&nbsp;&nbsp;일 :
-							<div class="img-box">
-								<c:forEach var="vo" items="${listFile}">
-									<img src="${pageContext.request.contextPath}/uploads/rentPhoto/${vo.rentPhotoName}"
-										onclick="imageViewer('${pageContext.request.contextPath}/uploads/rentPhoto/${vo.rentPhotoName}');">
-								</c:forEach>
-							</div>
-						</td>
-					</tr>
-					
-					</c:forEach>
-		
-					<c:forEach var="vo" items="${listFile}">
 							<tr>
 								<td colspan="2">
 									파&nbsp;&nbsp;일 :
-									<a href="${pageContext.request.contextPath}/notice/download.do?fileNum=${vo.fileNum}">${vo.originalFilename}</a>
+									<a href="${pageContext.request.contextPath}/qna/download.do?qnaFileNum=${vo.qnaFileNum}">${vo.qnaoriginalFilename}</a>
 								</td>
 							</tr>
 						</c:forEach>
-		
 					<tr>
 						<td colspan="2">
 							이전글 :
-							<c:if test="${not empty preRentDto}">
-								<a href="${pageContext.request.contextPath}/rent/article.do?${query}&rentNum=${preRentDto.rentNum}">${preRentDto.rentSubject}</a>
+							<c:if test="${not empty preQnaDto}">
+								<a href="${pageContext.request.contextPath}/qna/article.do?${query}&qnaNum=${preQnaDto.qnaNum}">${preQnaDto.qnaSubject}</a>
 							</c:if>
 						</td>
 					</tr>
 					<tr>
 						<td colspan="2">
 							다음글 :
-							<c:if test="${not empty nextRentDto}">
-								<a href="${pageContext.request.contextPath}/rent/article.do?${query}&rentNum=${nextRentDto.rentNum}">${nextRentDto.rentSubject}</a>
+							<c:if test="${not empty nextQnaDto}">
+								<a href="${pageContext.request.contextPath}/qna/article.do?${query}&qnaNum=${nextQnaDto.qnaNum}">${nextQnaDto.qnaSubject}</a>
 							</c:if>
 						</td>
 					</tr>
@@ -381,9 +352,19 @@ function ajaxFun(url, method, query, dataType, fn) {
 			<table class="table">
 				<tr>
 					<td width="50%">
+					    <c:choose>
+							<c:when test="${sessionScope.member.userId=='admin'}">
+								<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/qna/reply.do?page=${page}&qnaNum=${dto.qnaNum}';">답글</button>
+							</c:when>
+							<c:otherwise>
+								<button type="button" class="btn" disabled="disabled">답글</button>
+							</c:otherwise>
+						</c:choose>
+				    	
+					
 						<c:choose>
-							<c:when test="${sessionScope.member.userId==dto.hostId}">
-								<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/rent/update.do?page=${page}&rentNum=${dto.rentNum}';">수정</button>
+							<c:when test="${sessionScope.member.userId==dto.userId}">
+								<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/qna/update.do?page=${page}&qnaNum=${dto.qnaNum}';">수정</button>
 							</c:when>
 							<c:otherwise>
 								<button type="button" class="btn" disabled="disabled">수정</button>
@@ -391,8 +372,8 @@ function ajaxFun(url, method, query, dataType, fn) {
 						</c:choose>
 				    	
 						<c:choose>
-				    		<c:when test="${sessionScope.member.userId==dto.hostId || sessionScope.member.userId=='admin'}">
-				    			<button type="button" class="btn" onclick="deleterentBoard();">삭제</button>
+				    		<c:when test="${sessionScope.member.userId==dto.userId || sessionScope.member.userId=='admin'}">
+				    			<button type="button" class="btn" onclick="deleteqnaBoard();">삭제</button>
 				    		</c:when>
 				    		<c:otherwise>
 				    			<button type="button" class="btn" disabled="disabled">삭제</button>
@@ -400,7 +381,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 				    	</c:choose>
 					</td>
 					<td align="right">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/rent/list.do?${query}';">리스트</button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/qna/list.do?${query}';">리스트</button>
 					</td>
 				</tr>
 			</table>
