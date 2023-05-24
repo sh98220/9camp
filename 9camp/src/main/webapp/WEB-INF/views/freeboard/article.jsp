@@ -72,7 +72,7 @@ input[type=checkbox], input[type=radio] { vertical-align: middle; }
 .table th, .table td { padding-top: 10px; padding-bottom: 10px; }
 
 .table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
-.table-border tbody > tr { border-bottom: 1px solid #ff5522; }
+.table-border tbody > tr { border-bottom: 1px solid #666; }
 .td-border td { border: 1px solid #ced4da; }
 
 tr.hover:hover { cursor: pointer; background: #f5fffa; }
@@ -383,7 +383,7 @@ $(function(){
 						</td>
 					</tr>
 					
-					<tr>
+					<tr style="border-bottom : 0px solid black;">
 						<td colspan="2" valign="top" height="200">
 							${dto.camChatContent}
 						</td>

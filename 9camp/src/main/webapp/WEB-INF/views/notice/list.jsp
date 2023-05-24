@@ -68,7 +68,7 @@ input[type=checkbox], input[type=radio] { vertical-align: middle; }
 .table th, .table td { padding-top: 10px; padding-bottom: 10px; }
 
 .table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
-.table-border tbody > tr { border-bottom: 1px solid #ff5522; }
+.table-border tbody > tr { border-bottom: 1px solid #666; }
 .td-border td { border: 1px solid #ced4da; }
 
 tr.hover:hover { cursor: pointer; background: #f5fffa; }
@@ -250,7 +250,10 @@ function searchList() {
 						</form>
 					</td>
 					<td align="right" width="100">
+						<c:if test="${memberInfo eq 'admin'}">
+						
 						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/notice/write.do';">글올리기</button>
+						</c:if>
 					</td>
 				</tr>
 			</table>

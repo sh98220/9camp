@@ -476,4 +476,240 @@ public class NoticeDAO {
 		}
 	}
 	
+	public NoticeDTO readNoticeFile(int noticePhotoNum) {
+		NoticeDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+
+		try {
+			sql = "SELECT noticePhotoNum, noticeNum, noticePhotoName FROM noticePhoto WHERE noticePhotoNum = ?";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, noticePhotoNum);
+			
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				dto = new NoticeDTO();
+
+				dto.setNoticePhotoNum(rs.getInt("noticePhotoNum"));
+				dto.setNoticeNum(rs.getInt("noticeNum"));
+				dto.setNoticePhotoName(rs.getString("noticePhotoName"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		return dto;
+}
+	
+	public NoticeDTO preReadNotice(long noticeNum, String condition, String keyword) {
+		NoticeDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StringBuilder sb = new StringBuilder();
+
+		try {
+			if (keyword != null && keyword.length() != 0) {
+				sb.append(" SELECT noticeNum, noticeSubject ");
+				sb.append(" FROM notice n ");
+				sb.append(" JOIN member m ON n.userId = m.userId ");
+				sb.append(" WHERE noticeNum > ? ");
+				if (condition.equals("all")) {
+					sb.append("   AND ( INSTR(noticeSubject, ?) >= 1 OR INSTR(noticeContent, ?) >= 1 ) ");
+				} else if (condition.equals("noticeRegDate")) {
+					keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
+					sb.append("   AND TO_CHAR(noticeRegDate, 'YYYYMMDD') = ? ");
+				} else {
+					sb.append("   AND INSTR(" + condition + ", ?) >= 1 ");
+				}
+				sb.append(" ORDER BY noticeNum ASC ");
+				sb.append(" FETCH FIRST 1 ROWS ONLY ");
+
+				pstmt = conn.prepareStatement(sb.toString());
+				
+				pstmt.setLong(1, noticeNum);
+				pstmt.setString(2, keyword);
+				if (condition.equals("all")) {
+					pstmt.setString(3, keyword);
+				}
+			} else {
+				sb.append(" SELECT noticeNum, noticeSubject FROM notice ");
+				sb.append(" WHERE noticeNum > ? ");
+				sb.append(" ORDER BY noticeNum ASC ");
+				sb.append(" FETCH FIRST 1 ROWS ONLY ");
+
+				pstmt = conn.prepareStatement(sb.toString());
+				
+				pstmt.setLong(1, noticeNum);
+			}
+
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				dto = new NoticeDTO();
+				
+				dto.setNoticeNum(rs.getInt("noticeNum"));
+				dto.setNoticeSubject(rs.getString("noticeSubject"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		return dto;
+	}
+	
+	public NoticeDTO nextReadNotice(long noticeNum, String condition, String keyword) {
+		NoticeDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StringBuilder sb = new StringBuilder();
+
+		try {
+			if (keyword != null && keyword.length() != 0) {
+				sb.append(" SELECT noticeNum, noticeSubject ");
+				sb.append(" FROM notice n ");
+				sb.append(" JOIN member m ON n.userId = m.userId ");
+				sb.append(" WHERE noticeNum < ? ");
+				if (condition.equals("all")) {
+					sb.append("   AND ( INSTR(noticeSubject, ?) >= 1 OR INSTR(noticeContent, ?) >= 1 ) ");
+				} else if (condition.equals("noticeRegDate")) {
+					keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
+					sb.append("   AND TO_CHAR(noticeRegDate, 'YYYYMMDD') = ? ");
+				} else {
+					sb.append("   AND INSTR(" + condition + ", ?) >= 1 ");
+				}
+				sb.append(" ORDER BY noticeNum DESC ");
+				sb.append(" FETCH FIRST 1 ROWS ONLY ");
+
+				pstmt = conn.prepareStatement(sb.toString());
+				
+				pstmt.setLong(1, noticeNum);
+				pstmt.setString(2, keyword);
+				if (condition.equals("all")) {
+					pstmt.setString(3, keyword);
+				}
+			} else {
+				sb.append(" SELECT noticeNum, noticeSubject FROM notice ");
+				sb.append(" WHERE noticeNum < ? ");
+				sb.append(" ORDER BY noticeNum DESC ");
+				sb.append(" FETCH FIRST 1 ROWS ONLY ");
+
+				pstmt = conn.prepareStatement(sb.toString());
+				
+				pstmt.setLong(1, noticeNum);
+			}
+
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				dto = new NoticeDTO();
+				
+				dto.setNoticeNum(rs.getInt("noticeNum"));
+				dto.setNoticeSubject(rs.getString("noticeSubject"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		return dto;
+	}
+	
+	public void deletePhotoFile(String mode, long num) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+
+		try {
+			if (mode.equals("all")) {
+				sql = "DELETE FROM sphotoFile WHERE num = ?";
+			} else {
+				sql = "DELETE FROM sphotoFile WHERE fileNum = ?";
+			}
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+
+			pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e2) {
+				}
+			}
+		}
+	}
+	
+	public void updateHitCount(long noticeNum) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+
+		try {
+			sql = "UPDATE notice SET noticeHitCount=noticeHitCount+1 WHERE noticeNum=?";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, noticeNum);
+			
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e2) {
+				}
+			}
+		}
+	}
+	
 }

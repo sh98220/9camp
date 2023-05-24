@@ -210,7 +210,7 @@ function sendOk() {
 }
 
 <c:if test="${mode == 'update'}">
-function deleteFile(camRevphotonum) {
+function deleteFile(noticePhotoNum) {
 	let cnt = $(".img-box").find("img").length;
 	if(cnt == 1){
 		alert('이미지가 한개면 삭제할 수 없습니다.')
