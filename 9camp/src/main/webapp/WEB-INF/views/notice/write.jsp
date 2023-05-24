@@ -176,6 +176,22 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	    max-width: 750px;
 	}
 }
+
+.img-box {
+	max-width: 600px;
+	padding: 5px;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	overflow-x: auto;
+}
+.img-box img {
+	width: 37px; height: 37px;
+	margin-right: 5px;
+	flex: 0 0 auto;
+	cursor: pointer;
+}
 	
 </style>
 
@@ -199,11 +215,7 @@ function sendOk() {
     }
     
     let mode = "${mode}";
-    if( (mode === "write") && (!f.selectFile.value) ) {
-        alert("이미지 파일을 추가 하세요. ");
-        f.selectFile.focus();
-        return;
-    }
+    
 
     f.action = "${pageContext.request.contextPath}/notice/${mode}_ok.do";
     f.submit();
@@ -212,10 +224,6 @@ function sendOk() {
 <c:if test="${mode == 'update'}">
 function deleteFile(noticePhotoNum) {
 	let cnt = $(".img-box").find("img").length;
-	if(cnt == 1){
-		alert('이미지가 한개면 삭제할 수 없습니다.')
-		return;
-	}
 	
 	if(confirm('이미지를 삭제하시겠습니까 ?')){
 		let query = "noticeNum=${dto.noticeNum}&noticePhotoNum=" + noticePhotoNum + "&page=${page}";

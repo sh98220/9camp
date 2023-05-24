@@ -96,10 +96,22 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 }
 
 .img-box{
-	border:1px solid black;
+	max-width: 700px;
+	min-height: 120px;
 	padding: 10px;
+	box-sizing: border-box;
+	border:1px solid #ccc;
 	display:flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	overflow-x: auto;
 	justify-content: flex-start;
+}
+.img-box img {
+	width: 200px; height: 200px;
+	margin-right: 5px;
+	flex: 0 0 auto;
+	cursor: pointer;
 }
 
 .btnConfirm {
@@ -308,32 +320,48 @@ function ajaxFun(url, method, query, dataType, fn) {
 						</td>
 					</tr>
 					
-					<tr>
-						<td colspan="2" height="200">
-							사&nbsp;&nbsp;진 :
-							<div class="img-box">
-								<c:forEach var="vo" items="${listFile}">
-									<img class = "noticeImage" src="${pageContext.request.contextPath}/uploads/notice/${vo.noticePhotoName}"
-										onclick="imageViewer('${pageContext.request.contextPath}/uploads/notice/${vo.noticePhotoName}');">
-								</c:forEach>
-							</div>
-						</td>
-					</tr>
+					<c:choose>
+						<c:when test="${! empty listFile}">	
+							<tr>
+								<td colspan="2" height="200">
+									사&nbsp;&nbsp;진 :
+									<div class="img-box">
+										<c:forEach var="vo" items="${listFile}">
+											<img class = "noticeImage" src="${pageContext.request.contextPath}/uploads/notice/${vo.noticePhotoName}"
+												onclick="imageViewer('${pageContext.request.contextPath}/uploads/notice/${vo.noticePhotoName}');">
+										</c:forEach>
+									</div>
+								</td>
+							</tr>
+						</c:when>	
+						<c:otherwise>
+						</c:otherwise>
+					</c:choose>
 					
 					<tr>
-						<td colspan="2">
-							이전글 :
-							<c:if test="${not empty preReadDto}"> 
-								<a href="${pageContext.request.contextPath}/notice/article.do?${query}&num=${preReadDto.noticeNum}">${preReadDto.noticeSubject}</a>
-							</c:if>
-						</td>
-					</tr>
+						    <td colspan="2">
+						        이전글 :
+						        <c:choose>
+						            <c:when test="${empty preReadDto}">
+						                <span style="font-weight: bold;">제일 처음 게시글입니다.</span>
+						            </c:when>
+						            <c:otherwise>
+						                <a class="nav-link" href="${pageContext.request.contextPath}/notice/article.do?${query}&num=${preReadDto.noticeNum}">${preReadDto.noticeSubject}</a>
+						            </c:otherwise>
+						        </c:choose>
+						    </td>
+						</tr>
 					<tr>
 						<td colspan="2">
 							다음글 :
-							<c:if test="${not empty nextReadDto}">
-								<a href="${pageContext.request.contextPath}/notice/article.do?${query}&num=${nextReadDto.noticeNum}">${nextReadDto.noticeSubject}</a>
-							</c:if>
+							<c:choose>
+		           				 <c:when test="${empty nextReadDto}">
+		              					 <span style="font-weight: bold;">제일 마지막 게시글입니다.</span>
+         					     </c:when>
+					             <c:otherwise>
+					                 <a class="nav-link"  href="${pageContext.request.contextPath}/notice/article.do?${query}&num=${nextReadDto.noticeNum}">${nextReadDto.noticeSubject}</a>
+					             </c:otherwise>
+					         </c:choose>
 						</td>
 					</tr>
 				</tbody>
@@ -381,29 +409,4 @@ function ajaxFun(url, method, query, dataType, fn) {
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

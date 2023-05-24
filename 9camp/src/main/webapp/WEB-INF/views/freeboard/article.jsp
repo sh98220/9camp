@@ -329,7 +329,7 @@ $(function(){
 //댓글 삭제
 $(function(){
 	$("#listReply").on("click", ".deleteReply", function(){
-		if(! confirm("게시글을 삭제하시겠습니까 ? ")){
+		if(! confirm("댓글을 삭제하시겠습니까 ? ")){
 			return false;
 		}
 		
@@ -396,19 +396,29 @@ $(function(){
 					</tr>
 		
 					<tr>
-						<td colspan="2">
-							이전글 :
-							<c:if test="${not empty preReadDto}"> 
-								<a href="${pageContext.request.contextPath}/freeboard/article.do?${query}&num=${preReadDto.camChatNum}">${preReadDto.camChatSubject}</a>
-							</c:if>
-						</td>
+					    <td colspan="2">
+					        이전글 :
+					        <c:choose>
+					            <c:when test="${empty preReadDto}">
+					                <span style="font-weight: bold;">제일 처음 게시글입니다.</span>
+					            </c:when>
+					            <c:otherwise>
+					                <a class="nav-link" href="${pageContext.request.contextPath}/freeboard/article.do?${query}&num=${preReadDto.camChatNum}">${preReadDto.camChatSubject}</a>
+					            </c:otherwise>
+					        </c:choose>
+					    </td>
 					</tr>
 					<tr>
 						<td colspan="2">
 							다음글 :
-							<c:if test="${not empty nextReadDto}">
-								<a href="${pageContext.request.contextPath}/freeboard/article.do?${query}&num=${nextReadDto.camChatNum}">${nextReadDto.camChatSubject}</a>
-							</c:if>
+							<c:choose>
+		           				 <c:when test="${empty nextReadDto}">
+		              					 <span style="font-weight: bold;">제일 마지막 게시글입니다.</span>
+         					     </c:when>
+					             <c:otherwise>
+					                 <a class="nav-link"  href="${pageContext.request.contextPath}/freeboard/article.do?${query}&num=${nextReadDto.camChatNum}">${nextReadDto.camChatSubject}</a>
+					             </c:otherwise>
+					         </c:choose>
 						</td>
 					</tr>
 				</tbody>
