@@ -90,19 +90,7 @@ public class CampInfoServlet extends MyUploadServlet {
 			condition = "all";
 			keyword = "";
 		}
-		
-		String[] key = req.getParameterValues("key");
-		
-		
-		
-		if(req.getMethod().equalsIgnoreCase("GET")) {
-			for(int i = 0; i < key.length; i++) {
-				key[i] = URLDecoder.decode(key[i], "utf-8");
-				System.out.println(key[i]);
-			}
-		}
-		
-		
+
 		
 
 		
@@ -131,13 +119,7 @@ public class CampInfoServlet extends MyUploadServlet {
 		if(offset < 0) offset = 0;
 		
 		List<CampInfoDTO> list = null;
-		if(keyword.length() == 0 && key.length == 0) {
-			list = dao.listCampInfo(offset, size);
-		} else if (!(key.length == 0)) {
-			list = dao.listCampInfo(offset, size, condition, keyword);
-		} else {
-			list = dao.listCampInfo(offset, size, key);
-		}
+
 			
 		String query = "";
 		if(keyword.length() != 0) {
@@ -179,7 +161,7 @@ public class CampInfoServlet extends MyUploadServlet {
 		req.setAttribute("condition", condition);
 		req.setAttribute("keyword", keyword);
 		req.setAttribute("listimage", listimage);
-		req.setAttribute("key", key);
+
 		
 		} catch (Exception e) {
 			e.printStackTrace();
