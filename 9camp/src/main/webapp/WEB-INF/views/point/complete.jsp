@@ -201,9 +201,9 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     <div class="box">
         <span class="complete">충전이 완료되었습니다!</span><br>
         <div class="box-content">
-    충전 전 잔액: ${ prebalance}원&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          충전금액: ${  amount }원  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    충전 후 잔액: ${ balance}원  
+    충전 전 잔액: ${ prebalance}point&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          충전금액: ${  amount }point  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    충전 후 잔액: ${ balance}point  
         
         </div>
     </div>

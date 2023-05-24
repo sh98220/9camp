@@ -194,49 +194,23 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 }
 
 </style>
-<script src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+
 <script type="text/javascript">
-var IMP = window.IMP;
-IMP.init("imp11737131");
-
-var today = new Date();
-var hours = today.getHours();
-var minutes = today.getMinutes();
-var seconds = today.getSeconds();
-var milliseconds = today.getMilliseconds();
-var makeMerchantUid = hours + minutes + seconds + milliseconds;
-
-
-function requestPay(){
-	let amount = $("input[type=radio]:checked").val();
-	IMP.request_pay({
-		pg : 'html5_inicis.INIpayTest',
-		pay_method : 'card',
-		merchant_uid: "IMP" + makeMerchantUid,
-		name : '포인트',
-		amount : amount,
-		buyer_email : 'ljh222666@naver.com',
-		buyer_name : '나',
-		buyer_tel : '010-2326-0739',
-		buyer_addr : '서울특별시',
-		buyer_postcode : '123-456'
-	}, function (rsp) {
-		if(rsp.success){
-			// alert("success");
-			// console.log(rsp);
-			
-			const f = document.pointForm;
-			f.amount.value = amount;
-			f.action = "${pageContext.request.contextPath}/point/complete.do";
-			f.submit();
-		} else {
-			alert("fail");
-			console.log(rsp);
-		}
-	});
+function withdraw(){
+	const f = document.withdrawForm;
+	let str;
+	
+	str = f.amount.value.trim();
+	if(str > ${userbalance}){
+		alert("보유 금액보다 많이 출금할수 없습니다");
+		return;
+	}
+	
+	
+	f.action = "${pageContext.request.contextPath}/point/withdraw.do";
+	f.submit();
 }
 </script>
-
 </head>
 <body>
 
@@ -247,11 +221,11 @@ function requestPay(){
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fa-solid fa-tent fa-bounce"></i> 충전하기 </h2>
+			<h2><i class="fa-solid fa-tent fa-bounce"></i> 출금하기 </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
-
+			<form name="withdrawForm" method="post">
 	
 				<table class="table">
 					<tr> 
@@ -264,11 +238,11 @@ function requestPay(){
                             <label for="amount-3">10000원</label>
                             <input type="radio" name="amount" value="50000" id="amount-4">
                             <label for="amount-4">50000원</label>
-							<button type="button" class="btn" onclick="requestPay();">충전하기</button>
+							<button type="button" class="btn" onclick="withdraw();">출금하기</button>
 						</td>
 					</tr>
 				</table>
-				
+				</form>
 			<form name="pointForm" method="post">
 			<input type="hidden" name="amount" value="0">
 			</form>

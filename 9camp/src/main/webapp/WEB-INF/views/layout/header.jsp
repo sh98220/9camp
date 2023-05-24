@@ -72,7 +72,7 @@ function countNoReadMsg() {
 				    <li class="point-li">
 				        <a href="${pageContext.request.contextPath}/point/list.do">
 				            <span class="point-tit">보유 포인트</span>
-				            <span class="point-val">${sessionScope.member.userPoint}</span> Point
+				            <span class="point-val">${userbalance}</span> Point
 				        </a>
 				    </li>
 				</c:if>

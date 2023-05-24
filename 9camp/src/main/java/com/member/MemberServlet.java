@@ -90,10 +90,10 @@ public class MemberServlet extends MyServlet {
 			info.setUserId(dto.getUserId());
 			info.setUserName(dto.getUserName());
 			info.setUserNickName(dto.getUserNickName());
-			info.setUserPoint(dto.getUserPoint());
+			
 
 			session.setAttribute("member", info);
-
+			session.setAttribute("userbalance", dto.getUserPoint());
 			resp.sendRedirect(cp + "/");
 			return;
 		}
@@ -110,7 +110,8 @@ public class MemberServlet extends MyServlet {
 		String cp = req.getContextPath();
 
 		session.removeAttribute("member");
-
+		session.removeAttribute("userbalance");
+		
 		session.invalidate();
 
 		resp.sendRedirect(cp + "/");

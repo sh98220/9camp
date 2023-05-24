@@ -183,7 +183,7 @@ function searchList() {
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fa-solid fa-store fa-spin-pulse"></i> 포인트 사용내역 </h2>
+			<h2><i class="fa-solid fa-store fa-spin-pulse"></i> 포인트 입출금 내역 </h2>
 	    </div>  
 	    
 	    <div class="body-main mx-auto">
@@ -200,9 +200,9 @@ function searchList() {
 				<thead>
 					<tr>
 						<th class="num">번호</th>
-						<th class="subject">제목</th>
 						<th class="name">금액</th>
 						<th class="name">입금/출금</th>
+						<th class="date">날짜</th>
 						<th class="date">잔액</th>
 					</tr>
 				</thead>
@@ -211,20 +211,17 @@ function searchList() {
 					<c:forEach var="dto" items="${list}" varStatus="status">
 						<tr>
 							<td>${dataCount - (page-1) * size - status.index}</td>
-							<td class="left">
-								<a href="${articleUrl}&num=${dto.auctionNum}">${dto.auctionSubject}</a>
-							</td>
-							<td>${dto.auctionObject}</td>
-							<td>${dto.userNickName}</td>
-							<td>${dto.auctionRegdate}</td>
-							<td>${dto.auctionEnddate}</td>
+							<td>${dto.pointAmount}</td>
+							<td>${dto.pointmode}</td>
+							<td>${dto.pointDate}</td>
+							<td>${dto.balance2}</td>
 						</tr>
 					</c:forEach>
 				</tbody>
 			</table>
 			
 			<div class="page-navigation">
-				${dataCount == 0 ? "등록된 게시물이 없습니다." : paging}
+				${dataCount == 0 ? "입출금 내역이 없습니다." : paging}
 			</div>
 			
 			<table class="table">
@@ -235,11 +232,8 @@ function searchList() {
 					<td align="center">
 						<form name="searchForm" action="${pageContext.request.contextPath}/point/list.do" method="post">
 							<select name="condition" class="form-select">
-								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
-								<option value="userNickName" ${condition=="userNickName"?"selected='selected'":"" }>작성자</option>
-								<option value="auctionRegdate"  ${condition=="auctionRegdate"?"selected='selected'":"" }>등록일</option>
-								<option value="auctionSubject"  ${condition=="auctionSubject"?"selected='selected'":"" }>제목</option>
-								<option value="auctionContent"  ${condition=="auctionContent"?"selected='selected'":"" }>내용</option>
+								<option value="pointmode"   ${condition=="pointmode"?"selected='selected'":"" }>입금, 출금</option>
+								<option value="pointdate"  ${condition=="pointdate"?"selected='selected'":"" }>날짜</option>
 							</select>
 							<input type="text" name="keyword" value="${keyword}" class="form-control">
 							<button type="button" class="btn" onclick="searchList();">검색</button>
@@ -248,6 +242,9 @@ function searchList() {
 					<td align="right" width="100">
 						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/point/write.do';">충전하기</button>
 					</td>	
+					<td align="right" width="100">
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/point/wd.do';">출금하기</button>
+					</td>
 				</tr>
 			</table>
 

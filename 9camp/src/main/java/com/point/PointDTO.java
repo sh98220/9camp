@@ -7,7 +7,14 @@ public class PointDTO {
 	private String pointDate;
 	private long pointAmount;
 	private long pointNum;
-	
+	private long balance2;
+	public long getBalance2() {
+		return balance2;
+	}
+	public void setBalance2(long balance2) {
+		this.balance2 = balance2;
+	}
+	private String pointmode;
 	
 	public String getUserId() {
 		return userId;
@@ -45,6 +52,11 @@ public class PointDTO {
 	public void setPointNum(long pointNum) {
 		this.pointNum = pointNum;
 	}
-	
+	public String getPointmode() {
+		return pointmode;
+	}
+	public void setPointmode(String pointmode) {
+		this.pointmode = pointmode;
+	}
 	
 }
