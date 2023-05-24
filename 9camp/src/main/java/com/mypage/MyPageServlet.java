@@ -127,6 +127,19 @@ public class MyPageServlet extends MyServlet {
 				list = dao.listWish(offset, size, condition, keyword, info.getUserId());
 			}
 
+			//20자 이후부터는 ...으로 표기
+			for(MyPageDTO dto : list) {
+				int contentLength = dto.getCamInfoContent().length();
+				if (contentLength > 20) {
+					contentLength = 20;
+					dto.setCamInfoContent(dto.getCamInfoContent().substring(0, contentLength) + "...");
+				}
+			}
+			
+			
+			
+			
+			
 			String query = "";
 			if (keyword.length() != 0) {
 				query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");
@@ -216,6 +229,17 @@ public class MyPageServlet extends MyServlet {
 				list = dao.listMate(offset, size, condition, keyword, info.getUserId());
 			}
 
+			//20자 이후부터는 ...으로 표기
+			for(MyPageDTO dto : list) {
+				int contentLength = dto.getCamMateContent().length();
+				if (contentLength > 20) {
+					contentLength = 20;
+					dto.setCamMateContent(dto.getCamMateContent().substring(0, contentLength) + "...");
+				}
+	
+			}
+			
+			
 			String query = "";
 			if (keyword.length() != 0) {
 				query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");
@@ -303,6 +327,21 @@ public class MyPageServlet extends MyServlet {
 				list = dao.readMateApply(offset, size, num, condition, keyword, info.getUserId());
 			}
 
+			
+			//20자 이후부터는 ...으로 표기
+			for(MyPageDTO dto : list) {
+				int contentLength = dto.getCamMateAppContent().length();
+				if (contentLength > 20) {
+					contentLength = 20;
+					dto.setCamMateAppContent(dto.getCamMateAppContent().substring(0, contentLength) + "...");
+				}
+				
+			}
+			
+			
+			
+			
+			
 			String query = "";
 			if (keyword.length() != 0) {
 				query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");
@@ -386,6 +425,18 @@ public class MyPageServlet extends MyServlet {
 				list = dao.readMateWait(offset, size, num, condition, keyword, info.getUserId());
 			}
 
+	
+			//20자 이후부터는 ...으로 표기
+			for(MyPageDTO dto : list) {
+				int contentLength = dto.getCamMateAppContent().length();
+				if (contentLength > 20) {
+					contentLength = 20;
+					dto.setCamMateAppContent(dto.getCamMateAppContent().substring(0, contentLength) + "...");
+				}
+				
+			}
+				
+			
 			String query = "";
 			if (keyword.length() != 0) {
 				query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");

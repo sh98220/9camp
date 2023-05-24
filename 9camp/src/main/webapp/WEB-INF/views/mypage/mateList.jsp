@@ -79,6 +79,7 @@ function searchList() {
 							<th class="num">번호</th>
 							<th class="mateSubject">메이트제목</th>
 							<th class="campSubject">캠핑장제목</th>
+							<th class="campContent">내용</th>
 							<th class="startDate">시작일</th>
 							<th class="endDate">종료일</th>
 							<th class="admin">관리자 닉네임</th>
@@ -97,6 +98,7 @@ function searchList() {
 							<td>${mateList.camMateNum}</td>
 							<td>${mateList.camMateSubject}</td>
 							<td>${mateList.camInfoSubject}</td>
+							<td>${mateList.camMateContent}</td>
 							<td>${mateList.camMateStartDate}</td>
 							<td>${mateList.camMateEndDate}</td>
 							<td>${mateList.userNickName}</td>

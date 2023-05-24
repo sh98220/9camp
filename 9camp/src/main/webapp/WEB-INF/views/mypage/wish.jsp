@@ -86,6 +86,7 @@ function searchList() {
 							<th class="date">작성일</th>
 							<th class="addr">주소</th>
 							<th class="thema">테마</th>
+							<th class="content">내용</th>
 							<th class="chk">
 								<input type="checkbox" name="chkAll" id="chkAll">        
 							</th>
@@ -103,7 +104,7 @@ function searchList() {
 							<td>${dto.camInfoRegDate}</td>
 							<td>${dto.camInfoAddr}</td>
 							<td>${dto.camThemaName}</td>
-	
+							<td>${dto.camInfoContent}</td>
 							<td>
 								<input type="checkbox" name="nums" value="${dto.camInfoNum}">
 							</td>

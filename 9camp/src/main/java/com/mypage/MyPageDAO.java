@@ -329,10 +329,11 @@ public class MyPageDAO {
 		String sql;
 
 		try {
-			sql = "SELECT COUNT(distinct campMate.camMateNum) " + 
-					" FROM campMate, member, campInfo, campMateApply "
-					+ " WHERE campMate.hostId = member.userId AND campInfo.camInfoNum = campMate.camInfoNum AND campMate.camMateNum = campMateApply.camMateNum "
-					+ " AND (campMate.hostId = ? OR campMateApply.userId = ? OR 'admin' = ? )";
+			sql = "SELECT COUNT(campMate.camMateNum)  FROM campMate"
+					+ " LEFT OUTER JOIN member on campMate.hostId = member.userId "
+					+ " LEFT OUTER JOIN campInfo on campInfo.camInfoNum = campMate.camInfoNum "
+					+ " LEFT OUTER JOIN campMateApply on campMateApply.camMateNum = campMate.camMateNum "
+					+ " WHERE  (campMate.hostId = ? OR campMateApply.userId = ? OR 'admin' = ?)";
 			pstmt = conn.prepareStatement(sql);
 
 			pstmt.setString(1, userId);
@@ -372,9 +373,11 @@ public class MyPageDAO {
 		String sql;
 
 		try {
-			sql = "SELECT COUNT(distinct campMate.camMateNum) " + " FROM campMate, member, campInfo, campMateApply "
-					+ " WHERE campMate.hostId = member.userId AND campInfo.camInfoNum = campMate.camInfoNum AND campMate.camMateNum = campMateApply.camMateNum "
-					+ " AND (campMate.hostId = ? OR campMateApply.userId = ? OR 'admin' = ?)";
+			sql = "SELECT COUNT(campMate.camMateNum)  FROM campMate"
+					+ " LEFT OUTER JOIN member on campMate.hostId = member.userId "
+					+ " LEFT OUTER JOIN campInfo on campInfo.camInfoNum = campMate.camInfoNum "
+					+ " LEFT OUTER JOIN campMateApply on campMateApply.camMateNum = campMate.camMateNum "
+					+ " WHERE  (campMate.hostId = ? OR campMateApply.userId = ? OR 'admin' = ?)";
 
 			if (condition.equals("all")) {
 				sql += " AND INSTR(LOWER(campMate.camMateSubject), LOWER(?)) >= 1 OR INSTR(LOWER(campMate.camMateContent), LOWER(?)) >= 1 ";
@@ -431,13 +434,14 @@ public class MyPageDAO {
 
 		try {
 			sb.append(
-					" SELECT DISTINCT campMate.camMateNum, campMate.camInfoNum, campMate.hostId, campMate.camMateSubject, member.userNickName, ");
+					" SELECT campMate.camMateNum, campMate.camInfoNum, campMate.hostId, campMate.camMateSubject, member.userNickName, campMate.camMateContent, ");
 			sb.append(
-					" campMate.camMateStartDate, campMate.camMateEndDate, campMate.camMateDues, campMate.campStyle, campInfo.camInfoSubject ");
-			sb.append(" FROM campMate, campInfo, member,campMateApply ");
-			sb.append(" WHERE campMate.camInfoNum = campInfo.camInfoNum AND ");
-			sb.append(" campMate.hostId = member.userId AND ");
-			sb.append(" (campMate.hostId = ? OR campMateApply.userId = ? OR 'admin' = ? ) ");
+					" campMate.camMateStartDate, campMate.camMateEndDate, campMate.camMateDues, campInfo.camInfoSubject, campMate.campStyle ");
+			sb.append(" FROM campMate ");
+			sb.append(" LEFT OUTER JOIN member on campMate.hostId = member.userId ");
+			sb.append(" LEFT OUTER JOIN campInfo on campInfo.camInfoNum = campMate.camInfoNum ");
+			sb.append(" LEFT OUTER JOIN campMateApply on campMateApply.camMateNum = campMate.camMateNum ");
+			sb.append(" WHERE (campMate.hostId = ? OR campMateApply.userId = ? OR 'admin' = ? ) ");
 			sb.append(" ORDER BY campMate.camMateNum DESC ");
 			sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
 
@@ -464,6 +468,7 @@ public class MyPageDAO {
 				dto.setCamInfoSubject(rs.getString("camInfoSubject"));
 				dto.setUserNickName(rs.getString("userNickName"));
 				dto.setCampStyle(rs.getString("campStyle"));
+				dto.setCamMateContent(rs.getString("camMateContent"));
 
 				list.add(dto);
 			}
@@ -496,13 +501,14 @@ public class MyPageDAO {
 
 		try {
 			sb.append(
-					" SELECT campMate.camMateNum, campMate.camInfoNum, campMate.hostId, campMate.camMateSubject, member.userNickName, ");
+					" SELECT campMate.camMateNum, campMate.camInfoNum, campMate.hostId, campMate.camMateSubject, member.userNickName, campMate.camMateContent, ");
 			sb.append(
-					" campMate.camMateStartDate, campMate.camMateEndDate, campMate.camMateDues, campInfo.camInfoSubject ");
-			sb.append(" FROM campMate, campInfo, member,campMateApply ");
-			sb.append(" WHERE campMate.camInfoNum = campInfo.camInfoNum AND ");
-			sb.append(" campMate.hostId = member.userId AND ");
-			sb.append(" (campMate.hostId = ? OR campMateApply.userId = ? OR 'admin' = ? ) AND ");
+					" campMate.camMateStartDate, campMate.camMateEndDate, campMate.camMateDues, campInfo.camInfoSubject, campMate.campStyle  ");
+			sb.append(" FROM campMate ");
+			sb.append(" LEFT OUTER JOIN member on campMate.hostId = member.userId ");
+			sb.append(" LEFT OUTER JOIN campInfo on campInfo.camInfoNum = campMate.camInfoNum ");
+			sb.append(" LEFT OUTER JOIN campMateApply on campMateApply.camMateNum = campMate.camMateNum ");
+			sb.append(" WHERE (campMate.hostId = ? OR campMateApply.userId = ? OR 'admin' = ? ) AND ");
 
 			if (condition.equals("all")) {
 				sb.append(" INSTR(LOWER(campMate.camMateSubject), LOWER(?)) >= 1 OR INSTR(LOWER(campMate.camMateContent), LOWER(?)) >= 1 ");
@@ -550,6 +556,8 @@ public class MyPageDAO {
 				dto.setCamMateDues(rs.getInt("camMateDues"));
 				dto.setCamInfoSubject(rs.getString("camInfoSubject"));
 				dto.setUserNickName(rs.getString("userNickName"));
+				dto.setCampStyle(rs.getString("campStyle"));
+				dto.setCamMateContent(rs.getString("camMateContent"));
 
 				list.add(dto);
 			}
@@ -579,7 +587,7 @@ public class MyPageDAO {
 		String sql;
 
 		try {
-			sql = "DELETE FROM campMate WHERE hostId = ? AND camInfoNum IN (";
+			sql = "DELETE FROM campMate WHERE (hostId = ? OR 'admin' = ?) AND camInfoNum IN (";
 			for (int i = 0; i < nums.length; i++) {
 				sql += "?,";
 			}
@@ -588,8 +596,9 @@ public class MyPageDAO {
 			pstmt = conn.prepareStatement(sql);
 
 			pstmt.setString(1, userId);
+			pstmt.setString(2, userId);
 			for (int i = 0; i < nums.length; i++) {
-				pstmt.setLong(i + 2, nums[i]);
+				pstmt.setLong(i + 3, nums[i]);
 			}
 
 			pstmt.executeUpdate();
@@ -660,7 +669,7 @@ public class MyPageDAO {
 		String sql;
 
 		try {
-			sql = "SELECT Count(*) " + " FROM campMateApply, campMate, member "
+			sql = "SELECT Count(*) FROM campMateApply, campMate, member "
 					+ " WHERE campMate.camMateNum = campMateApply.camMateNum  AND member.userId = campMateApply.userId AND "
 					+ " camMateAppConfirm = '1' AND "
 					+ " (campMate.hostId = ? AND " + " campMateApply.userId = ? OR 'admin' = ?) ";
