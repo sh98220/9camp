@@ -76,6 +76,7 @@ public class CampInfoServlet extends MyUploadServlet {
 		String cp = req.getContextPath();
 		
 		try {
+		//	long num = Long.parseLong(req.getParameter("num"));
 			String page = req.getParameter("page");
 			int current_page = 1;
 			if(page != null) {
@@ -126,6 +127,18 @@ public class CampInfoServlet extends MyUploadServlet {
 			query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");
 		}
 		
+		List<CampInfoDTO> listimage = dao.listPhoto(offset, size);
+		
+		for(CampInfoDTO dto : listimage) {
+			dto.setCamInfoContent(dto.getCamInfoContent().substring(0, 50) + "...");
+			dto.setCamInfoAddr(dto.getCamInfoAddr().substring(0, dto.getCamInfoAddr().indexOf(' ', dto.getCamInfoAddr().indexOf((' ') ) + 1 ) )  );
+		}
+	
+		
+		
+		
+		
+		
 		String listUrl = cp + "/campInfo/list.do";
 		String articleUrl = cp + "/campInfo/article.do?page=" + current_page;
 		if (query.length() != 0) {
@@ -135,7 +148,9 @@ public class CampInfoServlet extends MyUploadServlet {
 
 		String paging = util.paging(current_page, total_page, listUrl);
 	
-
+		
+		
+		
 		// 포워딩할 JSP에 전달할 속성
 		req.setAttribute("list", list);
 		req.setAttribute("page", current_page);
@@ -146,7 +161,7 @@ public class CampInfoServlet extends MyUploadServlet {
 		req.setAttribute("paging", paging);
 		req.setAttribute("condition", condition);
 		req.setAttribute("keyword", keyword);
-	
+		req.setAttribute("listimage", listimage);
 	
 		
 		} catch (Exception e) {
@@ -197,6 +212,7 @@ public class CampInfoServlet extends MyUploadServlet {
 			dto.setCamPeakWeekDayPrice(req.getParameter("camPeakWeekDayPrice"));
 			dto.setCamPeakWeekEndPrice(req.getParameter("camPeakWeekEndPrice"));
 			dto.setCamFacility(req.getParameter("camFacility"));
+			dto.setCamInfoLineContent(req.getParameter("camInfoLineContent"));
 			
 			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);
 			if(map != null) {
@@ -266,7 +282,7 @@ public class CampInfoServlet extends MyUploadServlet {
 			boolean isUserWish = dao.isUserCampWish(num, info.getUserId());
 			
 			List<CampInfoDTO> listFile = dao.listPhotoFile(num);
-		   
+		
 			
 			
 			// 로그인 유저의 찜 여부
@@ -343,6 +359,16 @@ public class CampInfoServlet extends MyUploadServlet {
 		}
 		
 		String page = req.getParameter("page");
+	
+		/*
+		pstmt.setString(7, dto.getCamNomalWeekDayPrice());
+		pstmt.setString(8, dto.getCamNomalWeekEndPrice());
+		pstmt.setString(9, dto.getCamPeakWeekDayPrice());
+		pstmt.setString(10, dto.getCamPeakWeekEndPrice());
+		pstmt.setString(11, dto.getCamFacility());
+		pstmt.setString(12, dto.getCamInfoLineContent());
+		*/
+		
 		
 		try {
 			CampInfoDTO dto = new CampInfoDTO();
@@ -352,6 +378,15 @@ public class CampInfoServlet extends MyUploadServlet {
 			dto.setCamInfoAddr(req.getParameter("camInfoAddr"));
 			dto.setCamKeyWord(req.getParameter("camKeyWord"));
 			dto.setCamThemaName(req.getParameter("camThemaName"));
+			dto.setCamPhoneNum(req.getParameter("camPhoneNum"));
+			dto.setCamNomalWeekDayPrice(req.getParameter("camNomalWeekDayPrice"));
+			dto.setCamNomalWeekEndPrice(req.getParameter("camNomalWeekEndPrice"));
+			dto.setCamPeakWeekDayPrice(req.getParameter("camPeakWeekDayPrice"));
+			dto.setCamPeakWeekEndPrice(req.getParameter("camPeakWeekEndPrice"));
+			dto.setCamFacility(req.getParameter("camFacility"));
+			dto.setCamInfoLineContent(req.getParameter("camInfoLineContent"));
+			
+		
 			
 			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);
 			if (map != null) {

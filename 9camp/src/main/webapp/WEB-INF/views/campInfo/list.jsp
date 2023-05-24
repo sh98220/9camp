@@ -160,12 +160,12 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 }
 @media (min-width: 992px) {
 	.container {
-		max-width: 960px;
+		max-width: 1010px;
 	}
 }
 @media (min-width: 1200px) {
 	.container {
-	    max-width: 750px;
+	    max-width: 1100px;
 	}
 }
 
@@ -175,6 +175,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     height: auto;
     clear: both;
     padding: 15px 0 95px 0;
+    margin: 0px 0 0px 0;
     background: #fff;
 }
 
@@ -266,20 +267,128 @@ div.select_box {
     clear: both;
 }
 
-@media (max-width: 1219px){
-	.camp_search_list .c_list .img_box {
-	    width: 275px;
-	    height: 195px;
-	    position: relative;
-	    float: left;
-	}
+.camp_search_list .c_list.update {
+    background: #f8fcfe;
 }
+
+.camp_search_list .c_list {
+    position: relative;
+    padding: 25px 20px;
+    height: auto;
+    overflow: hidden;
+    border-bottom: 1px solid #dbdbdb;
+ }
+
+.camp_search_list .c_list .img_box {
+    width: 285px;
+    height: 195px;
+    position: relative;
+    float: left;
+}
+
+.camp_search_list .c_list .img_box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.img_box {
+    background:  #f8fcfe
+}
+
+.camp_cont {
+    width: 700px;
+    height: auto;
+    float: right;
+}
+
+
+.camp_cont .item_group {
+    position: relative;
+    margin-bottom: -15px;
+    height: auto;
+    clear: both;
+    overflow: hidden;
+    width: 40%;
+}
+
+.camp_cont .item_group > span:first-child {
+    margin: 0;
+}
+
+.camp_cont .item_group .item_t01 {
+    background: #547ac0;
+}
+
+.camp_cont .item_group .item_t02 {
+    background: #d6394c;
+}
+
+.camp_cont .item_group .item_t03 {
+    background: #444444;
+    margin-left: -1px;
+}
+
+.camp_cont .item_group > span {
+    display: inline-block;
+    padding: 0 8px;
+    float: left;
+    font-size: 12px;
+    color: #fff;
+    height: 17px;
+    line-height: 17px;
+    margin: 0 3px;
+}
+.camp_tt {
+    text-align: left;
+    clear: both;
+    margin-top: 22px;
+    display: block;
+    padding-bottom: 5px;
+}
+
+.camp_txt {
+    font-size: 14px;
+    line-height: 20px;
+    text-align: left;
+    display: block;
+    margin-top: 5px;
+    clear: both;
+    margin-bottom: 25px;
+}
+
+.camp_info01 {
+    text-align: left;
+    list-style: none;
+    overflow: hidden;
+    width: 100%;
+    height: auto;
+    box-sizing: border-box;
+    margin-left: -19px;
+}
+
+.camp_info01 li {
+    float: left;
+    font-size: 14px;
+    color: #000;
+}
+
+.camp_info01 li.addr {
+    padding-left: 25px;
+    margin-right: 20px;
+}
+
+.camp_info01 li.call_num {
+    padding-left: 25px;
+}
+
 </style>
 <script type="text/javascript">
 function searchList() {
 	const f = document.searchForm;
 	f.submit();
 }
+
+
 
 
 
@@ -323,19 +432,48 @@ function searchList() {
 	    	
 	    	<div class="camp_search_list">
 	    		<ul>
-	    			<li>
-	    				<div class="c_list_update">
-	    					<div class="img_box">
-	    					
-	    					</div>
-	    				
-	    				</div>
-	    			
-	    			
-	    			
-	    			</li>
-	    			
-	    			
+	    			<c:forEach var="vo" items="${listimage}">
+	    		
+		    			<li>
+		    				<div class="c_list update">
+		    					<div class="img_box">
+		    						<a href="${articleUrl}&num=${vo.camInfoNum}">
+												<img src="${pageContext.request.contextPath}/uploads/campInfo/${vo.camInfoPhotoName};">
+									</a>		   						 
+		    					</div>
+		    					
+		    					<div class="camp_cont">
+		    						<p class="item_group">
+		    							<span class="item_t01">관광사업자</span>
+		    							<span class="item_t02">조회수 ${vo.camInfoHitCount}</span>
+		    							<span class="item_t03">찜 ${vo.wishCount}</span>
+		    						</p>
+			    					<h2 class="camp_tt" style="font-size: 21px;">
+			    					<a href="${articleUrl}&num=${vo.camInfoNum}">[ ${vo.camInfoAddr} ] ${vo.camInfoSubject}</a>			
+			    					</h2>
+			    					
+			    					<span class="camp_stt" style="font-size: 18px;">${vo.camInfoLineContent}</span>
+			    					
+			    					<span class="camp_txt" style="font-size: 13px;">
+			    						<a href="${articleUrl}&num=${vo.camInfoNum}">${vo.camInfoContent}</a>			
+			    					 </span>
+			    					
+		    						<ul class="camp_info01">
+		    							<li class="addr"><i class="fa-solid fa-location-dot" style="font-size: 18px; color: orange; margin-right: 3px;"></i>${vo.camInfoAddr1}</li>
+		    							<li class="call_num"><i class="fa-solid fa-phone" style="font-size: 16px; color: orange; margin-right: 3px;"></i>${vo.camPhoneNum}</li>
+		    					
+		    					
+		    						</ul>
+		    					
+		    					
+		    					</div>
+		    				
+		    				</div>
+		    			
+		    			
+		    			
+		    			</li>
+	    			</c:forEach>
 	    		
 	    		
 	    		
@@ -349,65 +487,6 @@ function searchList() {
 	    
 	    
 	    </div>
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 캠핑장 둘러보기 </h2>
-	    </div>
-	    
-	    <div class="body-main mx-auto">
-			<table class="table">
-				<tr>
-					<td width="50%">
-						${dataCount}개(${page}/${total_page} 페이지)
-					</td>
-					<td align="right">&nbsp;</td>
-				</tr>
-			</table>
-			
-			<table class="table table-border table-list">
-				<thead>
-					<tr>
-						<th class="caminfonum">번호</th>
-						<th class="caminfosubject">캠핑장 이름</th>
-						<th class="caminfoaddr">주소</th>
-						<th class="caminfohitcount">조회수</th>
-						<th class="wishCount">찜</th>
-						<th class="caminforegdate">작성일</th>
-					</tr>
-				</thead>
-				
-				<tbody>
-					<c:forEach var="dto" items="${list}" varStatus="status">
-						<tr>
-							<td>${dataCount - (page-1) * size - status.index}</td>
-							<td class="left">
-								<a href="${articleUrl}&num=${dto.camInfoNum}">${dto.camInfoSubject}</a>
-							</td>
-							<td>${dto.camInfoAddr}</td>
-							<td>${dto.camInfoHitCount}</td>
-							<td>${dto.wishCount}</td>
-							<td>${dto.camInfoRegDate}</td>
-							<td>
-								<c:if test="">
-									<a href="${pageContext.request.contextPath}/"><i class="far fa-file"></i></a>
-								</c:if>
-							</td>
-						</tr>
-					</c:forEach>
-				</tbody>
-			</table>
 			
 			<div class="page-navigation">
 				${dataCount == 0 ? "등록된 게시물이 없습니다." : paging}
@@ -443,9 +522,11 @@ function searchList() {
 					</td>
 				</tr>
 			</table>
+	    
+	    
 
 	    </div>
-	</div>
+	
 </main>
 
 <footer>

@@ -338,6 +338,15 @@ function sendOk() {
     	return;
     }
     
+    str = f.camInfoLineContent.value.trim();
+    if(!str) {
+    	alert("한줄소개를 해주세요!");
+    	f.camInfoLineContent.focus();
+    	return;
+    }
+    
+    
+    
     let mode = "${mode}";
     if( (mode === "write") && (!f.selectFile.value) ) {
         alert("이미지 파일을 추가 하세요. ");
@@ -408,6 +417,14 @@ function sendOk() {
 						</td>
 					</tr>
 			
+			
+					<tr> 
+						<td valign="top">한줄소개</td>
+						<td> 
+							<textarea name="camInfoLineContent" class="form-control">${dto.camInfoLineContent}</textarea>
+						</td>
+					</tr>	
+						
 					<tr>
 						<td>사&nbsp;&nbsp;&nbsp;&nbsp;진</td>
 						<td> 

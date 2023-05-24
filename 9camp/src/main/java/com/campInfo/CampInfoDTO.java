@@ -14,6 +14,21 @@ public class CampInfoDTO {
 	private String camKeyWord;
 	private String themaName;
 	private String camPhoneNum;
+	private String camInfoLineContent;
+	private String camInfoAddr1;
+	
+	public String getCamInfoAddr1() {
+		return camInfoAddr1;
+	}
+	public void setCamInfoAddr1(String camInfoAddr1) {
+		this.camInfoAddr1 = camInfoAddr1;
+	}
+	public String getCamInfoLineContent() {
+		return camInfoLineContent;
+	}
+	public void setCamInfoLineContent(String camInfoLineContent) {
+		this.camInfoLineContent = camInfoLineContent;
+	}
 	public String getCamPhoneNum() {
 		return camPhoneNum;
 	}
