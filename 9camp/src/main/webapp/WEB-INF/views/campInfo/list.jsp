@@ -382,11 +382,13 @@ div.select_box {
 }
 
 </style>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resource/jquery/js/jquery-ui.min.js"></script>
 <script type="text/javascript">
 function searchList() {
 	const f = document.searchForm;
 	f.submit();
 }
+
 
 
 
@@ -417,13 +419,13 @@ function searchList() {
 	    	<div id="contents">
 	    		<div class="search_list_gr">
 	    			<div class="select_box array_select">
-	    				<select class="detail_select" id="" title="">
-	    					<option value="">업데이트순</option>
-	    					<option value="">등록일순</option>
-	    					<option value="">조회순</option>
-	    					<option value="">추천순</option>    				
-	    				</select>	    			
-	    			</div>
+					  <select class="detail_select" id="sortSelect" title="">
+					    <option value="updatedAt">업데이트순</option>
+					    <option value="createdAt">등록일순</option>
+					    <option value="views">조회순</option>
+					    <option value="likes">추천순</option>    				
+					  </select>	    			
+					</div>
 	    			<div class="select_map">
 	    				<button type="button">지도로보기</button>
 	    			</div>	    			
