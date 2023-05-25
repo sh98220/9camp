@@ -172,6 +172,11 @@ function countNoReadMsg() {
 						<li>
 							<a href="${pageContext.request.contextPath}/member/pwd.do">정보수정</a>
 						</li>
+						<c:if test="${sessionScope.member.userId=='admin'}">
+							<li>
+								<a href="${pageContext.request.contextPath}/mypage/main.do">관리자 페이지</a>
+							</li>
+						</c:if>
 					</ul>
 				</li>
 				<li>
