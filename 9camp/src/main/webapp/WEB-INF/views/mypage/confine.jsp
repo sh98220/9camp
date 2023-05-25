@@ -262,7 +262,7 @@
 						
 				
 				<div class="writing_area">
-					<textarea id="restContent" name="restContent" style="resize:none;" rows="5" cols="55" title="내용을 입력해 주세요.">${restContent}</textarea>
+					<textarea id="restContent" name="restContent" style="resize:none;" rows="5" cols="55" title="내용을 입력해 주세요.">${dto.restContent}</textarea>
 				</div>
 			</div>
 			<button type="button" class="btn" onclick="sendOk();"> 확인 </button>
