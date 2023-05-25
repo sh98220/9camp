@@ -89,7 +89,6 @@ public class MemberServlet extends MyServlet {
 			return;
 		}
 		
-		
 		if(dto != null) {
 			
 			session.setMaxInactiveInterval(60*60);

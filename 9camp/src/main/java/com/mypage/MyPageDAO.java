@@ -1708,5 +1708,4 @@ public class MyPageDAO {
 		return list;
 	}
 	
-	
 }	

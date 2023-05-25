@@ -55,6 +55,7 @@ public class MemberDAO {
 					+ " FROM restrictedMember "
 					+ " WHERE userId = ? ";
 			
+			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, userId);
 	
