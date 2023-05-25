@@ -14,6 +14,14 @@ public class AuctionDTO {
 	private String auctionEnddate;
 	private long auctionFinalamount;
 	private int auctionEnabled;
+	private long userPoint;
+	
+	public long getUserPoint() {
+		return userPoint;
+	}
+	public void setUserPoint(long userPoint) {
+		this.userPoint = userPoint;
+	}
 	
 	private String AuctionStartamountFormatted;
 	

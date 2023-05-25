@@ -142,7 +142,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 .table-list .num { width: 60px; }
 .table-list .subject {  }
 .table-list .name { width: 100px; }
-.table-list .date { width: 100px; }
+.table-list .date { width: 150px; }
 .table-list .hit { width: 70px; }
 .table-list .file { width: 50px; }
 
@@ -203,8 +203,8 @@ function searchList() {
 						<th class="subject">제목</th>
 						<th class="name">경매물품</th>
 						<th class="name">작성자</th>
-						<th class="date">경매시작일</th>
-						<th class="date">경매종료일</th>
+						<th class="date">경매시작시간</th>
+						<th class="date">경매종료시간</th>
 					</tr>
 				</thead>
 				
