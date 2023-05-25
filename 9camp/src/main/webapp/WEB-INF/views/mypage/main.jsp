@@ -15,7 +15,6 @@
 
 <c:if test="${sessionScope.member.userId=='admin'}">
 	<button type="button" onclick="location.href='adminList.do'">모든 회원</button>
-	<button type="button" onclick="location.href='confine.do'">회원 정지</button>
 	<button type="button" onclick="location.href='stats.do'">가입자 통계</button>
 </c:if>
 </body>

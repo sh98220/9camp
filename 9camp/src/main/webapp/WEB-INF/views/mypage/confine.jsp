@@ -200,6 +200,8 @@
 					<button type="button" id = "monthBtn" onclick="monthFun()">30일</button>
 				</div>
 					<script>
+					
+					
 						function tomorrowFun(){
 							let today = new Date();
 							let tomorrow = new Date(today.setDate(today.getDate() + 2));

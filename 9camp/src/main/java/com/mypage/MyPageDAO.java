@@ -153,9 +153,8 @@ public class MyPageDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		StringBuilder sb = new StringBuilder();
-
 		try {
-			sb.append(" SELECT campWish.camInfoNum, campInfo.camInfoSubject, campInfo.camInfoRegDate, campInfo.camThemaName, campWish.userId, campInfo.camInfoAddr, campInfo.camInfoContent  ");
+			sb.append(" SELECT campWish.camInfoNum, campInfo.camInfoSubject, TO_CHAR(TO_DATE(campInfo.camInfoRegDate), 'YYYY-MM-DD') camInfoRegDate, campInfo.camThemaName, campWish.userId, campInfo.camInfoAddr, campInfo.camInfoContent  ");
 			sb.append(" FROM campWish, campInfo, member ");
 			sb.append(" WHERE campWish.camInfoNum = campInfo.camInfoNum AND ");
 			sb.append(" member.userId = campWish.userId AND ");
@@ -213,7 +212,7 @@ public class MyPageDAO {
 		StringBuilder sb = new StringBuilder();
 
 		try {
-			sb.append(" SELECT campWish.camInfoNum, campInfo.camInfoSubject, campInfo.camInfoRegDate, campInfo.camThemaName, campWish.userId, campInfo.camInfoAddr, campInfo.camInfoContent  ");
+			sb.append(" SELECT campWish.camInfoNum, campInfo.camInfoSubject, TO_CHAR(TO_DATE(campInfo.camInfoRegDate), 'YYYY-MM-DD') camInfoRegDate, campInfo.camThemaName, campWish.userId, campInfo.camInfoAddr, campInfo.camInfoContent  ");
 			sb.append(" FROM campWish, campInfo, member ");
 			sb.append(" WHERE campWish.camInfoNum = campInfo.camInfoNum AND ");
 			sb.append(" member.userId = campWish.userId AND ");
@@ -436,7 +435,7 @@ public class MyPageDAO {
 			sb.append(
 					" SELECT campMate.camMateNum, campMate.camInfoNum, campMate.hostId, campMate.camMateSubject, member.userNickName, campMate.camMateContent, ");
 			sb.append(
-					" campMate.camMateStartDate, campMate.camMateEndDate, campMate.camMateDues, campInfo.camInfoSubject, campMate.campStyle ");
+					" TO_CHAR(TO_DATE(campMate.camMateStartDate), 'YYYY-MM-DD') camMateStartDate, TO_CHAR(TO_DATE(campMate.camMateEndDate), 'YYYY-MM-DD') camMateEndDate , campMate.camMateDues, campInfo.camInfoSubject, campMate.campStyle ");
 			sb.append(" FROM campMate ");
 			sb.append(" LEFT OUTER JOIN member on campMate.hostId = member.userId ");
 			sb.append(" LEFT OUTER JOIN campInfo on campInfo.camInfoNum = campMate.camInfoNum ");
@@ -503,7 +502,7 @@ public class MyPageDAO {
 			sb.append(
 					" SELECT campMate.camMateNum, campMate.camInfoNum, campMate.hostId, campMate.camMateSubject, member.userNickName, campMate.camMateContent, ");
 			sb.append(
-					" campMate.camMateStartDate, campMate.camMateEndDate, campMate.camMateDues, campInfo.camInfoSubject, campMate.campStyle  ");
+					" TO_CHAR(TO_DATE(campMate.camMateStartDate), 'YYYY-MM-DD') camMateStartDate, TO_CHAR(TO_DATE(campMate.camMateEndDate), 'YYYY-MM-DD') camMateEndDate, campMate.camMateDues, campInfo.camInfoSubject, campMate.campStyle  ");
 			sb.append(" FROM campMate ");
 			sb.append(" LEFT OUTER JOIN member on campMate.hostId = member.userId ");
 			sb.append(" LEFT OUTER JOIN campInfo on campInfo.camInfoNum = campMate.camInfoNum ");
@@ -1168,6 +1167,7 @@ public class MyPageDAO {
 
 			pstmt = conn.prepareStatement(sb.toString());
 
+			pstmt.setString(1, userId);
 
 			rs = pstmt.executeQuery();
 
