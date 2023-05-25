@@ -56,6 +56,9 @@ public class PointServlet extends MyServlet {
 
 		String cp = req.getContextPath();
 		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
 		try {
 			String page = req.getParameter("page");
 			int current_page = 1;
@@ -80,9 +83,9 @@ public class PointServlet extends MyServlet {
 			// 전체 데이터 개수
 			int dataCount;
 			if (keyword.length() == 0) {
-				dataCount = dao.dataCount();
+				dataCount = dao.dataCount(info.getUserId());
 			} else {
-				dataCount = dao.dataCount(condition, keyword);
+				dataCount = dao.dataCount(condition, keyword, info.getUserId());
 			}
 			
 			
@@ -101,9 +104,9 @@ public class PointServlet extends MyServlet {
 			
 			List<PointDTO> list = null;
 			if (keyword.length() == 0) {
-				list = dao.listPoint(offset, size);
+				list = dao.listPoint(offset, size, info.getUserId());
 			} else {
-				list = dao.listPoint(offset, size, condition, keyword);
+				list = dao.listPoint(offset, size, condition, keyword, info.getUserId());
 			}
 			
 			

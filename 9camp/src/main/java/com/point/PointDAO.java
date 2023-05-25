@@ -134,16 +134,19 @@ public class PointDAO {
 	    return updatedBalance;
 	}
 	
-	public int dataCount() {
+	public int dataCount(String userId) {
 		int result = 0;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql;
 
 		try {
-			sql = "SELECT NVL(COUNT(*), 0) FROM pointrecord";
+			sql = "SELECT NVL(COUNT(*), 0) FROM pointrecord WHERE userId = ? OR 'admin' = ?";
 			pstmt = conn.prepareStatement(sql);
 
+			pstmt.setString(1, userId);
+			pstmt.setString(2, userId);
+			
 			rs = pstmt.executeQuery();
 			
 			if (rs.next()) {
@@ -172,7 +175,7 @@ public class PointDAO {
 	}
 	
 	// 검색에서의 데이터 개수
-	public int dataCount(String condition, String keyword) {
+	public int dataCount(String condition, String keyword, String userId) {
 	    int result = 0;
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
@@ -180,17 +183,21 @@ public class PointDAO {
 
 		try {
 			sql = "SELECT NVL(COUNT(*), 0) FROM pointrecord b "
-					+ " JOIN member m ON b.userId = m.userId ";
+					+ " JOIN member m ON b.userId = m.userId "
+					+ " (WHERE m.userId = ? OR 'admin' = ?) AND ";
 			if (condition.equals("pointmode")) {
-				sql += "  WHERE INSTR(pointmode, ?) >= 1";
+				sql += "  INSTR(pointmode, ?) >= 1";
 			} else if (condition.equals("pointdate")) {
 				keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
-				sql += "  WHERE TO_CHAR(pointdate, 'YYYYMMDD') = ? ";
+				sql += "  TO_CHAR(pointdate, 'YYYYMMDD') = ? ";
 			} 
 			
 	        pstmt = conn.prepareStatement(sql);
 
-	        pstmt.setString(1, keyword);
+	        
+	        pstmt.setString(1, userId);
+	        pstmt.setString(2, userId);
+	        pstmt.setString(3, keyword);
 
 	        rs = pstmt.executeQuery();
 
@@ -221,7 +228,7 @@ public class PointDAO {
 	    return result;
 	}
 
-	public List<PointDTO> listPoint(int offset, int size) {
+	public List<PointDTO> listPoint(int offset, int size, String userId) {
 		List<PointDTO> list = new ArrayList<PointDTO>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -231,21 +238,24 @@ public class PointDAO {
 			sb.append(" SELECT pointnum, pointmode, pointamount, balance2, ");
 			sb.append("       TO_CHAR(pointdate, 'YYYY-MM-DD HH24:MI') pointdate ");
 			sb.append(" FROM pointrecord b ");
-			sb.append(" JOIN member m ON b.userid = m.userId ");
-			sb.append(" ORDER BY pointnum DESC ");
+			sb.append(" JOIN member m ON b.userId = m.userId ");
+			sb.append(" WHERE m.userId = ? OR 'admin' = ? ");
+			sb.append(" ORDER BY b.pointnum DESC ");
 			sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
 
 			pstmt = conn.prepareStatement(sb.toString());
 			
-			pstmt.setInt(1, offset);
-			pstmt.setInt(2, size);
+			pstmt.setString(1, userId);
+			pstmt.setString(2, userId);
+			pstmt.setInt(3, offset);
+			pstmt.setInt(4, size);
 
 			rs = pstmt.executeQuery();
 			
 			while (rs.next()) {
 				PointDTO dto = new PointDTO();
 
-				dto.setPointNum(rs.getLong("Pointnum"));
+				dto.setPointNum(rs.getLong("pointnum"));
 				dto.setPointmode(rs.getString("pointmode"));
 				dto.setPointAmount(rs.getLong("pointamount"));
 				dto.setPointDate(rs.getString("pointdate"));
@@ -274,7 +284,7 @@ public class PointDAO {
 		return list;
 	}
 
-	public List<PointDTO> listPoint(int offset, int size, String condition, String keyword) {
+	public List<PointDTO> listPoint(int offset, int size, String condition, String keyword, String userId) {
 		List<PointDTO> list = new ArrayList<PointDTO>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -285,20 +295,23 @@ public class PointDAO {
 			sb.append("       TO_CHAR(pointdate, 'YYYY-MM-DD HH24:MI') pointdate ");
 			sb.append(" FROM pointrecord b ");
 			sb.append(" JOIN member m ON b.userid = m.userId ");
+			sb.append(" (WHERE m.userId = ? OR 'admin' = ?) AND ");
 			if (condition.equals("pointmode")) {
-				sb.append(" WHERE INSTR(pointmode, ?) >= 1");
+				sb.append(" INSTR(pointmode, ?) >= 1");
 			} else if (condition.equals("pointdate")) {
 				keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
-				sb.append(" WHERE TO_CHAR(pointdate, 'YYYYMMDD') = ?");
+				sb.append(" TO_CHAR(pointdate, 'YYYYMMDD') = ?");
 			} 
 			sb.append(" ORDER BY pointNum DESC ");
 			sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
 
 			pstmt = conn.prepareStatement(sb.toString());
 			
-				pstmt.setString(1, keyword);
-				pstmt.setInt(2, offset);
-				pstmt.setInt(3, size);
+				pstmt.setString(1, userId);
+				pstmt.setString(2, userId);
+				pstmt.setString(3, keyword);
+				pstmt.setInt(4, offset);
+				pstmt.setInt(5, size);
 
 			rs = pstmt.executeQuery();
 			
@@ -309,6 +322,7 @@ public class PointDAO {
 				dto.setPointmode(rs.getString("pointmode"));
 				dto.setPointAmount(rs.getLong("pointamount"));
 				dto.setPointDate(rs.getString("pointdate"));
+				dto.setUserId(rs.getString("userId"));
 
 				list.add(dto);
 			}
