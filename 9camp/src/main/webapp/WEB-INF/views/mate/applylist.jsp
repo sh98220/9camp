@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -170,10 +170,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 }
 </style>
 <script type="text/javascript">
-function searchList() {
-	const f = document.searchForm;
-	f.submit();
-}
+
 </script>
 </head>
 <body>
@@ -185,7 +182,7 @@ function searchList() {
 <main>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 캠핑메이트 </h2>
+			<h2><i class="fas fa-graduation-cap"></i> 캠핑 메이트 지원자 </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
@@ -205,7 +202,6 @@ function searchList() {
 						<th class="subject">제목</th>
 						<th class="name">작성자</th>
 						<th class="date">작성일</th>
-						<th class="hit">조회수</th>
 					</tr>
 				</thead>
 				
@@ -214,11 +210,10 @@ function searchList() {
 						<tr>
 							<td>${dataCount - (page-1) * size - status.index}</td>
 							<td class="left">
-								<a href="${articleUrl}&camMateNum=${dto.camMateNum}">${dto.camMateSubject}</a>
+								<a href="${articleUrl}&camAppNum=${dto.camAppNum}">${dto.camAppSubject}</a>
 							</td>
 							<td>${dto.userNickName}</td>
-							<td>${dto.camMateRegDate}</td>
-							<td>${dto.camMateHitCount}</td>
+							<td>${dto.camAppRegDate}</td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -231,25 +226,9 @@ function searchList() {
 			<table class="table">
 				<tr>
 					<td width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mate/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mate/applylist.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
 					</td>
-					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/mate/list.do" method="post">
-							<select name="condition" class="form-select">
-								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
-								<option value="userName" ${condition=="userName"?"selected='selected'":"" }>작성자</option>
-								<option value="campinfo" ${condition=="campinfo"?"selected='selected'":"" }>캠핑장</option>
-								<option value="reg_date"  ${condition=="reg_date"?"selected='selected'":"" }>등록일</option>
-								<option value="subject"  ${condition=="subject"?"selected='selected'":"" }>제목</option>
-								<option value="content"  ${condition=="content"?"selected='selected'":"" }>내용</option>
-							</select>
-							<input type="text" name="keyword" value="${keyword}" class="form-control">
-							<button type="button" class="btn" onclick="searchList();">검색</button>
-						</form>
-					</td>
-					<td align="right" width="100">
-						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mate/write.do';">글올리기</button>
-					</td>
+					
 				</tr>
 			</table>
 

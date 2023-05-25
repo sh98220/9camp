@@ -1129,6 +1129,59 @@ public class CampInfoDAO {
 			return result;
 		}
 		
+		
+		// 캠핑장 검색 리스트
+		public List<CampInfoDTO> listCampInfo(String keyword) {
+			List<CampInfoDTO> list = new ArrayList<CampInfoDTO>();
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			StringBuilder sb = new StringBuilder();
+
+			try {
+				sb.append(" SELECT camInfoNum, camInfoSubject, camInfoAddr ");
+				sb.append(" FROM campInfo ");
+				sb.append("WHERE INSTR(camInfoSubject, ?) >= 1 OR INSTR(camInfoContent, ?) >= 1 OR INSTR(camInfoAddr, ?) >= 1");
+
+				pstmt = conn.prepareStatement(sb.toString());
+				
+				pstmt.setString(1, keyword);
+				pstmt.setString(2, keyword);
+				pstmt.setString(3, keyword);
+					
+
+				rs = pstmt.executeQuery();
+				
+				while(rs.next()) {
+					CampInfoDTO dto = new CampInfoDTO();
+					
+					dto.setCamInfoNum(rs.getInt("camInfoNum"));
+					dto.setCamInfoSubject(rs.getString("camInfoSubject"));
+					dto.setCamInfoAddr(rs.getString("camInfoAddr"));
+					
+					list.add(dto);		
+					
+				}
+	 
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException e2) {
+					}
+				}
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e2) {
+					}
+				}
+			}
+
+			return list;
+			
+		}
 	
 	
 }

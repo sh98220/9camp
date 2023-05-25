@@ -264,33 +264,44 @@ function sendOk() {
     const f = document.boardForm;
 	let str;
 	
-    str = f.subject.value.trim();
+    str = f.camMateSubject.value.trim();
     if(!str) {
         alert("제목을 입력하세요. ");
-        f.subject.focus();
+        f.camMateSubject.focus();
         return;
     }
 
-    str = f.content.value.trim();
+    str = f.camMateContent.value.trim();
     if(!str) {
         alert("내용을 입력하세요. ");
-        f.content.focus();
+        f.camMateContent.focus();
         return;
     }
 
-    f.action = "${pageContext.request.contextPath}/reviews/${mode}_ok.do";
+    f.action = "${pageContext.request.contextPath}/mate/${mode}_ok.do";
     f.submit();
 }
 
-<c:if test="${mode == 'update'}">
-	function deleteFile(num) {
-		if(confirm('파일을 삭제하시겠습니까 ?')){
-			let query = "category=${category}&num="+num+"&page=${page}";
-			let url = "${pageContext.request.contextPath}/reviews/deleteFile.do";
-			location.href = url + "?" + query;
+$(function() {
+	$("#modal-open").click(function() {
+		const search = document.queryselector("#modal-open");
+		let searchvalue = document.getElementById("search").val().trim();
+		if(!search) {
+			search.focus();
+			return false;
 		}
-	}
-</c:if>
+		
+		search = encodeURIComponent(search);
+		
+		let url = "${pageContext.request.contextPath}/mate/searchCamp.do";
+		
+		const fn = function(date) {
+			let campinfo  = data.
+		}
+	});
+	
+});
+
 </script>
 </head>
 <body>
@@ -311,7 +322,7 @@ function sendOk() {
 					<tr> 
 						<td>제&nbsp;&nbsp;&nbsp;&nbsp;목</td>
 						<td> 
-							<input type="text" name="subject" maxlength="100" class="form-control" value="${dto.subject}">
+							<input type="text" name="camMateSubject" maxlength="100" class="form-control" value="${dto.camMateSubject}">
 						</td>
 					</tr>
 					
@@ -338,7 +349,7 @@ function sendOk() {
 							      		</div>
 										<div class="popup-body">
 											<div class="popup-content">
-												<input type="text" style="width: 90%" >
+												<input type="text" id="search" style="width: 90%" onkeyup="search()">
 												<button type="button" id="modal-open" >검색</button>  
 											</div>
 										</div>
@@ -350,7 +361,9 @@ function sendOk() {
 								</div>
 							
 							</div>   				
-   						</td>	
+   						</td>
+   						
+   							
 						
 					</tr>
 					
@@ -359,7 +372,7 @@ function sendOk() {
 					<tr> 
 						<td valign="top">내&nbsp;&nbsp;&nbsp;&nbsp;용</td>
 						<td> 
-							<textarea name="content" class="form-control">${dto.content}</textarea>
+							<textarea name="camMateContent" class="form-control">${dto.camMateContent}</textarea>
 						</td>
 					</tr>
 				
@@ -369,34 +382,57 @@ function sendOk() {
 							<div id="keyword-cont">
 									<ul class="keyword-ul">
 										<li>
-											<input type="checkbox" name="key" id="check1" value="101" >
+											<input type="checkbox" name="campstyle" id="check1" value="술을 많이 마시는" >
 							        		<label for="check1">#술을 많이 마시는</label>
 										</li>
 										<li>
-											<input type="checkbox" name="key" id="check2" value="102" >
+											<input type="checkbox" name="campstyle" id="check2" value="조용한" >
 							        		<label for="check2">#조용한</label>
 										</li>
 										<li>
-											<input type="checkbox" name="key" id="check3" value="103" >
+											<input type="checkbox" name="campstyle" id="check3" value="시끌벅적한" >
 							        		<label for="check3">#시끌벅적한</label>
 										</li>
 										<li>
-											<input type="checkbox" name="key" id="check4" value="104">
-							        		<label for="check4">#슬을 마시지 않는</label>
+											<input type="checkbox" name="campstyle" id="check4" value="술을 마시지 않는">
+							        		<label for="check4">#술을 마시지 않는</label>
 										</li>
 										<li>
-											<input type="checkbox" name="key" id="check5" value="105">
+											<input type="checkbox" name="campstyle" id="check5" value="사람이 많은">
 							        		<label for="check5">#사람이 많은</label>
 										</li>
 										<li>
-											<input type="checkbox" name="key" id="check6" value="106">
+											<input type="checkbox" name="campstyle" id="check6" value="단둘이">
 							        		<label for="check6">#단둘이</label>
 										</li>
 										<li>
-											<input type="checkbox" name="key" id="check7" value="107">
-							        		<label for="check7">#남녀가 섞인</label>
+											<input type="checkbox" name="campstyle" id="check7" value="육식파">
+							        		<label for="check7">#육식파</label>
 										</li>
-															
+										<li>
+											<input type="checkbox" name="campstyle" id="check7" value="채식파">
+							        		<label for="check7">#채식파</label>
+										</li>
+										<li>
+											<input type="checkbox" name="campstyle" id="check7" value="해물파">
+							        		<label for="check7">#해물파</label>
+										</li>
+										<li>
+											<input type="checkbox" name="campstyle" id="check7" value="즉흥적">
+							        		<label for="check7">#즉흥적</label>
+										</li>
+										<li>
+											<input type="checkbox" name="campstyle" id="check7" value="계획적">
+							        		<label for="check7">#계획적</label>
+										</li>
+										<li>
+											<input type="checkbox" name="campstyle" id="check7" value="내향적">
+							        		<label for="check7">#내향적</label>
+										</li>
+										<li>
+											<input type="checkbox" name="campstyle" id="check7" value="외향적">
+							        		<label for="check7">#외향적</label>
+										</li>
 									</ul>
 								</div>
 						</td>					
@@ -405,15 +441,15 @@ function sendOk() {
 					<tr>
 					    <td>기&nbsp;&nbsp;&nbsp;&nbsp;간</td>
 					    <td>
-					        <p style="display: inline-block;">출발날짜&nbsp;&nbsp;</p><input type="date" name="depdate" id="dep">&nbsp;&nbsp;
-					        <p  style="display: inline-block;">도착날짜&nbsp;&nbsp;</p><input type="date" name="aridate" id="ari">&nbsp;&nbsp;
+					        <p style="display: inline-block;">출발날짜&nbsp;&nbsp;</p><input type="date" name="camMateStartDate" id="dep">&nbsp;&nbsp;
+					        <p  style="display: inline-block;">도착날짜&nbsp;&nbsp;</p><input type="date" name="camMateEndDate" id="ari">&nbsp;&nbsp;
 					   		<p id="result" style="display: inline-block;"></p>
 					    </td>					   
 					</tr>
 					<tr>
 						<td>회&nbsp;&nbsp;&nbsp;&nbsp;비</td>
 						<td>
-							<input type="text" placeholder="ex) 50,000원"> 
+							<input type="text" name="camMateDues" placeholder="ex) 50,000원" value="${dto.camMateDues}"> 
 						</td>
 					</tr>
 				</table>
@@ -425,10 +461,7 @@ function sendOk() {
 							<button type="reset" class="btn">다시입력</button>
 							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/mate/list.do';">${mode=="update"?"수정취소":"등록취소"}</button>
 							<c:if test="${mode=='update' }">
-								<input type="hidden" name="num" value="${dto.num}">
-								<input type="hidden" name="saveFilename" value="${dto.saveFilename}">
-								<input type="hidden" name="originalFilename" value="${dto.originalFilename}">
-								<input type="hidden" name="fileSize" value="${dto.fileSize}">
+								<input type="hidden" name="camMateNum" value="${dto.camMateNum}">
 								<input type="hidden" name="page" value="${page}">
 							</c:if>							
 						</td>
