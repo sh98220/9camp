@@ -151,6 +151,51 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 .table-list .hit { width: 70px; }
 .table-list .file { width: 50px; }
 
+/*작성자 이름 부분*/
+.writer_info {
+	overflow: visible;
+	position: relative;
+}
+
+.writer_info a {
+	cursor: pointer;
+}
+
+.writer_info #writer_modal {
+	
+}
+
+.writer_info #writer_modal .writer_submenu {
+	position: absolute;
+	background: #fff;
+	border: 1px solid #ddd;
+	box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.2);
+	width: 113px;
+	font-size: 14px;
+	left: 35%;
+	z-index: 9;
+	display: none;
+}
+
+.writer_info #writer_modal .writer_submenu > li a {
+	padding: 10px 15px;
+}
+
+.writer_info #writer_modal .writer_submenu > li a:hover {
+	background: #eee;
+	font-weight: bold;
+}
+
+#open_layer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 3;
+	width: 100%;
+	height: 100%;
+	display: none;
+}
+
 @media (min-width: 576px) {
 	.container {
 	    max-width: 540px;
@@ -186,6 +231,7 @@ function searchList() {
 </header>
 	
 <main>
+	<div id="open_layer"></div>
 	<div class="container body-container">
 	    <div class="body-title">
 			<h2><i class="fas fa-graduation-cap"></i> 자유게시판 </h2>
@@ -219,7 +265,18 @@ function searchList() {
 							<td class="left">
 								<a href="${articleUrl}&num=${dto.camChatNum}">${dto.camChatSubject}</a>
 							</td>
-							<td>${dto.userNickName}</td>
+							<td>
+								<div class="writer_info">
+									<a>${dto.userNickName}</a>
+									<div id="writer_modal">
+										<ul class="writer_submenu">
+											<li>
+												<a href="${pageContext.request.contextPath}/message/write.do?msgRecId=${dto.userId}">쪽지보내기</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</td>
 							<td>${dto.camChatRegDate}</td>
 							<td>${dto.camChatHitCount}</td>
 						</tr>
@@ -263,6 +320,29 @@ function searchList() {
 <footer>
 	<jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
 </footer>
+
+<script type="text/javascript">
+//작성자 클릭시 쪽지보내기 뜨기
+$(function(){
+	$("body").on("click", ".writer_info", function(){
+		const $modal = $(this).find(".writer_submenu");
+		
+		let isVisible = $modal.is(':visible');
+		
+		$("#open_layer").show();
+		$modal.show();
+	});
+	
+});
+
+// 바디 클릭시 쪽지보내기 닫기
+$(function(){
+	$("#open_layer").click(function(){
+		$("#open_layer").hide();
+		$(".writer_submenu").hide();
+	});
+});
+</script>
 
 </body>
 </html>
