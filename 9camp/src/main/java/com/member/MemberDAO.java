@@ -49,7 +49,7 @@ public class MemberDAO {
 			
 			pstmt.close();
 			rs.close();
-			
+			/*
 			sql = "";
 			sql = "SELECT userId, restContent, TO_CHAR(restEndDate, 'YYYY-MM-DD') restEndDate "
 					+ " FROM restrictedMember "
@@ -66,7 +66,7 @@ public class MemberDAO {
 				dto.setRestId(rs.getString("userId"));
 				dto.setRestContent(rs.getString("restContent"));
 				dto.setRestDate(rs.getString("restEndDate"));
-			}
+			}*/
 
 		} catch (Exception e) {
 			e.printStackTrace();

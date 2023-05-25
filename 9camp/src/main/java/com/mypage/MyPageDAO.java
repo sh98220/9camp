@@ -328,7 +328,7 @@ public class MyPageDAO {
 		String sql;
 
 		try {
-			sql = "SELECT COUNT(campMate.camMateNum)  FROM campMate"
+			sql = "SELECT COUNT(distinct campMate.camMateNum)  FROM campMate"
 					+ " LEFT OUTER JOIN member on campMate.hostId = member.userId "
 					+ " LEFT OUTER JOIN campInfo on campInfo.camInfoNum = campMate.camInfoNum "
 					+ " LEFT OUTER JOIN campMateApply on campMateApply.camMateNum = campMate.camMateNum "
@@ -372,7 +372,7 @@ public class MyPageDAO {
 		String sql;
 
 		try {
-			sql = "SELECT COUNT(campMate.camMateNum)  FROM campMate"
+			sql = "SELECT COUNT(distinct campMate.camMateNum)  FROM campMate"
 					+ " LEFT OUTER JOIN member on campMate.hostId = member.userId "
 					+ " LEFT OUTER JOIN campInfo on campInfo.camInfoNum = campMate.camInfoNum "
 					+ " LEFT OUTER JOIN campMateApply on campMateApply.camMateNum = campMate.camMateNum "
@@ -433,7 +433,7 @@ public class MyPageDAO {
 
 		try {
 			sb.append(
-					" SELECT campMate.camMateNum, campMate.camInfoNum, campMate.hostId, campMate.camMateSubject, member.userNickName, campMate.camMateContent, ");
+					" SELECT distinct campMate.camMateNum, campMate.camInfoNum, campMate.hostId, campMate.camMateSubject, member.userNickName, ");
 			sb.append(
 					" TO_CHAR(TO_DATE(campMate.camMateStartDate), 'YYYY-MM-DD') camMateStartDate, TO_CHAR(TO_DATE(campMate.camMateEndDate), 'YYYY-MM-DD') camMateEndDate , campMate.camMateDues, campInfo.camInfoSubject, campMate.campStyle ");
 			sb.append(" FROM campMate ");
@@ -467,7 +467,6 @@ public class MyPageDAO {
 				dto.setCamInfoSubject(rs.getString("camInfoSubject"));
 				dto.setUserNickName(rs.getString("userNickName"));
 				dto.setCampStyle(rs.getString("campStyle"));
-				dto.setCamMateContent(rs.getString("camMateContent"));
 
 				list.add(dto);
 			}
@@ -500,7 +499,7 @@ public class MyPageDAO {
 
 		try {
 			sb.append(
-					" SELECT campMate.camMateNum, campMate.camInfoNum, campMate.hostId, campMate.camMateSubject, member.userNickName, campMate.camMateContent, ");
+					" SELECT distinct campMate.camMateNum, campMate.camInfoNum, campMate.hostId, campMate.camMateSubject, member.userNickName,  ");
 			sb.append(
 					" TO_CHAR(TO_DATE(campMate.camMateStartDate), 'YYYY-MM-DD') camMateStartDate, TO_CHAR(TO_DATE(campMate.camMateEndDate), 'YYYY-MM-DD') camMateEndDate, campMate.camMateDues, campInfo.camInfoSubject, campMate.campStyle  ");
 			sb.append(" FROM campMate ");
@@ -556,7 +555,6 @@ public class MyPageDAO {
 				dto.setCamInfoSubject(rs.getString("camInfoSubject"));
 				dto.setUserNickName(rs.getString("userNickName"));
 				dto.setCampStyle(rs.getString("campStyle"));
-				dto.setCamMateContent(rs.getString("camMateContent"));
 
 				list.add(dto);
 			}
@@ -617,23 +615,24 @@ public class MyPageDAO {
 	}
 
 	// 아이디를 이용하여 개수 구하기
-	public int dataCountMateApply(String userId) {
+	public int dataCountMateApply(long num, String userId) {
 		int result = 0;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql;
 
 		try {
-			sql = "SELECT Count(*) FROM campMateApply,  campMate, member "
-					+ " WHERE campMate.camMateNum = campMateApply.camMateNum AND member.userId = campMateApply.userId "
-					+ " AND camMateAppConfirm = '1' AND "
-					+ " (campMate.hostId = ? AND campMateApply.userId = ? OR 'admin' = ?) ";
+			sql = "SELECT Count(*) FROM campMateApply, campMate, member "
+					+ " WHERE campMate.camMateNum = campMateApply.camMateNum  AND member.userId = campMateApply.userId AND "
+					+ " camMateAppConfirm = '1' AND campMateApply.camMateNum = ? AND "
+					+ " (campMate.hostId = ? OR campMateApply.userId = ? OR 'admin' = ?) ";
 
 			pstmt = conn.prepareStatement(sql);
 
-			pstmt.setString(1, userId);
+			pstmt.setLong(1, num);
 			pstmt.setString(2, userId);
 			pstmt.setString(3, userId);
+			pstmt.setString(4, userId);
 
 			rs = pstmt.executeQuery();
 
@@ -661,7 +660,7 @@ public class MyPageDAO {
 		return result;
 	}
 
-	public int dataCountMateApply(String condition, String keyword, String userId) {
+	public int dataCountMateApply(long num, String condition, String keyword, String userId) {
 		int result = 0;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -670,8 +669,8 @@ public class MyPageDAO {
 		try {
 			sql = "SELECT Count(*) FROM campMateApply, campMate, member "
 					+ " WHERE campMate.camMateNum = campMateApply.camMateNum  AND member.userId = campMateApply.userId AND "
-					+ " camMateAppConfirm = '1' AND "
-					+ " (campMate.hostId = ? AND " + " campMateApply.userId = ? OR 'admin' = ?) ";
+					+ " camMateAppConfirm = '1' AND campMateApply.camMateNum = ? AND "
+					+ " (campMate.hostId = ? OR campMateApply.userId = ? OR 'admin' = ?) ";
 
 			if (condition.equals("userNickName")) {
 				sql += " AND INSTR(LOWER(member.userNickName), LOWER(?)) >= 1 ";
@@ -685,10 +684,11 @@ public class MyPageDAO {
 
 			pstmt = conn.prepareStatement(sql);
 
-			pstmt.setString(1, userId);
+			pstmt.setLong(1, num);
 			pstmt.setString(2, userId);
 			pstmt.setString(3, userId);
-			pstmt.setString(4, keyword);
+			pstmt.setString(4, userId);
+			pstmt.setString(5, keyword);
 
 			rs = pstmt.executeQuery();
 
@@ -730,7 +730,7 @@ public class MyPageDAO {
 					+ " FROM campMate, campMateApply, member "
 					+ " WHERE campMate.camMateNum = campMateApply.camMateNum  AND "
 					+ " member.userId = campMateApply.userid AND " + " campMateApply.camMateAppConfirm = '1' AND "
-					+ " (campMateApply.camMateNum= ? AND campMate.hostId = ? OR 'admin' = ?) ";
+					+ " campMateApply.camMateNum= ? AND (campMate.hostId = ? OR 'admin' = ?) ";
 			pstmt = conn.prepareStatement(sql);
 
 			pstmt.setLong(1, num);
@@ -790,7 +790,7 @@ public class MyPageDAO {
 			sb.append(" WHERE campMate.camMateNum = campMateApply.camMateNum  AND ");
 			sb.append(" member.userId = campMateApply.userid AND ");
 			sb.append(" campMateApply.camMateAppConfirm = '1' AND ");
-			sb.append(" (campMateApply.camMateNum= ? AND campMate.hostId = ? OR 'admin' = ? ) AND ");
+			sb.append(" campMateApply.camMateNum= ? AND (campMate.hostId = ? OR 'admin' = ? ) AND ");
 
 			if (condition.equals("userNickName")) {
 				sb.append(" INSTR(LOWER(member.userNickName), LOWER(?)) >= 1  ");
@@ -884,7 +884,7 @@ public class MyPageDAO {
 	}
 
 	// 아이디를 이용하여 개수 구하기
-	public int dataCountMateWait(String userId) {
+	public int dataCountMateWait(long num, String userId) {
 		int result = 0;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -893,14 +893,17 @@ public class MyPageDAO {
 		try {
 			sql = "SELECT Count(*) FROM campMateApply,  campMate, member "
 					+ " WHERE campMate.camMateNum = campMateApply.camMateNum AND member.userId = campMateApply.userId "
-					+ " AND camMateAppConfirm = '0' AND "
-					+ " (campMate.hostId = ? AND campMateApply.userId = ? OR 'admin' = ?) ";
+					+ " AND camMateAppConfirm = '0' AND campMateApply.camMateNum = ? AND "
+					+ " (campMate.hostId = ? OR campMateApply.userId = ? OR 'admin' = ?) ";
 
 			pstmt = conn.prepareStatement(sql);
 
-			pstmt.setString(1, userId);
+
+			pstmt.setLong(1, num);
 			pstmt.setString(2, userId);
 			pstmt.setString(3, userId);
+			pstmt.setString(4, userId);
+
 			rs = pstmt.executeQuery();
 
 			if (rs.next()) {
@@ -927,7 +930,7 @@ public class MyPageDAO {
 		return result;
 	}
 
-	public int dataCountMateWait(String condition, String keyword, String userId) {
+	public int dataCountMateWait(long num, String condition, String keyword, String userId) {
 		int result = 0;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -936,8 +939,8 @@ public class MyPageDAO {
 		try {
 			sql = "SELECT Count(*) FROM campMateApply, campMate, member "
 					+ " WHERE campMate.camMateNum = campMateApply.camMateNum AND member.userId = campMateApply.userId "
-					+ " AND camMateAppConfirm = '0' AND "
-					+ " (campMate.hostId = ? AND campMateApply.userId = ? OR 'admin' = ?) ";
+					+ " AND camMateAppConfirm = '0' AND campMateApply.camMateNum = ? AND "
+					+ " (campMate.hostId = ? OR campMateApply.userId = ? OR 'admin' = ?) ";
 
 			if (condition.equals("userNickName")) {
 				sql += " AND INSTR(LOWER(member.userNickName), LOWER(?)) >= 1  ";
@@ -951,10 +954,11 @@ public class MyPageDAO {
 
 			pstmt = conn.prepareStatement(sql);
 
-			pstmt.setString(1, userId);
+			pstmt.setLong(1, num);
 			pstmt.setString(2, userId);
 			pstmt.setString(3, userId);
-			pstmt.setString(4, keyword);
+			pstmt.setString(4, userId);
+			pstmt.setString(5, keyword);
 
 			rs = pstmt.executeQuery();
 
@@ -997,7 +1001,7 @@ public class MyPageDAO {
 			sb.append(" WHERE campMate.camMateNum = campMateApply.camMateNum  AND ");
 			sb.append(" member.userId = campMateApply.userId AND ");
 			sb.append(" campMateApply.camMateAppConfirm = '0' AND ");
-			sb.append(" (campMateApply.camMateNum= ? AND campMate.hostId = ? OR 'admin' = ? ) ");
+			sb.append(" campMateApply.camMateNum= ? AND (campMate.hostId = ? OR 'admin' = ? ) ");
 			sb.append(" ORDER BY campMate.camMateNum DESC ");
 
 			pstmt = conn.prepareStatement(sb.toString());
@@ -1059,7 +1063,7 @@ public class MyPageDAO {
 			sb.append(" WHERE campMate.camMateNum = campMateApply.camMateNum  AND ");
 			sb.append(" member.userId = campMateApply.userid AND ");
 			sb.append(" campMateApply.camMateAppConfirm = '0' AND ");
-			sb.append(" (campMateApply.camMateNum= ? AND campMate.hostId = ? OR 'admin' = ? ) AND ");
+			sb.append(" campMateApply.camMateNum= ? AND (campMate.hostId = ? OR 'admin' = ? ) AND ");
 
 			if (condition.equals("userNickName")) {
 				sb.append(" INSTR(LOWER(member.userNickName), LOWER(?)) >= 1  ");

@@ -36,7 +36,7 @@ public class MyPageServlet extends MyServlet {
 
 		// uri에 따른 작업 구분
 		if (uri.indexOf("main.do") != -1) {
-			forward(req, resp, "/WEB-INF/views/mypage/main.jsp");
+			main(req, resp);
 		} else if (uri.indexOf("wish.do") != -1) {
 			wish(req, resp);
 		} else if (uri.indexOf("mateList.do") != -1) {
@@ -70,6 +70,24 @@ public class MyPageServlet extends MyServlet {
 		} else if (uri.indexOf("stats.do") != -1) {
 			stats(req, resp);
 		} 
+	}
+
+	private void main(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+
+		String cp = req.getContextPath();
+
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+
+		
+		if (!info.getUserId().equals("admin")) {
+			resp.sendRedirect(cp + "/main.do");
+			return;
+		}
+		
+		forward(req, resp, "/WEB-INF/views/mypage/main.jsp");
+		
 	}
 
 	protected void wish(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -230,16 +248,7 @@ public class MyPageServlet extends MyServlet {
 				list = dao.listMate(offset, size, condition, keyword, info.getUserId());
 			}
 
-			//20자 이후부터는 ...으로 표기
-			for(MyPageDTO dto : list) {
-				int contentLength = dto.getCamMateContent().length();
-				if (contentLength > 20) {
-					contentLength = 20;
-					dto.setCamMateContent(dto.getCamMateContent().substring(0, contentLength) + "...");
-				}
-	
-			}
-			
+
 			
 			String query = "";
 			if (keyword.length() != 0) {
@@ -303,9 +312,9 @@ public class MyPageServlet extends MyServlet {
 			// 전체데이터 개수
 			int dataCount;
 			if (keyword.length() == 0) {
-				dataCount = dao.dataCountMateApply(info.getUserId());
+				dataCount = dao.dataCountMateApply(num, info.getUserId());
 			} else {
-				dataCount = dao.dataCountMateApply(condition, keyword, info.getUserId());
+				dataCount = dao.dataCountMateApply(num, condition, keyword, info.getUserId());
 			}
 
 			// 전체페이지수
@@ -401,9 +410,9 @@ public class MyPageServlet extends MyServlet {
 			// 전체데이터 개수
 			int dataCount;
 			if (keyword.length() == 0) {
-				dataCount = dao.dataCountMateWait(info.getUserId());
+				dataCount = dao.dataCountMateWait(num, info.getUserId());
 			} else {
-				dataCount = dao.dataCountMateWait(condition, keyword, info.getUserId());
+				dataCount = dao.dataCountMateWait(num, condition, keyword, info.getUserId());
 			}
 
 			// 전체페이지수
@@ -670,7 +679,7 @@ public class MyPageServlet extends MyServlet {
 		try {
 			// admin 아니면 조회 불가
 			if (!info.getUserId().equals("admin")) {
-				resp.sendRedirect(cp + "/mypage/main.do");
+				resp.sendRedirect(cp + "/main.do");
 				return;
 			}
 
