@@ -583,7 +583,7 @@ function imageViewer(img) {
 	    					</tr>
 	    					<tr>
 	    						<th scope="col">키워드</th>
-	    							<td style="border-bottom: 1px solid #c8c8c8;">#${dto.camKeyWord}</td>
+	    							<td style="border-bottom: 1px solid #c8c8c8;">${dto.camKeyWord}</td>
 	    					
 	    					</tr>
 	    					
@@ -674,7 +674,7 @@ function imageViewer(img) {
 </footer>
 
 
-</div>
+
 
 </body>
 </html>

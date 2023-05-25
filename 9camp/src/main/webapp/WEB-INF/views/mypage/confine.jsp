@@ -200,21 +200,23 @@
 					<button type="button" id = "monthBtn" onclick="monthFun()">30일</button>
 				</div>
 					<script>
+					
+					
 						function tomorrowFun(){
 							let today = new Date();
-							let tomorrow = new Date(today.setDate(today.getDate() + 1));
+							let tomorrow = new Date(today.setDate(today.getDate() + 2));
 							document.getElementById('restEndDate').valueAsDate = tomorrow;
 						}
 						
 						function weekFun(){
 							let today = new Date();
-							let week = new Date(today.setDate(today.getDate() + 7));
+							let week = new Date(today.setDate(today.getDate() + 8));
 							document.getElementById('restEndDate').valueAsDate = week;
 						}
 						
 						function monthFun(){
 							let today = new Date();
-							let month = new Date(today.setDate(today.getDate() + 30));
+							let month = new Date(today.setDate(today.getDate() + 31));
 							document.getElementById('restEndDate').valueAsDate = month;
 						}
 						
@@ -262,7 +264,7 @@
 						
 				
 				<div class="writing_area">
-					<textarea id="restContent" name="restContent" style="resize:none;" rows="5" cols="55" title="내용을 입력해 주세요.">${restContent}</textarea>
+					<textarea id="restContent" name="restContent" style="resize:none;" rows="5" cols="55" title="내용을 입력해 주세요.">${dto.restContent}</textarea>
 				</div>
 			</div>
 			<button type="button" class="btn" onclick="sendOk();"> 확인 </button>

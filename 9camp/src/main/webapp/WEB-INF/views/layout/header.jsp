@@ -81,13 +81,7 @@ function countNoReadMsg() {
 					|
 				</li>
 			</c:if>
-			<c:if test="${not empty sessionScope.member}">
-				<li>
-					<a href="#" class="top-icon ic_bell" title="알림">
-						<i class="fa-sharp fa-regular fa-bell"></i>
-					</a>
-				</li>
-			</c:if>
+		
 			<c:if test="${not empty sessionScope.member}">
 				<li>
 					<a href="${pageContext.request.contextPath}/member/logout.do" class="top-icon ic_logout" title="로그아웃">
@@ -111,10 +105,7 @@ function countNoReadMsg() {
 				</li>
 			</c:if>
 			<li>
-				<a href="#" class="top-icon ic_setting" title="설정">
-					<i class="fa-solid fa-gear"></i>
-				</a>
-			</li>
+
 		</ul>
 	</div>
 	<!-- //메뉴바 위 -->
@@ -128,7 +119,7 @@ function countNoReadMsg() {
 					<ul class="sub-menu">
 						<li>
 						<!-- 김성훈 수정 -->
-							<a href="${pageContext.request.contextPath}/campInfo/list.do">캠핑장 검색</a>
+							<a href="${pageContext.request.contextPath}/campInfo/list.do">캠핑장 리스트</a>
 						</li>
 						<li>
 							<a href="${pageContext.request.contextPath}/mapCamp/mapSearch.do">지도 검색</a>
@@ -187,9 +178,6 @@ function countNoReadMsg() {
 						</li>
 						<li>
 							<a href="${pageContext.request.contextPath}/qna/list.do">Q &amp; A</a>
-						</li>
-						<li>
-							<a href="#">정보수정요청</a>
 						</li>
 					</ul>
 				</li>

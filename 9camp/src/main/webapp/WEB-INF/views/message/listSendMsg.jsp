@@ -275,7 +275,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 									<td class="left td-content">
 										<a href="${articleUrl}&msgNum=${dto.msgNum}">${dto.msgContent}</a>
 									</td>
-									<td>${dto.userNickName}</td>
+									<td><a href="${pageContext.request.contextPath}/message/write.do?msgRecId=${dto.msgSenderId}">${dto.userNickName}</a></td>
 									<td>${dto.msgRegDate}</td>
 									<td>${dto.msgRead == 0 ? "안 읽음" : dto.msgReadDate}</td>
 								</tr>

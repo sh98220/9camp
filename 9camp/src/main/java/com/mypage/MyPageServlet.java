@@ -3,6 +3,7 @@ package com.mypage;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -700,7 +701,7 @@ public class MyPageServlet extends MyServlet {
 			}
 
 			// 전체페이지수
-			int size = 2;
+			int size = 10;
 			int total_page = util.pageCount(dataCount, size);
 			if (current_page > total_page) {
 				current_page = total_page;
@@ -833,6 +834,11 @@ public class MyPageServlet extends MyServlet {
 		MyPageDAO dao = new MyPageDAO();
 		
 		String page = req.getParameter("page");
+		
+		if(page.length() == 0) {
+			page = "1";
+		}
+		
 		String query = "page=" + page;
 
 		try {
@@ -846,13 +852,35 @@ public class MyPageServlet extends MyServlet {
 
 			dao.cofineMember(userId, content, endDate);
 
+			
+			List<MyPageDTO> list = dao.listMember(userId);
+			
+			System.out.println(list);
+			
+			
+			/*for(MyPageDTO dto : list) {
+				int contentLength = dto.getCamInfoContent().length();
+				if (contentLength > 20) {
+					contentLength = 20;
+					dto.setCamInfoContent(dto.getCamInfoContent().substring(0, contentLength) + "...");
+				}
+			}*/
+			
+			
+			
+			
+			
 			req.setAttribute("userId", userId);
 			req.setAttribute("content", content);
 			req.setAttribute("endDate", endDate);
 			req.setAttribute("page", page);
 
 
-		} catch (Exception e) {
+		} catch (SQLException e) {
+			
+		}
+		
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 
@@ -947,7 +975,7 @@ public class MyPageServlet extends MyServlet {
 			}
 
 			// 전체페이지수
-			int size = 2;
+			int size = 10;
 			int total_page = util.pageCount(dataCount, size);
 			if (current_page > total_page) {
 				current_page = total_page;

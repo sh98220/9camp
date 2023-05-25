@@ -49,13 +49,10 @@ public class MainServlet extends MyServlet {
 		// 검색
 		String condition = req.getParameter("condition");
 		String keyword = req.getParameter("keyword");
-		/*
-        String[] key = req.getParameterValues("key"); // 키워드명 배열로 받기
-        String keystring = "";
-        for (int i = 0; i < key.length; i++) {
-            keystring += key[i];
-        }
- */
+	
+        // String[] keys = req.getParameterValues("key"); // 키워드명 배열로 받기
+       
+ 
 		if(condition == null) {
 			condition = "all";
 			keyword = "";
@@ -93,7 +90,7 @@ public class MainServlet extends MyServlet {
 		}
 		
 		// 키워드로 검색
-		// listimage = dao.listPhoto(keystring, offset, size);
+		// listimage = dao.listPhoto(keys, offset, size);
 		
 		
 		
@@ -114,7 +111,7 @@ public class MainServlet extends MyServlet {
 	
 		
 		
-		// 메인화면 이런 캠핑장은 어떄요?
+		// 메인화면 -  이런 캠핑장은 어떄요?
 		List<CampInfoDTO> images = new ArrayList<>();
 		
 		int n = 3;

@@ -61,7 +61,9 @@ public class AuctionServlet extends MyUploadServlet {
 			updateForm(req, resp);
 		} else if(uri.indexOf("update_ok.do") != -1) {
 			updateSubmit(req, resp);
-		}
+		} else if(uri.indexOf("finish.do") != -1) {
+			finish(req, resp);
+		} 
 		
 	}
 
@@ -181,7 +183,8 @@ public class AuctionServlet extends MyUploadServlet {
 			dto.setAuctionSubject(req.getParameter("auctionSubject"));
 			dto.setAuctionContent(req.getParameter("auctionContent"));
 			dto.setAuctionObject(req.getParameter("auctionObject"));
-			dto.setAuctionEnddate(req.getParameter("auctionEnddate"));
+			String auctionEnddate = req.getParameter("auctionEnddate").replace("T", "");
+			dto.setAuctionEnddate(auctionEnddate);
 			dto.setAuctionStartamount(Long.parseLong(req.getParameter("auctionStartamount")));			
 
 			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);
@@ -199,6 +202,7 @@ public class AuctionServlet extends MyUploadServlet {
 		
 		resp.sendRedirect(cp + "/auction/list.do?");
 	}
+	
 	
 	protected void article(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 글 보기
@@ -337,8 +341,6 @@ public class AuctionServlet extends MyUploadServlet {
 	protected void auctionRecamount(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		AuctionDAO dao = new AuctionDAO();
 		
-		HttpSession session= req.getSession();
-		SessionInfo info = (SessionInfo)session.getAttribute("member");
 		
 		String cp = req.getContextPath();
 		String page = req.getParameter("page");
@@ -349,20 +351,33 @@ public class AuctionServlet extends MyUploadServlet {
 		}
 		
 		try {
+			HttpSession session= req.getSession();
+			SessionInfo info = (SessionInfo)session.getAttribute("member");
+			
 			AuctionDTO dto = new AuctionDTO();
 			
 			dto.setAuctionNum(Long.parseLong(req.getParameter("auctionNum")));
 			dto.setAuctionUserId(info.getUserId()); 
 			dto.setAuctionRecamount(Long.parseLong(req.getParameter("auctionRecamount")));			
 				
-			dao.insertAuctionRecamount(dto);
+			long auctionRecamount = dao.insertAuctionRecamount(dto);
+			
+			session.setAttribute("userbalance", info.getUserPoint() - auctionRecamount);
+
+			Long balance =  (Long)session.getAttribute("updatedbalance");
+			
+			req.setAttribute("balance", balance);
+			
 			resp.sendRedirect(cp + "/auction/article.do?num="+dto.getAuctionNum()+"&page="+page);
+			
+			
 			return;
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		//resp.sendRedirect(cp + "/auction/list.do?page=" + page);
+		// resp.sendRedirect(cp + "/auction/auctionRecamount_ok.do");
 	}
 	
 	
@@ -439,6 +454,50 @@ public class AuctionServlet extends MyUploadServlet {
 		}
 
 		resp.sendRedirect(cp + "/auction/list.do?page=" + page);
+	}
+	
+	
+	protected void finish(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		AuctionDAO dao = new AuctionDAO();
+		
+		
+		String cp = req.getContextPath();
+		String page = req.getParameter("page");
+		
+		if(req.getMethod().equalsIgnoreCase("GET")) {
+			resp.sendRedirect(cp + "/auction/list.do");
+			return;
+		}
+		
+		try {
+			HttpSession session= req.getSession();
+			SessionInfo info = (SessionInfo)session.getAttribute("member");
+			
+			AuctionDTO dto = new AuctionDTO();
+			
+			dto.setAuctionNum(Long.parseLong(req.getParameter("auctionNum")));
+			dto.setUserId(info.getUserId()); 
+			dto.setAuctionRecamount(Long.parseLong(req.getParameter("auctionRecamount")));			
+			
+			
+			long auctionRecamount = dao.finish(dto);
+			
+			session.setAttribute("userbalance", info.getUserPoint() + auctionRecamount);
+
+			Long balance =  (Long)session.getAttribute("updatedbalance");
+			
+			req.setAttribute("balance", balance);
+			
+			resp.sendRedirect(cp + "/auction/article.do?num="+dto.getAuctionNum()+"&page="+page);
+			
+			
+			
+			return;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		// resp.sendRedirect(cp + "/auction/auctionRecamount_ok.do");
 	}
 }
 	

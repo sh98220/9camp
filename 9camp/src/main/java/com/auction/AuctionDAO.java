@@ -36,17 +36,19 @@ public class AuctionDAO {
 			pstmt = null;
 			
 			sql = "INSERT INTO AUCTION(auctionnum, auctionSubject, auctionsaleId, auctionObject, auctionStartAmount, auctionRegdate, auctionEnddate, auctionContent, auctionEnabled, auctionFinalamount) "
-					+ " VALUES (?, ?, ?, ?, ?, SYSDATE, ?, ?, 0, 0)";
-			
-			pstmt = conn.prepareStatement(sql);
-			
-			pstmt.setLong(1, dto.getAuctionNum());
-			pstmt.setString(2, dto.getAuctionSubject());
-			pstmt.setString(3, dto.getAuctionSaleId());
-			pstmt.setString(4, dto.getAuctionObject());
-			pstmt.setLong(5, dto.getAuctionStartamount());
-			pstmt.setString(6, dto.getAuctionEnddate());
-			pstmt.setString(7, dto.getAuctionContent());
+				      + "VALUES (?, ?, ?, ?, ?, SYSDATE, TO_DATE(?, 'YYYY-MM-DD HH24:MI'), ?, 0, 0)";
+
+				pstmt = conn.prepareStatement(sql);
+
+				pstmt.setLong(1, dto.getAuctionNum());
+				pstmt.setString(2, dto.getAuctionSubject());
+				pstmt.setString(3, dto.getAuctionSaleId());
+				pstmt.setString(4, dto.getAuctionObject());
+				pstmt.setLong(5, dto.getAuctionStartamount());
+				
+				pstmt.setString(6, dto.getAuctionEnddate());
+
+				pstmt.setString(7, dto.getAuctionContent());
 			
 			pstmt.executeUpdate();
 			
@@ -79,11 +81,76 @@ public class AuctionDAO {
 		}
 	}
 	
-	public void insertAuctionRecamount(AuctionDTO dto) throws SQLException{
+	public long insertAuctionRecamount(AuctionDTO dto) throws SQLException{
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		String sql;
-		
-		try {		
+
+	    long auctionRecamount = 0;
+	    long userPoint = 0;
+	    
+		try {
+	        conn.setAutoCommit(false);
+			
+	        // 데이터 입력하기 전 가장 큰 값을 가진 금액 조회
+	        sql = "SELECT MAX(auctionRecamount) auctionRecamount "
+	        		+ "FROM auctionrecord "
+	        		+ "WHERE auctionnum = ?";
+	        
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setLong(1, dto.getAuctionNum());
+	        rs = pstmt.executeQuery();
+	        
+	        if(rs.next()) {
+	        	auctionRecamount = rs.getLong("auctionRecamount");
+	        }
+
+	        rs.close();
+	        pstmt.close();
+	        rs = null;
+	        pstmt = null;
+	        
+	        if(auctionRecamount >= dto.getAuctionRecamount()) {
+	        	return 0L;
+	        }
+	        
+	        // 이전 입찰자의 포인트를 입찰전으로 변경
+			sql = "UPDATE member SET userpoint = userpoint + ? WHERE userid= "
+	        		+ "(SELECT auctionuserID "
+	        		+ "FROM auctionrecord "
+					+ "WHERE auctionnum = ? "
+					+ "ORDER BY auctionrecamount DESC "
+					+ "FETCH FIRST 1 ROW ONLY) ";					
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setLong(1, auctionRecamount);
+			pstmt.setLong(2, dto.getAuctionNum());
+
+			pstmt.executeUpdate();
+			
+			pstmt.close();
+			pstmt=null;
+			
+	        // 참가자 잔액 가져오기
+	        sql = "SELECT userpoint FROM member WHERE userId = ? ";
+	        
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, dto.getAuctionUserId());
+	        rs = pstmt.executeQuery();
+	        
+	        if(rs.next()) {
+	        	userPoint = rs.getLong("userpoint");
+	        }
+	        rs.close();
+	        pstmt.close();
+	        rs = null;
+	        pstmt = null;
+
+	        if(userPoint < dto.getAuctionRecamount()) {
+	        	return 0L;
+	        }
+	        
+			// 입력한 auctionRecamount 인서트
 			sql = "INSERT INTO AUCTIONRECORD(auctionnum, auctionuserId, auctionRecamount, auctionRecdate, auctionConfirm) "
 					+ " VALUES (?, ?, ?, SYSDATE, 0)";
 			
@@ -94,8 +161,30 @@ public class AuctionDAO {
 			pstmt.setLong(3, dto.getAuctionRecamount());
 			
 			pstmt.executeUpdate();
+			pstmt.close();
+
 			
+			sql = "UPDATE AUCTION SET auctionfinalamount = ? WHERE auctionnum = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setLong(1, dto.getAuctionRecamount());
+			pstmt.setLong(2, dto.getAuctionNum());
+			pstmt.executeUpdate();
+			pstmt.close();
+			
+			
+			sql = "UPDATE member SET userpoint=userpoint - ? WHERE userid = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setLong(1, dto.getAuctionRecamount());
+			pstmt.setString(2, dto.getAuctionUserId());
+			pstmt.executeUpdate();
+			
+		    conn.commit();
+		    
 		} catch (SQLException e) {
+			try {
+				conn.rollback();
+			} catch (Exception e2) {
+			}
 			e.printStackTrace();
 			throw e;
 		} finally {
@@ -105,9 +194,13 @@ public class AuctionDAO {
 				} catch (Exception e2) {
 				}
 			}
+			
+			conn.setAutoCommit(true);
 		}
+		return dto.getAuctionRecamount();
 	}
 	
+
 	public int dataCount() {
 		int result = 0;
 		PreparedStatement pstmt = null;
@@ -206,8 +299,8 @@ public class AuctionDAO {
 
 			try {
 				sb.append(" SELECT auctionnum, usernickname, username, auctionsubject, auctionObject,  ");
-				sb.append("       TO_CHAR(auctionregdate, 'YYYY-MM-DD') auctionregdate, ");
-				sb.append("       TO_CHAR(auctionEnddate, 'YYYY-MM-DD') auctionEnddate ");
+				sb.append("       TO_CHAR(auctionregdate, 'YYYY-MM-DD HH24:MI') auctionregdate, ");
+				sb.append("       TO_CHAR(auctionEnddate, 'YYYY-MM-DD HH24:MI') auctionEnddate ");
 				sb.append(" FROM auction b ");
 				sb.append(" JOIN member m ON b.auctionSaleId = m.userId ");
 				sb.append(" ORDER BY auctionnum DESC ");
@@ -262,8 +355,8 @@ public class AuctionDAO {
 
 			try {
 				sb.append(" SELECT auctionnum, usernickname, username, auctionsubject, auctionObject,  ");
-				sb.append("       TO_CHAR(auctionregdate, 'YYYY-MM-DD') auctionregdate, ");
-				sb.append("       TO_CHAR(auctionEnddate, 'YYYY-MM-DD') auctionEnddate ");
+				sb.append("       TO_CHAR(auctionregdate, 'YYYY-MM-DD HH24:MI') auctionregdate, ");
+				sb.append("       TO_CHAR(auctionEnddate, 'YYYY-MM-DD HH24:MI') auctionEnddate ");
 				sb.append(" FROM auction b ");
 				sb.append(" JOIN member m ON b.auctionSaleId = m.userId ");
 				if (condition.equals("all")) {
@@ -334,8 +427,8 @@ public class AuctionDAO {
 
 			try {
 				sql = "SELECT b.auctionnum, b.auctionSaleId, userNickName, userName, auctionSubject, auctionContent, "
-						+ " TO_CHAR(auctionRegdate, 'YYYY-MM-DD') auctionregdate, NVL(auctionRecAmount, 0) auctionRecAmount,"
-						+ " TO_CHAR(auctionEnddate, 'YYYY-MM-DD') auctionEnddate, auctionObject, auctionStartamount, auctionFinalamount "
+						+ " TO_CHAR(auctionRegdate, 'YYYY-MM-DD HH24:MI') auctionregdate, NVL(auctionRecAmount, 0) auctionRecAmount,"
+						+ " TO_CHAR(auctionEnddate, 'YYYY-MM-DD HH24:MI') auctionEnddate, auctionObject, auctionStartamount, auctionFinalamount "
 						+ " FROM auction b "
 						+ " JOIN member m ON b.auctionSaleId=m.userId "
 						+ " LEFT OUTER JOIN ("
@@ -573,27 +666,29 @@ public class AuctionDAO {
 				}
 			}
 		}
-			
-		public void updateAuctionFinalamount(AuctionDTO dto) throws SQLException {
-		    PreparedStatement pstmt = null;
-		    String sql;
+		public long finish(AuctionDTO dto) throws SQLException{
+			PreparedStatement pstmt = null;
+			String sql;
 		    
-		    try {
-		        sql = "UPDATE auction SET auctionFinalamount = ? WHERE auctionNum = ?";
-		        
-		        pstmt = conn.prepareStatement(sql);
-		        pstmt.setLong(1, dto.getAuctionFinalamount());
-		        pstmt.setLong(2, dto.getAuctionNum());
-		        
-		        pstmt.executeUpdate();
-		    } finally {
-		        if (pstmt != null) {
-		            try {
-		                pstmt.close();
-		            } catch (SQLException e) {
-		                e.printStackTrace();
-		            }
-		        }
-		    }
+			try {
+				sql = "UPDATE member SET userpoint=userpoint + ? WHERE userid = ?";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setLong(1, dto.getAuctionRecamount());
+				pstmt.setString(2, dto.getUserId());
+				pstmt.executeUpdate();
+			    
+		
+			} finally {
+				if(pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (Exception e2) {
+					}
+				}
+				
+			}
+			return dto.getAuctionRecamount();
 		}
-}
+		
+
+		}

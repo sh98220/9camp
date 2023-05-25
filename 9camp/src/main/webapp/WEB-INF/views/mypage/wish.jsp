@@ -237,7 +237,7 @@ function searchList() {
 	<div class="container body-container">
 	    <div class="body-title">
 			<h2><i class="fas fa-clipboard-list"></i> 나의 찜 목록 </h2>
-			<button type="button" onclick="location.href='${pageContext.request.contextPath}/mypage/main.do'">뒤로 가기</button>
+			<button type="button" class="btn" style = "float:right " onclick="location.href='${pageContext.request.contextPath}/main.do'">뒤로 가기</button>
 	    </div>
 	    
 	    <div class="body-main mx-auto">

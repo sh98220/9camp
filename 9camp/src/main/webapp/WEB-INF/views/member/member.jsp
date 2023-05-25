@@ -357,26 +357,22 @@ fjg
 <!-- 김성훈 -->
 
 <script type="text/javascript">
-function sendLogin() {
-    const f = document.loginForm;
+$(document).keydown(function(e){
+	key = (e)?e.keyCode:event.keyCode;
+	//alert(key);
+	if(key == 116 || (event.ctrlKey && event.keyCode == 82)) {
+		history.replaceState({}, null, '${pageContext.request.contextPath}/member/member.do');
+	}
+})
 
-	let str = f.userId.value;
-    if(!str) {
-        alert("아이디를 입력하세요. ");
-        f.userId.focus();
-        return;
-    }
+let msgLogin = '${message}';
 
-    str = f.userPwd.value;
-    if(!str) {
-        alert("패스워드를 입력하세요. ");
-        f.userPwd.focus();
-        return;
-    }
-
-    f.action = "${pageContext.request.contextPath}/member/login_ok.do";
-    f.submit();
+if (msgLogin.length !== 0){
+	alert(msgLogin.replace('사유', '\n사유'));
 }
+
+
+
 
 function memberOk() {
 	const f = document.memberForm;
@@ -580,7 +576,7 @@ function changeEmail() {
 							<div class="input-group">
 								<i class=''></i> <input type="text" name="userBirth" placeholder="생년월일">
 							</div>
-
+							
 						</form>
 						<button  type="button" onclick="memberOk();">Sign up</button>
 						<p>
@@ -591,6 +587,32 @@ function changeEmail() {
 				</div>
 
 			</div>
+			
+			
+			<script type="text/javascript">
+			function sendLogin() {
+			    const f = document.loginForm;
+
+				let str = f.userId.value;
+			    if(!str) {
+			        alert("아이디를 입력하세요. ");
+			        f.userId.focus();
+			        return;
+			    }
+
+			    str = f.userPwd.value;
+			    if(!str) {
+			        alert("패스워드를 입력하세요. ");
+			        f.userPwd.focus();
+			        return;
+			    }
+
+			    f.action = "${pageContext.request.contextPath}/member/login_ok.do";
+			    f.submit();
+			}
+			
+			</script>
+			
 			<!-- END SIGN UP -->
 			<!-- SIGN IN -->
 

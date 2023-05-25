@@ -153,9 +153,8 @@ public class MyPageDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		StringBuilder sb = new StringBuilder();
-
 		try {
-			sb.append(" SELECT campWish.camInfoNum, campInfo.camInfoSubject, campInfo.camInfoRegDate, campInfo.camThemaName, campWish.userId, campInfo.camInfoAddr, campInfo.camInfoContent  ");
+			sb.append(" SELECT campWish.camInfoNum, campInfo.camInfoSubject, TO_CHAR(TO_DATE(campInfo.camInfoRegDate), 'YYYY-MM-DD') camInfoRegDate, campInfo.camThemaName, campWish.userId, campInfo.camInfoAddr, campInfo.camInfoContent  ");
 			sb.append(" FROM campWish, campInfo, member ");
 			sb.append(" WHERE campWish.camInfoNum = campInfo.camInfoNum AND ");
 			sb.append(" member.userId = campWish.userId AND ");
@@ -213,7 +212,7 @@ public class MyPageDAO {
 		StringBuilder sb = new StringBuilder();
 
 		try {
-			sb.append(" SELECT campWish.camInfoNum, campInfo.camInfoSubject, campInfo.camInfoRegDate, campInfo.camThemaName, campWish.userId, campInfo.camInfoAddr, campInfo.camInfoContent  ");
+			sb.append(" SELECT campWish.camInfoNum, campInfo.camInfoSubject, TO_CHAR(TO_DATE(campInfo.camInfoRegDate), 'YYYY-MM-DD') camInfoRegDate, campInfo.camThemaName, campWish.userId, campInfo.camInfoAddr, campInfo.camInfoContent  ");
 			sb.append(" FROM campWish, campInfo, member ");
 			sb.append(" WHERE campWish.camInfoNum = campInfo.camInfoNum AND ");
 			sb.append(" member.userId = campWish.userId AND ");
@@ -436,7 +435,7 @@ public class MyPageDAO {
 			sb.append(
 					" SELECT campMate.camMateNum, campMate.camInfoNum, campMate.hostId, campMate.camMateSubject, member.userNickName, campMate.camMateContent, ");
 			sb.append(
-					" campMate.camMateStartDate, campMate.camMateEndDate, campMate.camMateDues, campInfo.camInfoSubject, campMate.campStyle ");
+					" TO_CHAR(TO_DATE(campMate.camMateStartDate), 'YYYY-MM-DD') camMateStartDate, TO_CHAR(TO_DATE(campMate.camMateEndDate), 'YYYY-MM-DD') camMateEndDate , campMate.camMateDues, campInfo.camInfoSubject, campMate.campStyle ");
 			sb.append(" FROM campMate ");
 			sb.append(" LEFT OUTER JOIN member on campMate.hostId = member.userId ");
 			sb.append(" LEFT OUTER JOIN campInfo on campInfo.camInfoNum = campMate.camInfoNum ");
@@ -503,7 +502,7 @@ public class MyPageDAO {
 			sb.append(
 					" SELECT campMate.camMateNum, campMate.camInfoNum, campMate.hostId, campMate.camMateSubject, member.userNickName, campMate.camMateContent, ");
 			sb.append(
-					" campMate.camMateStartDate, campMate.camMateEndDate, campMate.camMateDues, campInfo.camInfoSubject, campMate.campStyle  ");
+					" TO_CHAR(TO_DATE(campMate.camMateStartDate), 'YYYY-MM-DD') camMateStartDate, TO_CHAR(TO_DATE(campMate.camMateEndDate), 'YYYY-MM-DD') camMateEndDate, campMate.camMateDues, campInfo.camInfoSubject, campMate.campStyle  ");
 			sb.append(" FROM campMate ");
 			sb.append(" LEFT OUTER JOIN member on campMate.hostId = member.userId ");
 			sb.append(" LEFT OUTER JOIN campInfo on campInfo.camInfoNum = campMate.camInfoNum ");
@@ -727,7 +726,7 @@ public class MyPageDAO {
 		try {
 			sql = "SELECT campMateApply.camMateNum, campMateApply.userid, campMateApply.camMateAppContent,  "
 					+ " campMateApply.camMateAppDate, campMateApply.camMateAppGender, campMateApply.camMateAppAge, "
-					+ " campMateApply.camMateAppConfirm, member.userNickname "
+					+ " campMateApply.camMateAppConfirm, member.userNickname, campMateApply.camMateSubject "
 					+ " FROM campMate, campMateApply, member "
 					+ " WHERE campMate.camMateNum = campMateApply.camMateNum  AND "
 					+ " member.userId = campMateApply.userid AND " + " campMateApply.camMateAppConfirm = '1' AND "
@@ -750,7 +749,8 @@ public class MyPageDAO {
 				dto.setCamMateAppAge(rs.getInt("camMateAppAge"));
 				dto.setCamMateAppConfirm(rs.getString("camMateAppConfirm"));
 				dto.setUserNickName(rs.getString("userNickname"));
-
+				dto.setCamMateAppSubject(rs.getString("camMateSubject"));
+				
 				list.add(dto);
 			}
 
@@ -1152,6 +1152,58 @@ public class MyPageDAO {
 		}
 	}
 
+	
+	public List<MyPageDTO> listMember(String userId) {
+		List<MyPageDTO> list = new ArrayList<MyPageDTO>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StringBuilder sb = new StringBuilder();
+
+		try {
+			sb.append(" SELECT userId, userNickName ");
+			sb.append(" FROM member ");
+			sb.append(" WHERE userId = ?");
+
+
+			pstmt = conn.prepareStatement(sb.toString());
+
+			pstmt.setString(1, userId);
+
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				MyPageDTO dto = new MyPageDTO();
+
+				dto.setUserId(rs.getString("userId"));
+				dto.setUserNickName(rs.getString("userNickName"));
+
+				list.add(dto);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+		return list;
+	}
+	
+	
+	
+	
+	
 	public List<MyPageDTO> listMember(int offset, int size) {
 		List<MyPageDTO> list = new ArrayList<MyPageDTO>();
 		PreparedStatement pstmt = null;
@@ -1407,7 +1459,7 @@ public class MyPageDAO {
 
 		try {
 
-			sb.append(" SELECT restrictedmember.userId, restEndDate ");
+			sb.append(" SELECT restrictedmember.userId, TO_CHAR(TO_DATE(restEndDate), 'YYYY-MM-DD') restEndDate, restContent ");
 			sb.append(" FROM restrictedmember, member ");
 			sb.append(" WHERE restrictedmember.userId = member.userId AND restrictedmember.userId = ? ");
 
@@ -1419,6 +1471,7 @@ public class MyPageDAO {
 
 				dto.setUserId(rs.getString("userId"));
 				dto.setRestEndDate(rs.getString("restEndDate"));
+				dto.setRestContent(rs.getString("restContent"));
 			}
 
 		} catch (SQLException e) {
@@ -1486,7 +1539,7 @@ public class MyPageDAO {
 			pstmt.setString(1, userId);
 			pstmt.executeQuery();
 			conn.commit();
-			conn.setAutoCommit(true);
+
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -1498,6 +1551,11 @@ public class MyPageDAO {
 					pstmt.close();
 				} catch (SQLException e) {
 				}
+			}
+			
+			try {
+				conn.setAutoCommit(true);
+			} catch (SQLException e2) {
 			}
 		}
 	}
@@ -1649,6 +1707,5 @@ public class MyPageDAO {
 
 		return list;
 	}
-	
 	
 }	

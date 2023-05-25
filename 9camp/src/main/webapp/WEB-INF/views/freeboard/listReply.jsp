@@ -12,7 +12,20 @@
 	<c:forEach var="vo" items="${listReply}">	
 		<tr class='list-header'>
 			<td width='50%'>
-				<span class='bold'>${vo.userNickName}</span>
+				<div class="writer_info">
+					<a style="cursor: pointer;">
+						<span class='bold'>
+							${vo.userNickName}
+						</span>
+					</a>
+					<div id="writer_modal">
+						<ul class="writer_submenu">
+							<li>
+								<a href="${pageContext.request.contextPath}/message/write.do?msgRecId=${vo.userId}">쪽지보내기</a>
+							</li>
+						</ul>
+					</div>
+				</div>
 			</td>
 			<td width='50%' align='right'>
 				<span>${vo.camChatRepRegDate}</span> |

@@ -80,27 +80,44 @@ public class MemberServlet extends MyServlet {
 		String userId = req.getParameter("userId");
 		String userPwd = req.getParameter("userPwd");
 
+		
+		
+		
 		MemberDTO dto = dao.loginMember(userId, userPwd);
-	
-		if(dto != null) {
-			session.setMaxInactiveInterval(60*60);
 
-			SessionInfo info = new SessionInfo();
-
-			info.setUserId(dto.getUserId());
-			info.setUserName(dto.getUserName());
-			info.setUserNickName(dto.getUserNickName());
-			
-
-			session.setAttribute("member", info);
-			session.setAttribute("userbalance", dto.getUserPoint());
-			resp.sendRedirect(cp + "/");
+		
+		
+		if(dto.getRestId() != null) {
+			String msg = dto.getRestId() + "님은 " + dto.getRestDate() + " 까지 로그인 할 수 없습니다. 사유 : " + dto.getRestContent();
+			req.setAttribute("message", msg);
+			forward(req, resp, "/WEB-INF/views/member/member.jsp");
 			return;
+		}
+		
+			if(dto != null) {
+				
+				session.setMaxInactiveInterval(60*60);
+	
+				SessionInfo info = new SessionInfo();
+	
+				info.setUserId(dto.getUserId());
+				info.setUserName(dto.getUserName());
+				info.setUserNickName(dto.getUserNickName());
+				info.setUserPoint(dto.getUserPoint());
+				
+	
+				session.setAttribute("member", info);
+				session.setAttribute("userbalance", dto.getUserPoint());
+				
+				resp.sendRedirect(cp + "/");
+				return;
+			
 		}
 		String msg = "아이디 또는 패스워드가 일치하지 않습니다.";
 		req.setAttribute("message", msg);
 
 		forward(req, resp, "/WEB-INF/views/member/member.jsp");
+		return;
 	}
 
 

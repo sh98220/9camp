@@ -45,51 +45,27 @@ public class MemberDAO {
 				dto.setUserPoint(rs.getLong("userPoint"));
 				dto.setUserUpdateDate(rs.getString("userUpdateDate"));
 			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if(pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (Exception e2) {
-				}
-			}
-
-			if(rs != null) {
-				try {
-					rs.close();
-				} catch (Exception e2) {
-				}
-
-			}
-		}
-
-		return dto;
-	}
-	
-	public MemberDTO loginAdmin(String adminId, String adminPwd) {
-		MemberDTO dto = null;
-		PreparedStatement pstmt = null;
-		String sql = null;
-		ResultSet rs = null;
-
-		try {
-			sql = "SELECT adminId, adminNickName, adminPwd, adminRegDate "
-					+ "FROM admin WHERE adminId= ? AND adminPwd=? ";
+			
+			
+			pstmt.close();
+			rs.close();
+			
+			sql = "";
+			sql = "SELECT userId, restContent, TO_CHAR(restEndDate, 'YYYY-MM-DD') restEndDate "
+					+ " FROM restrictedMember "
+					+ " WHERE userId = ? ";
+			
+			
 			pstmt = conn.prepareStatement(sql);
-
-			pstmt.setString(1, adminId);
-			pstmt.setString(2, adminPwd);
-
+			pstmt.setString(1, userId);
+	
 			rs = pstmt.executeQuery();
-
+			
 			if(rs.next()) {
-				dto = new MemberDTO();
 
-				dto.setUserId(rs.getString("adminId"));
-				dto.setUserNickName (rs.getString("adminNickName"));
-				
+				dto.setRestId(rs.getString("userId"));
+				dto.setRestContent(rs.getString("restContent"));
+				dto.setRestDate(rs.getString("restEndDate"));
 			}
 
 		} catch (Exception e) {

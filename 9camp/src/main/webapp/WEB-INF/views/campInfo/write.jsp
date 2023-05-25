@@ -338,6 +338,14 @@ function sendOk() {
     	return;
     }
     
+    
+    str = f.camFacility.value.trim();
+    if(!str) {
+    	alert("캠핑장 시설을 입력해주세요!");
+    	f.camFacility.focus();
+    	return;
+    }
+    
     str = f.camInfoLineContent.value.trim();
     if(!str) {
     	alert("한줄소개를 해주세요!");
@@ -345,7 +353,12 @@ function sendOk() {
     	return;
     }
     
-    
+    str = f.camKeyWord.value.trim();
+    if(!str) {
+    	alert("키워드 명을 선택해주세요!");
+    	f.camKeyWord.focus();
+    	return;
+    }
     
     let mode = "${mode}";
     if( (mode === "write") && (!f.selectFile.value) ) {
