@@ -247,6 +247,8 @@
 
 .desc i {color: #888;}
 
+.wrap a:hover { text-decoration: underline; }
+
 
 </style>
 
@@ -272,12 +274,12 @@
 		    <div class="search_list_gr">
 		    	<div class="select_box">
 		    		<select class="detail_select">
-		    			<option>조회순</option>
 		    			<option>등록일순</option>
+		    			<option>조회순</option>
 		    		</select>
 		    	</div>
 		    	<div class="select_map">
-		    		<button type="button">리스트로 보기</button>
+		    		<button type="button" onclick="location.href='${pageContext.request.contextPath}/campInfo/list.do'">리스트로 보기</button>
 		    	</div>
 		    </div>
 		    
@@ -296,7 +298,7 @@
 				<div class="map_list">
 					<ul>
 						<c:forEach var="dto" items="${list}" varStatus="status">
-							<li onclick="">
+							<li id="li${status.index}" class="camp_list" data-index=${status.index} data-num="${dto.camInfoNum}" data-name="${dto.camInfoSubject}" data-addr="${dto.camInfoAddr}" data-tel="${dto.camPhoneNum}">
 								<div>
 									<h2>${dto.camInfoSubject}</h2>
 									<p><i class="fa-solid fa-location-dot"></i> ${dto.camInfoAddr}</p>
@@ -341,78 +343,13 @@
 <script type="text/javascript">
 var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
     mapOption = { 
-        center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
-        level: 9 // 지도의 확대 레벨
+        center: new kakao.maps.LatLng(34.987387, 127.9661896), // 지도의 중심좌표
+        level: 13 // 지도의 확대 레벨
     };  
 
 var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
 
-//주소-좌표 변환 객체를 생성합니다
-var geocoder = new kakao.maps.services.Geocoder();
-
-// 주소로 좌표를 검색합니다
-geocoder.addressSearch('경남 사천시 서포면 토끼로 245-29', function(result, status) {
-
-    // 정상적으로 검색이 완료됐으면 
-     if (status === kakao.maps.services.Status.OK) {
-
-        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
-        // 결과값으로 받은 위치를 마커로 표시합니다
-        var marker = new kakao.maps.Marker({
-            map: map,
-            position: coords
-        });
-
-        // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
-        map.setCenter(coords);
-        
-     	// 커스텀 오버레이에 표시할 컨텐츠 입니다
-     	var content = document.createElement('div');
-		content.className = 'overlay';
-
-     	var content = '<div class="wrap">' + 
-	                 '    <div class="info">' + 
-	                 '        <div class="title">' + 
-	                 '            사천비토솔섬오토캠핑장' + 
-	                 '            <div class="close" onclick="closeOverlay()" title="닫기"></div>' + 
-	                 '        </div>' + 
-	                 '        <div class="body">' + 
-	                 '            <div class="desc">' + 
-	                 '                <div class="ellipsis"><i class="fa-solid fa-location-dot"></i>&nbsp;경남 사천시 서포면 토끼로 245-29</div>' + 
-	                 '                <div class="tel ellipsis"><i class="fa-solid fa-phone"></i>&nbsp;055-854-0404</div>' +  
-	                 '            </div>' + 
-	                 '        </div>' + 
-	                 '    </div>' +    
-	                 '</div>';
-
-     	// 마커 위에 커스텀오버레이를 표시합니다
-     	// 마커를 중심으로 커스텀 오버레이를 표시하기위해 CSS를 이용해 위치를 설정했습니다
-     	var overlay = new kakao.maps.CustomOverlay({
-         	content: content,
-         	map: map,
-         	position: marker.getPosition()       
-     	});
-     	
-     	overlay.setMap(null);
-
-     	// 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
-     	kakao.maps.event.addListener(marker, 'click', function() {
-         	overlay.setMap(map);
-     	});
-     	
-     	kakao.maps.event.addListener(map, 'click', function() {
-         	overlay.setMap(null);
-     	});
-     	
-     	// 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
-     	function closeOverlay() {
-         	overlay.setMap(null);     
-     	}
-    } 
-});    
-    
-// 지도타입 컨트롤의 지도 또는 스카이뷰 버튼을 클릭하면 호출되어 지도타입을 바꾸는 함수입니다
+//지도타입 컨트롤의 지도 또는 스카이뷰 버튼을 클릭하면 호출되어 지도타입을 바꾸는 함수입니다
 function setMapType(maptype) { 
     var roadmapControl = document.getElementById('btnRoadmap');
     var skyviewControl = document.getElementById('btnSkyview'); 
@@ -435,6 +372,166 @@ function zoomIn() {
 // 지도 확대, 축소 컨트롤에서 축소 버튼을 누르면 호출되어 지도를 확대하는 함수입니다
 function zoomOut() {
     map.setLevel(map.getLevel() + 1);
+}
+
+var listData = '${jList}';
+var campList = JSON.parse(listData);
+
+var campNumList = new Array();
+var campNameList = new Array();
+var campAddrList = new Array();
+var campTelList = new Array();
+
+for(let k in campList){    
+    let $obj = campList[k];
+    let campNum  =  $obj.campNum;
+    let campName =  $obj.campName;
+    let campAddr =  $obj.campAddr;
+    let campTel =  $obj.campTel;
+    campNumList.push(campNum);
+    campNameList.push(campName);
+    campAddrList.push(campAddr);
+    campTelList.push(campTel);
+}
+
+function mapReady() {
+	//주소-좌표 변환 객체를 생성합니다
+	let geocoder = new kakao.maps.services.Geocoder();
+
+	// for loop
+	campAddrList.forEach(function(addr, index){
+	    geocoder.addressSearch(addr, function(result, status) {
+	        if (status === kakao.maps.services.Status.OK) {
+	            let coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+	            
+	            let marker = new kakao.maps.Marker({
+	                position: coords,
+	                title: campNameList[index]
+	            });
+	            
+	            var markers = [];
+	            markers.push(marker);
+	            
+	            for (var i = 0; i < markers.length; i++) {
+	                markers[i].setMap(map);
+	            }
+	            
+	         	let content = '<div class="wrap wrap'+campNumList[index]+'">' + 
+	    	                 '    <div class="info">' + 
+	    	                 '        <div class="title">' +
+	    	                 			  '<a href="${pageContext.request.contextPath}/campInfo/article.do?num='+campNumList[index]+'">' +
+	    	                 			  campNameList[index] + 
+	    	                 			  '</a>' +
+	    	                 '            <div class="close" title="닫기"></div>' + 
+	    	                 '        </div>' + 
+	    	                 '        <div class="body">' + 
+	    	                 '            <div class="desc">' + 
+	    	                 '                <div class="ellipsis"><i class="fa-solid fa-location-dot"></i>&nbsp;' + campAddrList[index] + '</div>' + 
+	    	                 '                <div class="tel ellipsis"><i class="fa-solid fa-phone"></i>&nbsp;' + campTelList[index] + '</div>' +  
+	    	                 '            </div>' + 
+	    	                 '        </div>' + 
+	    	                 '    </div>' +    
+	    	                 '</div>';
+	    	                 
+	         	// 마커 위에 커스텀오버레이를 표시합니다
+	         	// 마커를 중심으로 커스텀 오버레이를 표시하기위해 CSS를 이용해 위치를 설정했습니다
+	         	let overlay = new kakao.maps.CustomOverlay({
+	             	content: content,
+	             	map: map,
+	             	position: marker.getPosition()       
+	         	});
+	         	
+	         	overlay.setMap(null);
+
+	         	// 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
+	         	kakao.maps.event.addListener(marker, 'click', function() {
+	             	overlay.setMap(map);
+	         	});
+	         	
+	         	$("body").on("click", ".close", function(){
+	         		overlay.setMap(null);
+	         	});
+	         	
+	         	$("body").on("click", ".camp_list", function(){
+	         		let num = $(this).attr("data-index");
+	        		let campNum = $(this).attr("data-num");
+	        		let campName = $(this).attr("data-name");
+	        		let campAddr = $(this).attr("data-addr");
+	        		let campTel = $(this).attr("data-tel");
+	        		
+					// mapListClick(campNum, campName, campAddr, campTel);
+	        		
+	        	});
+	         	
+	        } 
+	    });
+	});
+}
+
+$(function(){
+	mapReady();
+});
+</script>
+
+<script type="text/javascript">
+/*
+$(function(){
+	$("body").on("click", ".camp_list", function(){
+		let campNum = $(this).attr("data-num");
+		let campName = $(this).attr("data-name");
+		let campAddr = $(this).attr("data-addr");
+		let campTel = $(this).attr("data-tel");
+		
+		mapListClick(campNum, campName, campAddr, campTel);
+	});
+	
+});
+*/
+
+function mapMarker(campNum, campName, campAddr, campTel) {
+	let geocoder = new kakao.maps.services.Geocoder();
+	
+	geocoder.addressSearch(campAddr, function(result, status) {
+        if (status === kakao.maps.services.Status.OK) {
+            let coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+            
+            map.setCenter(coords);
+            
+        } 
+    });
+}
+
+function mapListClick(campNum, campName, campAddr, campTel) {
+	let url = "${pageContext.request.contextPath}/mapCamp/mapSearch.do";
+	let query = "campNum=" + campNum + "&campName=" + campName + "&campAddr=" + campAddr + "&campTel=" + campTel;
+	
+	const fn = function(data){
+		let campNum = data.campNum;
+		let campName = data.campName;
+		let campAddr = data.campAddr;
+		let campTel = data.campTel;
+		mapMarker(campNum, campName, campAddr, campTel);
+	};
+	
+	$.ajax({
+		type:"POST",		
+		url:url,			
+		data:query,			
+		dataType:"json",	
+		success:function(data) {
+			fn(data);
+		},
+		beforeSend:function(jqXHR) { 
+			jqXHR.setRequestHeader("AJAX", true); 
+		},
+		error:function(jqXHR) {
+			if(jqXHR.status === 400) {
+				alert("요청 처리가 실패 했습니다.");
+				return false;
+			}
+			//console.log(jqXHR.responseText);
+		}
+	});
 }
 </script>
 

@@ -112,10 +112,10 @@ public class MapDAO {
 			StringBuilder sb = new StringBuilder();
 			
 			try {
-				sb.append(" SELECT camInfoNum, camInfoSubject, camInfoContent, camInfoAddr, camPhoneNum, ");
+				sb.append(" SELECT camInfoNum, camInfoSubject, camInfoContent, camInfoAddr, camPhoneNum,  ");
 				sb.append("		camInfoHitCount, TO_CHAR(camInfoRegDate, 'YYYY-MM-DD') camInfoRegDate, camThemaName ");
 				sb.append(" FROM campInfo ");
-				sb.append(" ORDER BY camInfoNum DESC ");
+				sb.append(" ORDER BY camInfoNum ASC ");
 				sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
 				
 				pstmt = conn.prepareStatement(sb.toString());
@@ -230,5 +230,70 @@ public class MapDAO {
 
 			return list;
 			
+		}
+		
+		// 리스트 클릭시 표시할 내용
+		public CampInfoDTO readCampInfo(long num) {
+			CampInfoDTO dto = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+
+			try {
+				sql = "SELECT c.camInfoNum, camInfoSubject, camInfoContent, camInfoAddr, "
+						+ " camInfoHitCount, TO_CHAR(camInfoRegDate, 'YYYY-MM-DD') camInfoRegDate, camThemaName, NVL(wishCount, 0) wishCount, camKeyWord, "
+						+ "  camPhoneNum, camNomalWeekDayPrice, camNomalWeekEndPrice, camPeakWeekDayPrice, camPeakWeekEndPrice, camFacility "
+						+ " FROM campInfo c "
+						+ " LEFT OUTER JOIN("
+						+ " SELECT camInfoNum, COUNT(*) wishCount"
+						+ " FROM campwish "
+						+ " GROUP BY camInfoNum ) "
+						+ " wc ON c.camInfoNum = wc.camInfoNum "
+						+ " WHERE c.camInfoNum = ? ";
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setLong(1, num);
+
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					dto = new CampInfoDTO();
+					
+					dto.setCamInfoNum(rs.getLong("camInfoNum"));
+					dto.setCamInfoSubject(rs.getString("camInfoSubject"));
+					dto.setCamInfoContent(rs.getString("camInfoContent"));
+					dto.setCamInfoAddr(rs.getString("camInfoAddr"));
+					dto.setCamInfoHitCount(rs.getInt("camInfoHitCount"));
+					dto.setCamInfoRegDate(rs.getString("camInfoRegDate"));
+					dto.setCamThemaName(rs.getString("camThemaName"));
+					dto.setWishCount(rs.getInt("wishCount"));	
+					dto.setCamKeyWord(rs.getString("camKeyWord"));
+					dto.setCamPhoneNum(rs.getString("camPhoneNum"));
+					dto.setCamNomalWeekDayPrice(rs.getString("camNomalWeekDayPrice"));
+					dto.setCamNomalWeekEndPrice(rs.getString("camNomalWeekEndPrice"));
+					dto.setCamPeakWeekDayPrice(rs.getString("camPeakWeekDayPrice"));
+					dto.setCamPeakWeekEndPrice(rs.getString("camPeakWeekEndPrice"));
+					dto.setCamFacility(rs.getString("camFacility"));
+				}
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException e) {
+					}
+				}
+
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e) {
+					}
+				}
+			}
+
+			return dto;
 		}
 }
