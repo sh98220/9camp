@@ -345,7 +345,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 	<div id="open_layer"></div>
 	<div class="container body-container">
 	    <div class="body-title">
-			<h2><i class="fas fa-graduation-cap"></i> 캠핑 메이트 </h2>
+			<h2><i class="fas fa-graduation-cap"></i> 캠핑 메이트 지원글 </h2>
 	    </div>
 	    
 	    <div class="body-main mx-auto">
@@ -393,7 +393,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 					</tr>
 					
 					<tr>
-						<td colspan="2" valign="top" height="100">
+						<td colspan="2" valign="top" height="300">
 							${dto.camAppContent}
 						</td>
 					</tr>
