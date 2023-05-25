@@ -78,6 +78,8 @@ public class CampInfoServlet extends MyUploadServlet {
 		try {
 			String page = req.getParameter("page");
 			int current_page = 1;
+			
+			
 			if(page != null) {
 				current_page = Integer.parseInt(page);
 			}
@@ -247,6 +249,11 @@ public class CampInfoServlet extends MyUploadServlet {
 		String cp = req.getContextPath();
 		
 		String page = req.getParameter("page");
+		
+		if(page == null) {
+			page = "1";
+		}
+		
 		String query = "page=" + page;
 		
 		try {
