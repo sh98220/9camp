@@ -282,25 +282,6 @@ function sendOk() {
     f.submit();
 }
 
-$(function() {
-	$("#modal-open").click(function() {
-		const search = document.queryselector("#modal-open");
-		let searchvalue = document.getElementById("search").val().trim();
-		if(!search) {
-			search.focus();
-			return false;
-		}
-		
-		search = encodeURIComponent(search);
-		
-		let url = "${pageContext.request.contextPath}/mate/searchCamp.do";
-		
-		const fn = function(date) {
-			let campinfo  = data.
-		}
-	});
-	
-});
 
 </script>
 </head>
@@ -349,14 +330,15 @@ $(function() {
 							      		</div>
 										<div class="popup-body">
 											<div class="popup-content">
-												<input type="text" id="search" style="width: 90%" onkeyup="search()">
-												<button type="button" id="modal-open" >검색</button>  
+												<input type="text" id="search" style="width: 90%">
+												<button type="button" id="modal-open" class="searchbt">검색</button>  
 											</div>
 										</div>
 										<div class="popup-foot">
 											<span class="pop-btn confirm" id="modal-confirm">확인</span>
 											<span class="pop-btn close" id="modal-close">창 닫기</span>
-										</div>			
+										</div>
+										<div class="resultLayout"></div>			
 									</div>
 								</div>
 							
@@ -530,6 +512,46 @@ function calculateDuration() {
 		function modalClose(){
 			$("#popup").fadeOut();
 		}
+	});
+	$(function() {
+		$(".searchbt").click(function() {
+			let searchvalue = document.querySelector("#search").value;
+			if(!searchvalue) {
+				search.focus();
+				return false;
+			}
+			
+			search = encodeURIComponent(search);
+			
+			let url = "${pageContext.request.contextPath}/mate/searchCamp.do";
+			
+			const fn = function(date) {
+				let campinfo  = data.list;
+				for(let item of data.list){
+					let camInfoNum = item.camInfoNum;
+					let camInfoSubject = item.camInfoSubject;
+					let camInfoAddr = item.camInfoAddr;
+					let camInfoContent = item.camInfoContent;
+					
+					out += "<tr>";
+					out += "<td width='50%'>";
+					out += "    <span style='font-weight: 600'>"+camInfoSubject+"</span>";
+					out += " </td>";
+					out += "   <td width='50%' align='right' > ";
+					out += "     "+camInfoAddr;
+					out += "    </td>";
+					out += "</tr>";
+					out += "<tr>";
+					out += "<td colspan='2' valign='top'>" + camInfoContent + "</td>";
+					out += "</tr>";
+				} 
+				
+				
+				$(".resultLayout").html(out);
+				
+			}
+		});
+		
 	});
 
 

@@ -1,6 +1,7 @@
 package com.mate;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
@@ -12,6 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
+
+import com.campInfo.CampInfoDAO;
+import com.campInfo.CampInfoDTO;
 import com.member.SessionInfo;
 import com.util.MyUploadServlet;
 import com.util.MyUtil;
@@ -494,8 +499,9 @@ public class MateServlet extends MyUploadServlet {
 
 
 		try {
-			long camMataAppNum = Long.parseLong(req.getParameter("camMateAppNum"));
-			MateDTO dto = dao.readMateApp(camMataAppNum);
+			long camAppNum = Long.parseLong(req.getParameter("camAppNum"));
+			
+			MateDTO dto = dao.readMateApp(camAppNum);
 
 			if(dto == null) {
 				resp.sendRedirect(cp+"/mate/applyList.do?page="+page);
@@ -607,8 +613,24 @@ public class MateServlet extends MyUploadServlet {
 	}
 
 	protected void searchCamp (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		//CampInfoDAO dao = new CampInfoDAO();
-
+		CampInfoDAO dao = new CampInfoDAO();
+		
+		try {
+			String search = req.getParameter("search");
+			
+			List<CampInfoDTO> list = dao.listCampInfo(search);
+			
+			JSONObject job = new JSONObject();
+			job.put("list", list);
+			
+			resp.setContentType("text/html;charset=utf-8");
+			PrintWriter out = resp.getWriter();
+			out.print(job.toString());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	
 	}
 
 

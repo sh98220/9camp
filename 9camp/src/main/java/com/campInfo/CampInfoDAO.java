@@ -1138,7 +1138,7 @@ public class CampInfoDAO {
 			StringBuilder sb = new StringBuilder();
 
 			try {
-				sb.append(" SELECT camInfoNum, camInfoSubject, camInfoAddr ");
+				sb.append(" SELECT camInfoNum, camInfoContent, camInfoSubject, camInfoAddr ");
 				sb.append(" FROM campInfo ");
 				sb.append("WHERE INSTR(camInfoSubject, ?) >= 1 OR INSTR(camInfoContent, ?) >= 1 OR INSTR(camInfoAddr, ?) >= 1");
 
