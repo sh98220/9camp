@@ -919,13 +919,13 @@ public class MyPageServlet extends MyServlet {
 			
 			
 			
-			if(startDate == null) {
+			/*if(startDate == null) {
 				startDate = "0001-01-01";
 			}
 			
 			if(endDate == null) {
 				endDate = "9999-12-31";
-			}
+			}*/
 			
 			if(page == null || page.equals("0"))
 				page = "1";
@@ -934,13 +934,17 @@ public class MyPageServlet extends MyServlet {
 			if (page != null) {
 				current_page = Integer.parseInt(page);
 			}
-			System.out.println(page);
+	
 			
 			// 전체데이터 개수
 			int dataCount;
 
-			dataCount = dao.dataCountStatsSwitch(startDate, endDate);
-
+			
+			if(startDate == null && endDate == null) {
+				dataCount = dao.dataCountMember();
+			} else {
+				dataCount = dao.dataCountStatsSwitch(startDate, endDate);
+			}
 
 			// 전체페이지수
 			int size = 2;
@@ -956,11 +960,15 @@ public class MyPageServlet extends MyServlet {
 
 			List<MyPageDTO> list = null;
 
-			list = dao.statsSwitch(startDate, endDate, offset, size);
-
+			
+			if(startDate == null && endDate == null) {
+				list = dao.listMember(offset, size);
+			} else {
+				list = dao.statsSwitch(startDate, endDate, offset, size);
+			}
 			
 			String query = "";
-			if(startDate.length() != 0 && endDate.length() != 0) {
+			if(startDate != null && endDate != null) {
 				query = "startDate=" + startDate + "&endDate=" + endDate;
 			}
 			
@@ -977,8 +985,6 @@ public class MyPageServlet extends MyServlet {
 			req.setAttribute("dataCount", dataCount);
 			req.setAttribute("size", size);
 			req.setAttribute("paging", paging);
-			req.setAttribute("startDate", startDate);
-			req.setAttribute("endDate", endDate);
 
 		} catch (Exception e) {
 			e.printStackTrace();
