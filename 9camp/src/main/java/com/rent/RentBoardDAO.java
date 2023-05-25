@@ -273,7 +273,7 @@ public class RentBoardDAO {
 		RentBoardDTO dto = null;
 
 		try {
-			sql = "SELECT rentNum, hostId, rentSubject, TO_CHAR(rentRegDate,'YYYY-MM-DD')rentRegDate , rentHitCount "
+			sql = "SELECT rentNum, hostId, rentSubject, TO_CHAR(rentRegDate,'YYYY-MM-DD')rentRegDate , rentHitCount, userNickName "
 					+ " FROM rental r "
 					+ " JOIN member m ON r.hostId = m.userId "
 					+ "ORDER BY rentNum DESC "
@@ -294,6 +294,7 @@ public class RentBoardDAO {
 				dto.setRentSubject(rs.getString("rentSubject"));
 				dto.setRentRegDate(rs.getString("rentRegDate"));
 				dto.setRentHitCount(rs.getInt("rentHitCount"));
+				dto.setUserNickName(rs.getString("userNickName"));
 
 				list.add(dto);
 			}
@@ -423,7 +424,7 @@ public class RentBoardDAO {
 		String sql;
 
 		try {
-			sql = "SELECT rentNum, hostId, rentSubject, rentObject, rentContent, rentFee, "
+			sql = "SELECT rentNum, hostId, rentSubject, rentObject, rentContent, rentFee, userNickName, "
 					+ "TO_CHAR(rentRegDate,'YYYY-MM-DD')rentRegDate, rentHitCount, "
 					+ "TO_CHAR(rentStartDate,'YYYY-MM-DD')rentStartDate, TO_CHAR(rentEndDate,'YYYY-MM-DD')rentEndDate "
 					+ "FROM rental r "
@@ -449,6 +450,7 @@ public class RentBoardDAO {
 				dto.setRentHitCount(rs.getInt("rentHitCount"));
 				dto.setRentStartDate(rs.getString("rentStartDate"));
 				dto.setRentEndDate(rs.getString("rentEndDate"));
+				dto.setUserNickName(rs.getString("userNickName"));
 			}
 
 		} catch (Exception e) {

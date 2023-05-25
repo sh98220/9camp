@@ -237,6 +237,49 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 
 .nav-link:hover { color: red; }
 
+/*작성자 이름 부분*/
+.writer_info {
+	overflow: visible;
+	position: relative;
+	display: inline-block;
+}
+
+.writer_info #writer_modal {
+	
+}
+
+.writer_info #writer_modal .writer_submenu {
+	position: absolute;
+	background: #fff;
+	border: 1px solid #ddd;
+	box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.2);
+	width: 113px;
+	font-size: 14px;
+	left: 35%;
+	z-index: 9;
+	display: none;
+}
+
+.writer_info #writer_modal .writer_submenu > li a {
+	padding: 10px 15px;
+	display: block;
+}
+
+.writer_info #writer_modal .writer_submenu > li a:hover {
+	background: #eee;
+	font-weight: bold;
+}
+
+#open_layer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 3;
+	width: 100%;
+	height: 200%;
+	display: none;
+}
+
 </style>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resource/jquery/js/jquery-ui.min.js"></script>
 
@@ -303,6 +346,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 </header>
 	
 <main>
+	<div id="open_layer"></div>
 	<div class="container body-container">
 	    <div class="body-title">
 			<h2><i class="fas fa-graduation-cap"></i> 렌트  </h2>
@@ -321,7 +365,19 @@ function ajaxFun(url, method, query, dataType, fn) {
 				<tbody>
 					<tr>
 						<td width="50%">
-							이름 : ${sessionScope.member.userNickName}
+							이름 :
+							<div class="writer_info">
+								<a style="cursor: pointer;">
+									${dto.userNickName}
+								</a>
+								<div id="writer_modal">
+									<ul class="writer_submenu">
+										<li>
+											<a href="${pageContext.request.contextPath}/message/write.do?msgRecId=${dto.hostId}">쪽지보내기</a>
+										</li>
+									</ul>
+								</div>
+							</div>
 						</td>
 						<td align="right">
 							${dto.rentRegDate} | 조회 ${dto.rentHitCount}
@@ -402,6 +458,29 @@ function ajaxFun(url, method, query, dataType, fn) {
 <div class="dialog-photo">
       <div class="photo-layout"></div>
 </div>
+
+<script type="text/javascript">
+//작성자 클릭시 쪽지보내기 뜨기
+$(function(){
+	$("body").on("click", ".writer_info", function(){
+		const $modal = $(this).find(".writer_submenu");
+		
+		let isVisible = $modal.is(':visible');
+		
+		$("#open_layer").show();
+		$modal.show();
+	});
+	
+});
+
+// 바디 클릭시 쪽지보내기 닫기
+$(function(){
+	$("#open_layer").click(function(){
+		$("#open_layer").hide();
+		$(".writer_submenu").hide();
+	});
+});
+</script>
 
 </body>
 </html>

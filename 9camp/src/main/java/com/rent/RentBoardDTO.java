@@ -15,6 +15,7 @@ public class RentBoardDTO {
 	private long rentPhotoNum;
 	private String rentPhotoName;
 	private String[] rentPhotos;
+	private String userNickName;
 	
 	
 	
@@ -98,5 +99,13 @@ public class RentBoardDTO {
 	public void setRentPhotoName(String rentPhotoName) {
 		this.rentPhotoName = rentPhotoName;
 	}
+	public String getUserNickName() {
+		return userNickName;
+	}
+	public void setUserNickName(String userNickName) {
+		this.userNickName = userNickName;
+	}
+	
+	
 	
 }
