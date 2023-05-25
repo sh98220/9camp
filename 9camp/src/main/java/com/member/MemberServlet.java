@@ -90,6 +90,7 @@ public class MemberServlet extends MyServlet {
 			info.setUserId(dto.getUserId());
 			info.setUserName(dto.getUserName());
 			info.setUserNickName(dto.getUserNickName());
+			info.setUserPoint(dto.getUserPoint());
 			
 
 			session.setAttribute("member", info);

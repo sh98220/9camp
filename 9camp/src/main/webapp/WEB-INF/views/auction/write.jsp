@@ -1,13 +1,40 @@
-﻿<%@ page contentType="text/html; charset=UTF-8" %>
+﻿<%@page import="java.util.TimerTask"%>
+<%@page import="java.util.Timer"%>
+<%@page import="java.util.Date"%>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+
+  <%
+//    Date auctionEndTime = dto.getAuctionEnddate(); 
+
+   // Timer timer = new Timer();
+
+   // TimerTask task = new TimerTask() {
+   //     @Override
+   //     public void run() {
+   //     }
+   //  };
+
+    // 경매 종료 시간까지의 시간 차 계산
+  //  long timeDifference = auctionEndTime.getTime() - System.currentTimeMillis();
+
+    // 경매 종료 시간이 지났을 경우 TimerTask를 예약 실행
+  //  if (timeDifference > 0) {
+  //      timer.schedule(task, timeDifference);
+  //  }
+  // %>
+
+
+<fmt:formatDate pattern="yyyy-MM-dd'T'HH:mm" var="formattedEnddate" value="${dto.auctionEnddate}" />
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>전국캠핑자랑</title>
+<title>중고거래</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 <style type="text/css">
 .body-main {
@@ -340,9 +367,9 @@ function sendOk() {
 					</tr>
 					
 					<tr> 
-						<td>경매종료일</td>
+						<td>경매종료시간</td>
 						<td> 
-							<input type="date" name="auctionEnddate" maxlength="100" class="form-control" value="${dto.auctionEnddate}">
+							<input type="datetime-local" name="auctionEnddate" class="form-control" value="${formattedEnddate}">
 						</td>
 					</tr>
 					

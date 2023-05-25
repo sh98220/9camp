@@ -239,18 +239,31 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 </style>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resource/jquery/js/jquery-ui.min.js"></script>
 <script type="text/javascript">
+
+
 <c:if test="${sessionScope.member.userId==dto.auctionSaleId || sessionScope.member.userId=='admin'}">
-	function deleteAuction() {
-	    if(confirm("게시글을 삭제 하시 겠습니까 ? ")) {
-		    let query = "num=${dto.auctionNum}&${query}";
-		    let url = "${pageContext.request.contextPath}/auction/delete.do?" + query;
-	    	location.href = url;
-	    }
-	}
+function deleteAuction() {
+    if(confirm("게시글을 삭제 하시겠습니까 ? ")) {
+	    let query = "num=${dto.auctionNum}&${query}";
+	    let url = "${pageContext.request.contextPath}/auction/delete.do?" + query;
+    	location.href = url;
+    }
+}
 </c:if>
 
-<c:if test="${sessionScope.member.userId!=dto.auctionSaleId && sessionScope.member.userId!='admin'}">
+<c:if test="${sessionScope.member.userId==dto.auctionSaleId }">
+function finishAuction() {
+	
+	const f = document.auctionForm;
+    if(confirm("게시글을 마감 하시겠습니까 ? ")) {
+    	f.action = "${pageContext.request.contextPath}/auction/finish.do";
+    	f.submit();
+    }
+}
+</c:if>
 
+
+<c:if test="${sessionScope.member.userId!=dto.auctionSaleId && sessionScope.member.userId!='admin'}">
 function sendOk() {
 	const f = document.auctionForm;
 	let str;
@@ -301,7 +314,7 @@ function sendOk() {
 		f.auctionRecamount.focus();
 		return;
 	}
-
+	
 	f.action = "${pageContext.request.contextPath}/auction/auctionRecamount.do";
 	f.submit();
 }
@@ -384,7 +397,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 					
 					<tr>
 						<td width="50%">
-							경매시작일 : ${dto.auctionRegdate} | 경매종료일 : ${dto.auctionEnddate}
+							경매시작시간 : ${dto.auctionRegdate} | 경매종료시간 : ${dto.auctionEnddate}
 						</td>
 					</tr>
 					
@@ -428,7 +441,8 @@ function ajaxFun(url, method, query, dataType, fn) {
 						<td width="50%">
 						  <c:choose>
 					   		  <c:when test="${sessionScope.member.userId!=dto.auctionSaleId && sessionScope.member.userId!='admin'}"> 
-									<button type="button" class="btn" onclick="sendOk();">입찰하기</button>
+									<button type="button" id="bidButton" class="btn" onclick="sendOk();">입찰하기</button>
+								
 				     	 	</c:when>  
 				     		<c:otherwise>  
 				     			<button type="button" class="btn" disabled="disabled">입찰하기</button>  
@@ -448,19 +462,28 @@ function ajaxFun(url, method, query, dataType, fn) {
 					<td width="50%">
 						<c:choose>
 							<c:when test="${sessionScope.member.userId==dto.auctionSaleId}">
-								<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/auction/update.do?num=${dto.auctionNum}&page=${page}';">수정</button>
+								<button type="button" id="bidButton" class="btn" onclick="location.href='${pageContext.request.contextPath}/auction/update.do?num=${dto.auctionNum}&page=${page}';">수정</button>
 							</c:when>
 							<c:otherwise>
 								<button type="button" class="btn" disabled="disabled">수정</button>
 							</c:otherwise>
 						</c:choose>
-				    	
+						
 						<c:choose>
 				    		<c:when test="${sessionScope.member.userId==dto.auctionSaleId || sessionScope.member.userId=='admin'}">
-				    			<button type="button" class="btn" onclick="deleteAuction();">삭제</button>
+				    			<button type="button" id="bidButton2" class="btn" onclick="deleteAuction();">삭제</button>
 				    		</c:when>
 				    		<c:otherwise>
 				    			<button type="button" class="btn" disabled="disabled">삭제</button>
+				    		</c:otherwise>
+				    	</c:choose>
+				    	
+				    	<c:choose>
+				    		<c:when test="${sessionScope.member.userId==dto.auctionSaleId}">
+				    			<button type="button" id="bidButton3" class="btn" onclick="finishAuction();">마감하기</button>
+				    		</c:when>
+				    		<c:otherwise>
+				    			<button type="button" class="btn" disabled="disabled">마감하기</button>
 				    		</c:otherwise>
 				    	</c:choose>
 					</td>
@@ -469,6 +492,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 					</td>
 				</tr>
 			</table>
+			<input type="hidden" name="userId" value="${dto.userId}">
 			</form>
 	    </div>
 	</div>
@@ -477,6 +501,32 @@ function ajaxFun(url, method, query, dataType, fn) {
 <footer>
     <jsp:include page="/WEB-INF/views/layout/footer.jsp"></jsp:include>
 </footer>
+
+<script type="text/javascript">
+
+
+
+//경매 종료 시간을 문자열로 받아옴 
+var auctionEndDateStr = "${dto.auctionEnddate}";
+
+// 경매 종료 시간을 JavaScript Date 객체로 변환
+var auctionEndTime = new Date(auctionEndDateStr);
+
+// 경매 종료 시간까지의 시간 차 계산
+var timeDifference = auctionEndTime - new Date();
+
+// 경매 종료 시간이 지났을 경우 버튼 비활성화
+if (timeDifference < 0) {
+  document.getElementById("bidButton").disabled = true ;
+  document.getElementById("bidButton2").disabled = true ;
+}
+
+if (timeDifference > 0){
+	document.getElementById("bidButton3").disabled = true;
+}
+ 
+
+</script>
 
 <div class="dialog-photo">
       <div class="photo-layout"></div>
