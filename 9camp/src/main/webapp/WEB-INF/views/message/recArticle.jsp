@@ -263,6 +263,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 					<tr>
 						<td width="50%">
 							<button type="button" class="btn" onclick="recDelete();">삭제</button>
+							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/message/write.do?msgRecId=${dto.msgWriterId}';">답장</button>
 						</td>
 						<td align="right">
 							<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/message/listRecMsg.do?${query}';">리스트</button>
