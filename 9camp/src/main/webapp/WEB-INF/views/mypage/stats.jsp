@@ -172,7 +172,7 @@
 <main>
 	<div id="writeMessageWrap">
 		<div class="body-title">
-			<h2><i class="fa-regular fa-envelope"></i> 통계 설정 </h2>
+			<h2><i class="fa-regular fa-envelope"></i> 가입 날짜 통계 </h2>
 	    </div>
 	    
 

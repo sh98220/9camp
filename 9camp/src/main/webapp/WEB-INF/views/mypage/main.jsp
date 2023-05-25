@@ -12,11 +12,11 @@
 <body>
 
 
-<button type="button" onclick="location.href='profile.jsp'">정보 수정</button>
-<button type="button" onclick="location.href='wish.do'">찜 리스트</button>
-<button type="button" onclick="location.href='mateList.do'">메이트 관리 리스트</button>
+
 <c:if test="${sessionScope.member.userId=='admin'}">
-	<button type="button" onclick="location.href='adminList.do'">관리자 전용</button>
+	<button type="button" onclick="location.href='adminList.do'">모든 회원</button>
+	<button type="button" onclick="location.href='confine.do'">회원 정지</button>
+	<button type="button" onclick="location.href='stats.do'">가입자 통계</button>
 </c:if>
 </body>
 </html>

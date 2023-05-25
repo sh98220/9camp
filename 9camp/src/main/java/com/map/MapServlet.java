@@ -10,6 +10,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import com.campInfo.CampInfoDTO;
 import com.util.MyServlet;
 import com.util.MyUtil;
@@ -80,6 +83,16 @@ public class MapServlet extends MyServlet {
 			} else {
 				list = dao.listCampInfo(offset, size, condition, keyword);
 			}
+			
+			JSONArray jArray = new JSONArray();
+			for (int i = 0; i < list.size(); i++) {
+                JSONObject jObject = new JSONObject();//배열 내에 들어갈 json
+                jObject.put("campNum", list.get(i).getCamInfoNum());
+                jObject.put("campName", list.get(i).getCamInfoSubject());
+                jObject.put("campAddr", list.get(i).getCamInfoAddr());
+                jObject.put("campTel", list.get(i).getCamPhoneNum());
+                jArray.put(jObject);
+            }
 				
 			String query = "";
 			if(keyword.length() != 0) {
@@ -94,8 +107,10 @@ public class MapServlet extends MyServlet {
 			}
 
 			String paging = util.paging2(current_page, total_page, listUrl);
+			
+			//long num = Long.parseLong(req.getParameter("num"));
+			//CampInfoDTO campDto = dao.readCampInfo(num);
 		
-
 			// 포워딩할 JSP에 전달할 속성
 			req.setAttribute("list", list);
 			req.setAttribute("page", current_page);
@@ -106,6 +121,9 @@ public class MapServlet extends MyServlet {
 			req.setAttribute("paging", paging);
 			req.setAttribute("condition", condition);
 			req.setAttribute("keyword", keyword);
+			
+			req.setAttribute("jList", jArray.toString());
+			//req.setAttribute("campDto", campDto);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
