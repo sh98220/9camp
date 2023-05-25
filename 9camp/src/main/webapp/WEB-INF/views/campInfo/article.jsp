@@ -674,7 +674,7 @@ function imageViewer(img) {
 </footer>
 
 
-</div>
+
 
 </body>
 </html>

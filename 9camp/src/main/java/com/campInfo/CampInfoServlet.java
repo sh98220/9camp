@@ -392,7 +392,7 @@ public class CampInfoServlet extends MyUploadServlet {
 			
 			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);
 			if (map != null) {
-				String[] saveFiles = map.get("saveFileNames");
+				String[] saveFiles = map.get("saveFilenames");
 				dto.setImageFiles(saveFiles);
 			}
 			

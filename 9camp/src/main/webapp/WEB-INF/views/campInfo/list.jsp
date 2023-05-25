@@ -63,7 +63,7 @@ input[type=checkbox], input[type=radio] { vertical-align: middle; }
 
 /* table */
 .table { width: 100%; border-spacing: 0; border-collapse: collapse; }
-.table th, .table td { padding-top: 10px; padding-bottom: 10px; }
+.table th, .table td { padding-top: 0px; padding-bottom: 10px; }
 
 .table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
 .table-border tbody > tr { border-bottom: 1px solid #ff5522; }
@@ -174,7 +174,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     position: relative;
     height: auto;
     clear: both;
-    padding: 15px 0 95px 0;
+    padding: 15px 0 15px 0;
     margin: 0px 0 0px 0;
     background: #fff;
 }
@@ -192,8 +192,33 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     clear: both;
     text-align: center;
     white-space: nowrap;
-    font-size: 20px;
+    font-size: 15px;
     margin-top: -19px;
+ 
+}
+
+.paginate a {
+    border: 1px solid #cccccc;
+    color: #000000;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 3px 7px;
+    margin-left: 3px;
+    vertical-align: middle;
+    display: inline-block;
+    border-radius : 50%;
+}
+
+.paginate span {
+    border: 1px solid #c1e0f9;
+    background: #c1e0f9;
+    font-weight: 600;
+     padding: 3px 7px;
+       margin-left: 3px;
+    vertical-align: middle;
+    border-radius : 50%;
+    color: #ffffff;
+    width: 10px;
 }
 
 #section1 {
@@ -264,7 +289,7 @@ div.select_box {
 }
 
 .select_map {
-    float: right;
+    float: left;
 }
 
 
@@ -425,7 +450,7 @@ function searchList() {
 	    <div id="cont_inner">
 	    	<div class="sub_layout layout">
 	    		<section id="section1" style="right: 0px">
-	    			<header class="title _w mb_0">
+	    			<header style="padding-bottom: 10px;" class="title _w mb_0">
 	    				<h2 class="title2">
 	    					총
 	    					<span class="em_org">${dataCount}개</span>
@@ -436,15 +461,9 @@ function searchList() {
 	    	
 	    	<div id="contents">
 	    		<div class="search_list_gr">
-	    			<div class="select_box array_select">
-					  <select class="detail_select" id="sortSelect" title="">
-					    <option value="updatedAt">업데이트순</option>
-					    <option value="views">조회순</option>
-					    <option value="likes">추천순</option>    				
-					  </select>	    			
-					</div>
+	   
 	    			<div class="select_map">
-	    				<button type="button" onclick="location.href='${pageContext.request.contextPath}/mapCamp/mapSearch.do';">지도로보기</button>
+	    				<button style="background : #e2eef3; color: black; margin-left: 20px; padding: 0px;" type="button" onclick="location.href='${pageContext.request.contextPath}/mapCamp/mapSearch.do';">지도로보기</button>
 	    			</div>	    			
 	    		</div>	    	
 	    	</div>

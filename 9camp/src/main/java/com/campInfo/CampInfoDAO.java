@@ -248,7 +248,7 @@ public class CampInfoDAO {
 			sb.append("		camInfoHitCount, TO_CHAR(camInfoRegDate, 'YYYY-MM-DD') camInfoRegDate, camThemaName ");
 			sb.append(" FROM campInfo ");
 			if(condition.equals("all")) {
-				sb.append("WHERE INSTR(camInfoSubject, ?) >= 1 OR INSTR(camInfoContent, ?) >= 1 ");
+				sb.append("WHERE INSTR(camInfoSubject, ?) >= 1");
 			} else {
 				sb.append(" WHERE INSTR(" + condition + ", ?) >= 1 ");
 			}
@@ -1005,7 +1005,7 @@ public class CampInfoDAO {
 			return list;
 		}
 		// 키워드로 검색해서 리스트 출력하기
-		public List<CampInfoDTO> listPhoto(String keystring, int offset, int size) {
+		public List<CampInfoDTO> listPhoto(String[] keys, int offset, int size) {
 
 			List<CampInfoDTO> list = new ArrayList<CampInfoDTO>();
 			PreparedStatement pstmt = null;
@@ -1022,18 +1022,34 @@ public class CampInfoDAO {
 				sb.append("          FROM campPhoto");
 				sb.append("     ) WHERE rank = 1 ");
 				sb.append(" ) i ON c.camInfoNum = i.camInfoNum ");
+				
+				if( keys!=null && keys.length != 0) {
+					String s = " WHERE ";
+					for(int i=0; i<keys.length; i++) {
+						s += " INSTR(camkeyword, ?) >= 1 OR ";
+					}
+					s = s.substring(0, s.length()-3);
+					sb.append(s);
+				}
 				sb.append(" WHERE INSTR(camkeyword, ?) >= 1");
 				sb.append(" ORDER BY camInfoNum DESC ");
 				sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
 
 				
 				pstmt = conn.prepareStatement(sb.toString());
-
-				pstmt.setString(1, keystring);
-				pstmt.setInt(2, offset);
-				pstmt.setInt(3, size);
-
 				
+				if(keys != null && keys.length != 0) {
+					int n = keys.length;
+					for(int i=0; i<keys.length; i++) {
+						pstmt.setString(i+1, keys[i]);
+					}
+					pstmt.setInt(n+1, offset);
+					pstmt.setInt(n+2, size);						
+				} else {
+					pstmt.setInt(1, offset);
+					pstmt.setInt(2, size);					
+				}
+			
 				rs = pstmt.executeQuery();
 
 				while (rs.next()) {
@@ -1128,60 +1144,23 @@ public class CampInfoDAO {
 
 			return result;
 		}
-		
-		
+
 		// 캠핑장 검색 리스트
-		public List<CampInfoDTO> listCampInfo(String keyword) {
-			List<CampInfoDTO> list = new ArrayList<CampInfoDTO>();
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			StringBuilder sb = new StringBuilder();
+	      public List<CampInfoDTO> listCampInfo(String keyword) {
+	         List<CampInfoDTO> list = new ArrayList<CampInfoDTO>();
+	       //  PreparedStatement pstmt = null;
+	        // ResultSet rs = null;
+	        // StringBuilder sb = new StringBuilder();
 
-			try {
-				sb.append(" SELECT camInfoNum, camInfoContent, camInfoSubject, camInfoAddr ");
-				sb.append(" FROM campInfo ");
-				sb.append("WHERE INSTR(camInfoSubject, ?) >= 1 OR INSTR(camInfoContent, ?) >= 1 OR INSTR(camInfoAddr, ?) >= 1");
-
-				pstmt = conn.prepareStatement(sb.toString());
+	        try {
 				
-				pstmt.setString(1, keyword);
-				pstmt.setString(2, keyword);
-				pstmt.setString(3, keyword);
-					
-
-				rs = pstmt.executeQuery();
-				
-				while(rs.next()) {
-					CampInfoDTO dto = new CampInfoDTO();
-					
-					dto.setCamInfoNum(rs.getInt("camInfoNum"));
-					dto.setCamInfoSubject(rs.getString("camInfoSubject"));
-					dto.setCamInfoAddr(rs.getString("camInfoAddr"));
-					
-					list.add(dto);		
-					
-				}
-	 
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} finally {
-				if (rs != null) {
-					try {
-						rs.close();
-					} catch (SQLException e2) {
-					}
-				}
-				if (pstmt != null) {
-					try {
-						pstmt.close();
-					} catch (SQLException e2) {
-					}
-				}
+			} catch (Exception e) {
+				// TODO: handle exception
 			}
-
-			return list;
-			
-		}
+	       
+	        return list;
+	        
+	      }
 	
 	
 }

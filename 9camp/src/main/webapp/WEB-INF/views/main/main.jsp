@@ -338,12 +338,9 @@ function searchList() {
 						<form name="searchForm" action="${pageContext.request.contextPath}/campInfo/list.do" method="post">
 						
 								<select name="condition" class="form-select" class="form-control" style="width: 16%; height: 35px; border-radius: 3px;">
-									<option value="all"      ${condition=="all"?"selected='selected'":"" }>모든내용</option>
 									<option value="camInfoSubject"  ${condition=="camInfoSubject"?"selected='selected'":"" }>캠핑장이름</option>
 									<option value="camThemaName"  ${condition=="camThemaName"?"selected='selected'":"" }>테마</option>
 									<option value="caminfoAddr" 	${condition=="camInfoAddr"?"selected='selected'":"" }>지역</option>
-									<option value="camKeyword" 	${condition=="camKeyword"?"selected='selected'":"" }>키워드</option>
-									
 								</select>
 								
 						
@@ -365,16 +362,12 @@ function searchList() {
 	<!-- 키워드 검색 -->
 	<div id="keyword-cont">
 		<h1 class="center">키워드로 검색</h1>
-		<form name="keywordForm" action="${pageContext.request.contextPath}/campInfo/list.do" method="get">
+		<form name="keywordForm" action="${pageContext.request.contextPath}/campInfo/list.do" method="post">
 			<ul class="keyword-ul">
-			<c:forEach var="dto" items="${listimage}">					
 				<li>
-					<input type="checkbox" name="key" id="check1" value="${dto.keyWordName}">
-					<label for="check2">#바다가 보이는</label>
+					<input type="checkbox" name="key" id="check1" value="반려견동반" >
+	        		<label for="check1">#반려견동반</label>
 				</li>
-			</c:forEach>
-				
-				
 				<li>
 					<input type="checkbox" name="key" id="check2" value="바다가 보이는" >
 	        		<label for="check2">#바다가 보이는</label>
@@ -503,36 +496,38 @@ function searchList() {
 	 		
 	 		
 	 	<script type="text/javascript">
-	 		function sendOk() {
-		    	  let form = document.getElementById("keywordForm");
-		    	  let selectedKeywords = [];
-		    	  let array = "";
-		    	  let cnt = $("input[name=key]:checked").length;
-		    	  let cv = $("input[name=key]:checked").val();
-		    	  
-		    	  
-		    	  $("input[name=key]:checked").each(function(){
-		    		 	let chk = $(this).val();
-		    		 	selectedKeywords.push(chk);
-		    		 	array += chk;
-		    	  });
-		    	  
-		    	  console.log(array);
-		    	  if(cnt === 0){
-		    		  alert('키워드를 하나 이상 선택하세요.');
-		    		  return false;
-		    	  }
-		    	  
-		    	  if(confirm("선택한 키워드를 검색 하시겠습니까 ?")) {
-						const f = document.keywordForm;
-						//f.action="${pageContext.request.contextPath}/campInfo/list.do?key=" + encodeURIComponent(selectedKeywordsString);
-						f.action="${pageContext.request.contextPath}/campInfo/list.do?key=" + encodeURIComponent(array);
-						f.submit();
-					}
-		    	 
-		    	}
-	      
-	      </script>
+     		 function sendOk() {
+            // 체크된 모든 체크박스 가져오기
+            var checkedCheckboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            
+            if(checkedCheckboxes.length < 1) return;
+            
+            if(checkedCheckboxes.length > 5){
+            	alert("최대 5개");
+            	return;
+            }
+/*
+           // 선택된 값을 저장할 변수 생성
+           var selectedValues = '';
+            
+           // 체크된 체크박스를 순환하며 값을 문자열에 추가
+            for (var i = 0; i < checkedCheckboxes.length; i++) {
+               selectedValues += checkedCheckboxes[i].value + ',';
+            }
+            
+           // 마지막 쉼표 제거
+           selectedValues = selectedValues.slice(0, -1);
+
+           
+            console.log(selectedValues);
+*/            
+          
+
+            document.forms['keywordForm'].submit();
+          }
+         
+         </script>
+
 	 		
 	 		
 	 		
