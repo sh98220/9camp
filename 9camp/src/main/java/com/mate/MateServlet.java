@@ -71,7 +71,9 @@ public class MateServlet extends MyUploadServlet {
 			applyupdateSubmit(req, resp);
 		} else if (uri.indexOf("applyDelete.do") != -1) {
 			applydelete(req, resp);
-		}  
+		} else if (uri.indexOf("searchCamp.do") != -1) {
+			searchCamp(req, resp);
+		} 
 
 	}
 

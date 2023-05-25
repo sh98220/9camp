@@ -68,7 +68,11 @@ public class QnaServlet extends MyUploadServlet{
 			delete(req, resp);
 		} else if (uri.indexOf("download.do") != -1) {
 			download(req, resp);
-		} 
+		} else if (uri.indexOf("pwd.do") != -1) {
+			pwdForm(req, resp);
+		} else if (uri.indexOf("pwd_ok.do") != -1) {
+			pwdSubmit(req, resp);
+		}
 
 	}
 
@@ -180,6 +184,7 @@ public class QnaServlet extends MyUploadServlet{
 			dto.setQnaSubject(req.getParameter("qnaSubject"));
 			dto.setQnaContent(req.getParameter("qnaContent"));
 			dto.setQnaOrChange(req.getParameter("qnaOrChange"));
+			dto.setQnaPwd(req.getParameter("qnaPwd"));
 
 			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);
 			if (map != null) {
@@ -506,5 +511,63 @@ public class QnaServlet extends MyUploadServlet{
 			out.print("<script>alert('파일다운로드가 실패 했습니다.');history.back();</script>");
 		}
 	}
+	
+	protected void pwdForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// 패스워드 확인 폼
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+
+		long qnaNum = Long.parseLong(req.getParameter("qnaNum"));
+		
+		String cp = req.getContextPath();
+		if (info == null) {
+			// 로그 아웃 상태이면
+			resp.sendRedirect(cp + "/qna/member.do");
+			return;
+		}
+		
+		req.setAttribute("qnaNum", qnaNum);
+		forward(req, resp, "/WEB-INF/views/qna/pwd.jsp");
+
+	}	
+
+
+	protected void pwdSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// 패스워드 확인 제출
+
+		QnaDAO dao = new QnaDAO();
+		
+		String cp = req.getContextPath();
+
+		if (req.getMethod().equalsIgnoreCase("GET")) {
+			resp.sendRedirect(cp + "/");
+			return;
+		}
+
+		try {
+			
+			long qnaNum = Long.parseLong(req.getParameter("qnaNum"));
+			
+			QnaDTO dto = dao.readQna(qnaNum);
+
+			String userPwd = req.getParameter("userPwd");
+			
+			if (!dto.getQnaPwd().equals(userPwd)) {
+				req.setAttribute("message", "패스워드가 일치하지 않습니다.");
+				forward(req, resp, "/WEB-INF/views/qna/pwd.jsp");
+				return;
+			}
+
+			resp.sendRedirect(cp + "/qna/article.do?qnaNum="+qnaNum);
+			return;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		resp.sendRedirect(cp + "/");
+		
+	}
+
 
 }

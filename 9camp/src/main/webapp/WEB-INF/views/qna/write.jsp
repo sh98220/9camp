@@ -369,6 +369,12 @@ function deleteFile(qnaFileNum) {
 							<textarea name="qnaContent" class="form-control">${dto.qnaContent}</textarea>
 						</td>
 					</tr>
+					<tr> 
+						<td valign="top">비밀번호</td>
+						<td> 
+							<input type="text" name="qnaPwd" maxlength="100" class="form-control" value="${dto.qnaPwd}">
+						</td>
+					</tr>
 					
 					<tr>
 						<td>파일첨부</td>

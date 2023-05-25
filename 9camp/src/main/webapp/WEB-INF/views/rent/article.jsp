@@ -327,9 +327,19 @@ function ajaxFun(url, method, query, dataType, fn) {
 							${dto.rentRegDate} | 조회 ${dto.rentHitCount}
 						</td>
 					</tr>
+					<tr>
+						<td width="50%">
+							날짜 : ${dto.rentStartDate}&nbsp;~&nbsp;${dto.rentEndDate}
+						</td>
+					</tr>
+					<tr>
+						<td width="50%">
+							가격 : ${dto.rentFee}
+						</td>
+					</tr>
 					
 					<tr>
-						<td colspan="2" valign="top" height="200">
+						<td colspan="2" valign="top" height="500">
 							${dto.rentContent}
 						</td>
 					</tr>

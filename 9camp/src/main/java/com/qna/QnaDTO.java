@@ -6,7 +6,7 @@ public class QnaDTO {
 	private long qnaNum;
 	private String qnaSubject;
 	private String qnaContent;
-	private String qnaQwd;
+	private String qnaPwd;
 	private int qnaHitCount;
 	private String qnaRegDate;
 	private long groupNum;
@@ -85,11 +85,11 @@ public class QnaDTO {
 	public void setQnaContent(String qnaContent) {
 		this.qnaContent = qnaContent;
 	}
-	public String getQnaQwd() {
-		return qnaQwd;
+	public String getQnaPwd() {
+		return qnaPwd;
 	}
-	public void setQnaQwd(String qnaQwd) {
-		this.qnaQwd = qnaQwd;
+	public void setQnaPwd(String qnaPwd) {
+		this.qnaPwd = qnaPwd;
 	}
 	public int getQnaHitCount() {
 		return qnaHitCount;

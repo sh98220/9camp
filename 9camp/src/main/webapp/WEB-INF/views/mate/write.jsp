@@ -331,7 +331,8 @@ function sendOk() {
 										<div class="popup-body">
 											<div class="popup-content">
 												<input type="text" id="search" style="width: 90%">
-												<button type="button" id="modal-open" class="searchbt">검색</button>  
+												<button type="button" id="modal-open" class="searchbt">검색</button> 
+												<div class="resultLayout"></div> 
 											</div>
 										</div>
 										<div class="popup-foot">
@@ -513,19 +514,24 @@ function calculateDuration() {
 			$("#popup").fadeOut();
 		}
 	});
+	
 	$(function() {
 		$(".searchbt").click(function() {
-			let searchvalue = document.querySelector("#search").value;
-			if(!searchvalue) {
+			
+			let search = document.querySelector("#search")
+			let keyword = search.value;
+			
+			if(!keyword) {
 				search.focus();
 				return false;
 			}
 			
-			search = encodeURIComponent(search);
+			
+			let qs = "keyword="+keyword;
 			
 			let url = "${pageContext.request.contextPath}/mate/searchCamp.do";
 			
-			const fn = function(date) {
+			const fn = function(data) {
 				let campinfo  = data.list;
 				for(let item of data.list){
 					let camInfoNum = item.camInfoNum;
@@ -544,17 +550,42 @@ function calculateDuration() {
 					out += "<tr>";
 					out += "<td colspan='2' valign='top'>" + camInfoContent + "</td>";
 					out += "</tr>";
+					
+					console.log(out);
+
+					//$(".resultLayout").html(out);
+				
 				} 
-				
-				
-				$(".resultLayout").html(out);
-				
 			}
+			ajaxFun(url, "post", qs, "json", fn);
 		});
 		
 	});
 
-
+	function ajaxFun(url, method, query, dataType, fn) {
+		$.ajax({
+			type:method,		// 메소드(get, post, put, delete)
+			url:url,			// 요청 받을 서버주소
+			data:query,			// 서버에 전송할 파라미터
+			dataType:dataType,	// 서버에서 응답하는 형식(json, xml, text)
+			success:function(data) {
+				fn(data);
+			},
+			beforeSend:function(jqXHR) { 
+				jqXHR.setRequestHeader("AJAX", true); // 사용자 정의 헤더
+			},
+			error:function(jqXHR) {
+				if(jqXHR.status === 403) {
+					login();
+					return false;
+				} else if(jqXHR.status === 400) {
+					alert("요청 처리가 실패 했습니다.");
+					return false;
+				}
+				console.log(jqXHR.responseText);
+			}
+		});
+	}
 
 
 </script>

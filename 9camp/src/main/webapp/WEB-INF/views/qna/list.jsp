@@ -219,10 +219,10 @@ function searchList() {
 								<td class="left">
 									<c:choose>
 									<c:when test="${dto.depth!=0}">
-									<a href="${articleUrl}&qnaNum=${dto.qnaNum}" class="text-reset">└&nbsp;${dto.qnaSubject}</a>
+									<a href="${pageContext.request.contextPath}/qna/pwd.do?qnaNum=${dto.qnaNum}" class="text-reset">└&nbsp;${dto.qnaSubject}</a>
 									</c:when>
 									<c:otherwise>
-									<a href="${articleUrl}&qnaNum=${dto.qnaNum}" class="text-reset">${dto.qnaSubject}</a>
+									<a href="${pageContext.request.contextPath}/qna/pwd.do?qnaNum=${dto.qnaNum}" class="text-reset">${dto.qnaSubject}</a>
 									</c:otherwise>
 									</c:choose>
 								</td>

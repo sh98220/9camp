@@ -47,8 +47,8 @@ public class QnaDAO {
 				dto.setOrderNum(dto.getOrderNum()+1);
 			}
 
-			sql = "INSERT INTO qna (qnaNum, userId, qnaSubject, qnaContent, qnaRegDate, qnaHitCount, qnaGroupNum, qnaOrderNum, qnadepth, qnaparent, qnaOrChange ) "
-					+ "VALUES(?, ?, ?, ?, SYSDATE, 0, ?, ?, ?, ?, ? ) ";
+			sql = "INSERT INTO qna (qnaNum, userId, qnaSubject, qnaContent, qnaPwd, qnaRegDate, qnaHitCount, qnaGroupNum, qnaOrderNum, qnadepth, qnaparent, qnaOrChange ) "
+					+ "VALUES(?, ?, ?, ?, ?, SYSDATE, 0, ?, ?, ?, ?, ? ) ";
 
 			pstmt = conn.prepareStatement(sql);
 
@@ -56,11 +56,12 @@ public class QnaDAO {
 			pstmt.setString(2, dto.getUserId());
 			pstmt.setString(3, dto.getQnaSubject());
 			pstmt.setString(4, dto.getQnaContent());
-			pstmt.setLong(5, dto.getGroupNum());
-			pstmt.setInt(6, dto.getOrderNum());
-			pstmt.setInt(7, dto.getDepth());
-			pstmt.setLong(8, dto.getParent());
-			pstmt.setString(9, dto.getQnaOrChange());
+			pstmt.setString(5, dto.getQnaPwd());
+			pstmt.setLong(6, dto.getGroupNum());
+			pstmt.setInt(7, dto.getOrderNum());
+			pstmt.setInt(8, dto.getDepth());
+			pstmt.setLong(9, dto.getParent());
+			pstmt.setString(10, dto.getQnaOrChange());
 
 			pstmt.executeUpdate();
 
