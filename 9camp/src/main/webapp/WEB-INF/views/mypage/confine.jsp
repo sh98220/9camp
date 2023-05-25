@@ -202,19 +202,19 @@
 					<script>
 						function tomorrowFun(){
 							let today = new Date();
-							let tomorrow = new Date(today.setDate(today.getDate() + 1));
+							let tomorrow = new Date(today.setDate(today.getDate() + 2));
 							document.getElementById('restEndDate').valueAsDate = tomorrow;
 						}
 						
 						function weekFun(){
 							let today = new Date();
-							let week = new Date(today.setDate(today.getDate() + 7));
+							let week = new Date(today.setDate(today.getDate() + 8));
 							document.getElementById('restEndDate').valueAsDate = week;
 						}
 						
 						function monthFun(){
 							let today = new Date();
-							let month = new Date(today.setDate(today.getDate() + 30));
+							let month = new Date(today.setDate(today.getDate() + 31));
 							document.getElementById('restEndDate').valueAsDate = month;
 						}
 						
