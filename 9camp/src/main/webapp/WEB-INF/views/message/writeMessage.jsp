@@ -179,7 +179,7 @@
 				<div class="tf_tit">
 					<label for="who" class="recipient">받는사람</label>
 					<input type="text" id="who" name="msgSenderId" value="${msgRecId}" placeholder="아이디 입력">
-					<button type="button" id="modal-open" class="btn">검색</button>  
+					<!--<button type="button" id="modal-open" class="btn">검색</button>-->  
 				</div>
 				<div class="writing_area">
 					<textarea id="writeNote" name="msgContent" style="resize:none;" rows="5" cols="55" title="쪽지 내용을 입력해 주세요."></textarea>
