@@ -3,6 +3,7 @@ package com.main;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -27,21 +28,10 @@ public class MainServlet extends MyServlet {
 		
 		
 		if(uri.indexOf("main.do") != -1) {
-			forward(req, resp, "/WEB-INF/views/main/main.jsp");
-		} else if(uri.indexOf("list.do") != -1) {
 			list(req, resp);
 		}
 	}
 
-	protected void loginFrom(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-		//String path = "/WEB-INF/views/member/login.jsp";
-	}
-	
-	protected void loginSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-	}
-	
 	protected void list(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		CampInfoDAO dao = new CampInfoDAO();
 		MyUtil util = new MyUtil();
@@ -49,6 +39,7 @@ public class MainServlet extends MyServlet {
 		String cp = req.getContextPath();
 		
 		try {
+		//	long num = Long.parseLong(req.getParameter("num"));
 			String page = req.getParameter("page");
 			int current_page = 1;
 			if(page != null) {
@@ -58,6 +49,13 @@ public class MainServlet extends MyServlet {
 		// 검색
 		String condition = req.getParameter("condition");
 		String keyword = req.getParameter("keyword");
+		/*
+        String[] key = req.getParameterValues("key"); // 키워드명 배열로 받기
+        String keystring = "";
+        for (int i = 0; i < key.length; i++) {
+            keystring += key[i];
+        }
+ */
 		if(condition == null) {
 			condition = "all";
 			keyword = "";
@@ -70,7 +68,7 @@ public class MainServlet extends MyServlet {
 		
 		// 전체 데이터 개수
 		int dataCount;
-		if (keyword.length() == 0) {
+		if (keyword.length() == 0 ) {
 			dataCount = dao.dataCount();
 		} else {
 			dataCount = dao.dataCount(condition, keyword);
@@ -87,17 +85,62 @@ public class MainServlet extends MyServlet {
 		int offset = (current_page - 1) * size;
 		if(offset < 0) offset = 0;
 		
-		List<CampInfoDTO> list = null;
+		List<CampInfoDTO> listimage = null;
 		if(keyword.length() == 0) {
-			list = dao.listCampInfo(offset, size);
+			listimage = dao.listPhoto(offset, size);
 		} else {
-			list = dao.listCampInfo(offset, size, condition, keyword);
+			listimage = dao.listPhoto(offset, size, condition, keyword);
 		}
-			
+		
+		// 키워드로 검색
+		// listimage = dao.listPhoto(keystring, offset, size);
+		
+		
+		
+		
 		String query = "";
 		if(keyword.length() != 0) {
 			query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");
 		}
+		
+		// 키워드로 검색
+		
+		
+		
+		for(CampInfoDTO dto : listimage) {
+			dto.setCamInfoContent(dto.getCamInfoContent().substring(0, 50) + "...");
+			dto.setCamInfoAddr(dto.getCamInfoAddr().substring(0, dto.getCamInfoAddr().indexOf(' ', dto.getCamInfoAddr().indexOf((' ') ) + 1 ) )  );
+		}
+	
+		
+		
+		// 메인화면 이런 캠핑장은 어떄요?
+		List<CampInfoDTO> images = new ArrayList<>();
+		
+		int n = 3;
+		if(listimage.size() < n) {
+			 n = listimage.size();
+		}
+		
+		if(n > 0) {
+			int []nn = new int[n];
+			for(int i=0; i<n; i++) {
+				nn[i] = (int) (Math.random() * listimage.size());
+				for(int j=0; j<i; j++ ) {
+					if(nn[i] == nn[j]) {
+						i--;
+						break;
+					}
+				}
+			}
+			
+			for(int i=0; i<n; i++) {
+				images.add(listimage.get(nn[i]));
+			}
+		}
+		
+		
+		
 		
 		String listUrl = cp + "/campInfo/list.do";
 		String articleUrl = cp + "/campInfo/article.do?page=" + current_page;
@@ -107,10 +150,9 @@ public class MainServlet extends MyServlet {
 		}
 
 		String paging = util.paging(current_page, total_page, listUrl);
-	
 
+		
 		// 포워딩할 JSP에 전달할 속성
-		req.setAttribute("list", list);
 		req.setAttribute("page", current_page);
 		req.setAttribute("total_page", total_page);
 		req.setAttribute("dataCount", dataCount);
@@ -119,15 +161,16 @@ public class MainServlet extends MyServlet {
 		req.setAttribute("paging", paging);
 		req.setAttribute("condition", condition);
 		req.setAttribute("keyword", keyword);
-	
-	
+		req.setAttribute("listimage", listimage);
+		req.setAttribute("images", images);
 		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	
-		forward(req, resp, "/WEB-INF/views/campInfo/list.jsp");
+		forward(req, resp, "/WEB-INF/views/main/main.jsp");
 	}
+	
 	
 
 }

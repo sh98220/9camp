@@ -214,7 +214,7 @@ function searchList() {
 					<c:forEach var="dto" items="${list}" varStatus="status">
 						<tr>
 							<td>${dataCount - (page-1) * size - status.index}</td>
-							<td>${dto.qnaOrChange}</td>
+							<td style="font-size: 13px; color:  #837a7a;">[${dto.qnaOrChange}]</td>
 								
 								<td class="left">
 									<c:choose>

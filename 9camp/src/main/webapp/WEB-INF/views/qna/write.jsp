@@ -354,8 +354,8 @@ function deleteFile(qnaFileNum) {
 					<tr> 
 						<td>게시글 유형</td>
 						<td> 
-							<input type="radio" name="qnaOrChange" id="QnA" value="QnA">
-						    <label for="QnA">QnA</label>
+							<input type="radio" name="qnaOrChange" id="QnA" value="Q n A">
+						    <label for="Q n A">Q n A</label>
 						  
 						  	<input type="radio" name="qnaOrChange" id="change" value="정보수정요청">
 						  	<label for="change">정보수정요청</label>

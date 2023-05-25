@@ -866,7 +866,7 @@ public class CampInfoDAO {
 			StringBuilder sb = new StringBuilder();
 
 			try {
-				sb.append(" SELECT c.camInfoNum, camInfosubject, camInfoPhotoName, camInfoAddr,camInfoAddr camInfoAddr1, camInfoContent, camPhoneNum, camInfoHitCount, camInfoLineContent,  (SELECT COUNT(*) FROM campWish w WHERE w.camInfoNum = c.camInfoNum) AS wishCount ");
+				sb.append(" SELECT c.camInfoNum, camInfosubject, camInfoPhotoName, camInfoAddr,camInfoAddr camInfoAddr1, camInfoContent, camPhoneNum, camInfoHitCount, camInfoLineContent, camKeyWord,  (SELECT COUNT(*) FROM campWish w WHERE w.camInfoNum = c.camInfoNum) AS wishCount ");
 				sb.append(" FROM campInfo c ");
 				sb.append(" LEFT OUTER JOIN ( ");
 				sb.append("     SELECT camInfoPhotoNum, camInfoNum, camInfoPhotoName FROM ( ");
@@ -896,6 +896,7 @@ public class CampInfoDAO {
 					dto.setCamInfoAddr(rs.getString("camInfoAddr"));
 					dto.setCamInfoAddr1(rs.getString("camInfoAddr1"));
 					dto.setCamInfoContent(rs.getString("camInfoContent"));;
+					dto.setCamKeyWord(rs.getString("camKeyWord"));
 					dto.setCamPhoneNum(rs.getString("camPhoneNum"));
 					dto.setCamInfoHitCount(rs.getInt("camInfoHitCount"));
 					dto.setCamInfoLineContent(rs.getString("camInfoLineContent"));
@@ -924,67 +925,210 @@ public class CampInfoDAO {
 			return list;
 		}
 
-		public List<CampInfoDTO> listCampInfo(int offset, int size, String[] key) {
+		
+		// 메인화면 검색
+		public List<CampInfoDTO> listPhoto(int offset, int size , String condition, String keyword) {
+			List<CampInfoDTO> list = new ArrayList<CampInfoDTO>();
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			StringBuilder sb = new StringBuilder();
 
-				List<CampInfoDTO> list = new ArrayList<CampInfoDTO>();
-				PreparedStatement pstmt = null;
-				ResultSet rs = null;
-				StringBuilder sb = new StringBuilder();
+			try {
+				sb.append(" SELECT c.camInfoNum, camInfosubject, camInfoPhotoName, camInfoAddr,camInfoAddr camInfoAddr1, camInfoContent, camPhoneNum, camInfoHitCount, camInfoLineContent, camKeyWord,  (SELECT COUNT(*) FROM campWish w WHERE w.camInfoNum = c.camInfoNum) AS wishCount ");
+				sb.append(" FROM campInfo c ");
+				sb.append(" LEFT OUTER JOIN ( ");
+				sb.append("     SELECT camInfoPhotoNum, camInfoNum, camInfoPhotoName FROM ( ");
+				sb.append("        SELECT camInfoPhotoNum, camInfoNum, camInfoPhotoName, ");
+				sb.append("            ROW_NUMBER() OVER (PARTITION BY camInfoNum ORDER BY camInfoPhotoNum ASC) AS RANK ");
+				sb.append("          FROM campPhoto");
+				sb.append("     ) WHERE rank = 1 ");
+				sb.append(" ) i ON c.camInfoNum = i.camInfoNum ");
+				if(condition.equals("all")) {
+					sb.append("WHERE INSTR(camInfoSubject, ?) >= 1");
+				} else {
+					sb.append(" WHERE INSTR(" + condition + ", ?) >= 1 ");
+				}
+				sb.append(" ORDER BY camInfoNum DESC ");
+				sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
 
-				try {
-					sb.append(" SELECT camInfoNum, camInfoSubject, camInfoContent, camInfoAddr, ");
-					sb.append("		camInfoHitCount, TO_CHAR(camInfoRegDate, 'YYYY-MM-DD') camInfoRegDate, camThemaName, camkeyword ");
-					sb.append(" FROM campInfo ");
-					sb.append("");
-					sb.append(" ORDER BY camInfoNum DESC ");
-					sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
+				
+				pstmt = conn.prepareStatement(sb.toString());
 
-					pstmt = conn.prepareStatement(sb.toString());
-
+				if (condition.equals("all")) {
+					pstmt.setString(1, keyword);
 					pstmt.setInt(2, offset);
 					pstmt.setInt(3, size);
-					
+				} else {
+					pstmt.setString(1, keyword);
+					pstmt.setInt(2, offset);
+					pstmt.setInt(3, size);
+				}
 
-					rs = pstmt.executeQuery();
+				
+				rs = pstmt.executeQuery();
+
+				while (rs.next()) {
+					CampInfoDTO dto = new CampInfoDTO();
 					
-					while(rs.next()) {
-						CampInfoDTO dto = new CampInfoDTO();
-						
-						dto.setCamInfoNum(rs.getInt("camInfoNum"));
-						dto.setCamInfoSubject(rs.getString("camInfoSubject"));
-						dto.setCamInfoContent(rs.getString("camInfoContent"));
-						dto.setCamInfoAddr(rs.getString("camInfoAddr"));
-						dto.setCamInfoHitCount(rs.getInt("camInfoHitCount"));
-						dto.setCamInfoRegDate(rs.getString("camInfoRegDate"));
-						dto.setCamThemaName(rs.getString("camThemaName"));
-						
-						list.add(dto);		
-						
-					}
-		 
-				} catch (SQLException e) {
-					e.printStackTrace();
-				} finally {
-					if (rs != null) {
-						try {
-							rs.close();
-						} catch (SQLException e2) {
-						}
-					}
-					if (pstmt != null) {
-						try {
-							pstmt.close();
-						} catch (SQLException e2) {
-						}
+					dto.setCamInfoNum(rs.getLong("camInfoNum"));
+					dto.setCamInfoSubject(rs.getString("camInfoSubject"));
+					dto.setCamInfoPhotoName(rs.getString("camInfoPhotoName"));
+					dto.setCamInfoAddr(rs.getString("camInfoAddr"));
+					dto.setCamInfoAddr1(rs.getString("camInfoAddr1"));
+					dto.setCamInfoContent(rs.getString("camInfoContent"));;
+					dto.setCamKeyWord(rs.getString("camKeyWord"));
+					dto.setCamPhoneNum(rs.getString("camPhoneNum"));
+					dto.setCamInfoHitCount(rs.getInt("camInfoHitCount"));
+					dto.setCamInfoLineContent(rs.getString("camInfoLineContent"));
+					dto.setWishCount(rs.getInt("wishCount"));
+					
+					list.add(dto);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException e) {
 					}
 				}
 
-				return list;
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e) {
+					}
+				}
+			}
+
+			return list;
+		}
+		// 키워드로 검색해서 리스트 출력하기
+		public List<CampInfoDTO> listPhoto(String keystring, int offset, int size) {
+
+			List<CampInfoDTO> list = new ArrayList<CampInfoDTO>();
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			StringBuilder sb = new StringBuilder();
+
+			try {
+				sb.append(" SELECT c.camInfoNum, camInfosubject, camInfoPhotoName, camInfoAddr,camInfoAddr camInfoAddr1, camInfoContent, camPhoneNum, camInfoHitCount, camInfoLineContent, camKeyWord,  (SELECT COUNT(*) FROM campWish w WHERE w.camInfoNum = c.camInfoNum) AS wishCount ");
+				sb.append(" FROM campInfo c ");
+				sb.append(" LEFT OUTER JOIN ( ");
+				sb.append("     SELECT camInfoPhotoNum, camInfoNum, camInfoPhotoName FROM ( ");
+				sb.append("        SELECT camInfoPhotoNum, camInfoNum, camInfoPhotoName, ");
+				sb.append("            ROW_NUMBER() OVER (PARTITION BY camInfoNum ORDER BY camInfoPhotoNum ASC) AS RANK ");
+				sb.append("          FROM campPhoto");
+				sb.append("     ) WHERE rank = 1 ");
+				sb.append(" ) i ON c.camInfoNum = i.camInfoNum ");
+				sb.append(" WHERE INSTR(camkeyword, ?) >= 1");
+				sb.append(" ORDER BY camInfoNum DESC ");
+				sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
+
 				
+				pstmt = conn.prepareStatement(sb.toString());
+
+				pstmt.setString(1, keystring);
+				pstmt.setInt(2, offset);
+				pstmt.setInt(3, size);
+
+				
+				rs = pstmt.executeQuery();
+
+				while (rs.next()) {
+					CampInfoDTO dto = new CampInfoDTO();
+					
+					dto.setCamInfoNum(rs.getLong("camInfoNum"));
+					dto.setCamInfoSubject(rs.getString("camInfoSubject"));
+					dto.setCamInfoPhotoName(rs.getString("camInfoPhotoName"));
+					dto.setCamInfoAddr(rs.getString("camInfoAddr"));
+					dto.setCamInfoAddr1(rs.getString("camInfoAddr1"));
+					dto.setCamInfoContent(rs.getString("camInfoContent"));;
+					dto.setCamKeyWord(rs.getString("camKeyWord"));
+					dto.setCamPhoneNum(rs.getString("camPhoneNum"));
+					dto.setCamInfoHitCount(rs.getInt("camInfoHitCount"));
+					dto.setCamInfoLineContent(rs.getString("camInfoLineContent"));
+					dto.setWishCount(rs.getInt("wishCount"));
+					
+					list.add(dto);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException e) {
+					}
+				}
+
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e) {
+					}
+				}
+			}
+
+			return list;
 			
 			
 		}
 		
+		// 키워드로 검색 데이터 개수
+		public int dataCount(String key[]) {
+			int result = 0;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+
+			try {
+				sql = "SELECT NVL(COUNT(*), 0)\r\n"
+						+ "FROM campInfo c\r\n"
+						+ "LEFT OUTER JOIN (\r\n"
+						+ "    SELECT camInfoPhotoNum, camInfoNum, camInfoPhotoName FROM (\r\n"
+						+ "        SELECT camInfoPhotoNum, camInfoNum, camInfoPhotoName,\r\n"
+						+ "            ROW_NUMBER() OVER (PARTITION BY camInfoNum ORDER BY camInfoPhotoNum ASC) AS RANK\r\n"
+						+ "        FROM campPhoto\r\n"
+						+ "    ) WHERE RANK = 1\r\n"
+						+ ") i ON c.camInfoNum = i.camInfoNum\r\n"
+						+ "WHERE INSTR(camkeyword, ?) >= 1\r\n"
+						+ "ORDER BY c.camInfoNum DESC";
+				
+
+				pstmt = conn.prepareStatement(sql);
+				
+			//	pstmt.setString(1, key);
+			
+				rs = pstmt.executeQuery();
+				
+				if (rs.next()) {
+					result = rs.getInt(1);
+				}
+						
+						
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException e) {
+					}
+				}
+
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException e) {
+					}
+				}
+			}
+
+			return result;
+		}
 		
+	
 	
 }

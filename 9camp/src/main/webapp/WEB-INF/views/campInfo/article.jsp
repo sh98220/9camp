@@ -550,7 +550,7 @@ function imageViewer(img) {
 				</div>
 				<div class="camp_tag">
 					<p class="tag_tt">키워드</p>
-					<p style="float: left">#${dto.camKeyWord}</p>
+					<p style="float: left">${dto.camKeyWord}</p>
 					<p style="float: right; padding-right: 0px" >${dto.camInfoRegDate} &nbsp;|   조회수 &nbsp;${dto.camInfoHitCount} &nbsp;| 찜하기 수&nbsp;${dto.wishCount}
 					 </p>			
 				</div>
@@ -650,7 +650,7 @@ function imageViewer(img) {
 						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/campInfo/update.do?num=${dto.camInfoNum}&page=${page}';">수정</button>
 					</c:when>
 				</c:choose>
-		    	
+		   
 				<c:choose>
 		    		<c:when test="${sessionScope.member.userId=='admin'}">
 		    			<button type="button" class="btn" onclick="deletecampInfo();">삭제</button>

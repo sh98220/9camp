@@ -188,6 +188,14 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	}
 }
 
+.paginate {
+    clear: both;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 20px;
+    margin-top: -19px;
+}
+
 #section1 {
     position: relative;
     overflow: hidden;
@@ -356,6 +364,16 @@ div.select_box {
     margin-bottom: 25px;
 }
 
+.camp_key {
+    font-size: 14px;
+    line-height: 20px;
+    text-align: left;
+    display: block;
+    margin-top: -15px;
+    clear: both;
+    margin-bottom: 25px;
+}
+
 .camp_info01 {
     text-align: left;
     list-style: none;
@@ -421,13 +439,12 @@ function searchList() {
 	    			<div class="select_box array_select">
 					  <select class="detail_select" id="sortSelect" title="">
 					    <option value="updatedAt">업데이트순</option>
-					    <option value="createdAt">등록일순</option>
 					    <option value="views">조회순</option>
 					    <option value="likes">추천순</option>    				
 					  </select>	    			
 					</div>
 	    			<div class="select_map">
-	    				<button type="button">지도로보기</button>
+	    				<button type="button" onclick="location.href='${pageContext.request.contextPath}/mapCamp/mapSearch.do';">지도로보기</button>
 	    			</div>	    			
 	    		</div>	    	
 	    	</div>
@@ -458,6 +475,10 @@ function searchList() {
 			    					
 			    					<span class="camp_txt" style="font-size: 13px;">
 			    						<a href="${articleUrl}&num=${vo.camInfoNum}">${vo.camInfoContent}</a>			
+			    					 </span>
+			    					 
+			    					 <span class="camp_key" style="font-size: 16px;">
+			    						${vo.camKeyWord}			
 			    					 </span>
 			    					
 		    						<ul class="camp_info01">
@@ -499,21 +520,7 @@ function searchList() {
 					<td width="100">
 						<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/campInfo/list.do';" title="새로고침"><i class="fa-solid fa-arrow-rotate-right"></i></button>
 					</td>
-					<td align="center">
-						<form name="searchForm" action="${pageContext.request.contextPath}/campInfo/list.do" method="post">
-							<select name="condition" class="form-select">
-								<option value="all"      ${condition=="all"?"selected='selected'":"" }>제목+내용</option>
-								<option value="camInfoRegDate"  ${condition=="camInfoRegDate"?"selected='selected'":"" }>등록일</option>
-								<option value="camInfoSubject"  ${condition=="camInfoSubject"?"selected='selected'":"" }>제목</option>
-								<option value="camInfoContent"  ${condition=="camInfoContent"?"selected='selected'":"" }>내용</option>
-								<option value="camThemaName"  ${condition=="camThemaName"?"selected='selected'":"" }>테마명</option>
-								
-							</select>
-							<input type="text" name="keyword" value="${keyword}" class="form-control">
-							<input type="hidden" name="category" value="${category}">
-							<button type="button" class="btn" onclick="searchList();">검색</button>
-						</form>
-					</td>
+					
 					
 					<td align="right" width="100">
 						<c:choose>

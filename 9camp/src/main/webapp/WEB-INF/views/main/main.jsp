@@ -31,6 +31,9 @@
 
 #main_ban .main_bg_txt > img {
 	width: 100%;
+    height: 100%;
+    object-fit: cover;
+	
 }
 
 #main_ban .main_bg_btn {
@@ -59,7 +62,7 @@
 }
 
 #rcm-cont .rcm-cont-div {
-	width: 90%;
+	width: 100%;
 	max-width: 1200px;
 	margin: 0 auto;
 }
@@ -100,6 +103,7 @@
 	height: 100%;
 	display: block;
 	transition: transform ease-in 0.5s;
+	object-fit: cover;
 }
 
 #rcm-cont .rcm-cont-div .rcm-cont-ul > li:hover .rcm-img {
@@ -116,8 +120,8 @@
 	position: absolute;
 	bottom: 0;
 	width: 100%;
-	background: rgba(1,1,1,1);
-	padding: 10px;
+	background-color: rgba(255, 196, 21, 0.8);
+	padding: 15px;
 	display: block;
 	transition: transform ease-in 0.5s;
 }
@@ -335,10 +339,11 @@ function searchList() {
 						
 								<select name="condition" class="form-select" class="form-control" style="width: 16%; height: 35px; border-radius: 3px;">
 									<option value="all"      ${condition=="all"?"selected='selected'":"" }>모든내용</option>
-									<option value="camInfoSubject"  ${condition=="camInfoSubject"?"selected='selected'":"" }>제목</option>
-									<option value="camInfoContent"  ${condition=="camInfoContent"?"selected='selected'":"" }>내용</option>
+									<option value="camInfoSubject"  ${condition=="camInfoSubject"?"selected='selected'":"" }>캠핑장이름</option>
 									<option value="camThemaName"  ${condition=="camThemaName"?"selected='selected'":"" }>테마</option>
 									<option value="caminfoAddr" 	${condition=="camInfoAddr"?"selected='selected'":"" }>지역</option>
+									<option value="camKeyword" 	${condition=="camKeyword"?"selected='selected'":"" }>키워드</option>
+									
 								</select>
 								
 						
@@ -362,124 +367,128 @@ function searchList() {
 		<h1 class="center">키워드로 검색</h1>
 		<form name="keywordForm" action="${pageContext.request.contextPath}/campInfo/list.do" method="get">
 			<ul class="keyword-ul">
+			<c:forEach var="dto" items="${listimage}">					
 				<li>
-					<input type="checkbox" name="key" id="check1" value="#반려견동반" >
-	        		<label for="check1">#반려견동반</label>
+					<input type="checkbox" name="key" id="check1" value="${dto.keyWordName}">
+					<label for="check2">#바다가 보이는</label>
 				</li>
+			</c:forEach>
+				
+				
 				<li>
-					<input type="checkbox" name="key" id="check2" value="#바다가 보이는" >
+					<input type="checkbox" name="key" id="check2" value="바다가 보이는" >
 	        		<label for="check2">#바다가 보이는</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check3" value="#친절한" >
+					<input type="checkbox" name="key" id="check3" value="친절한" >
 	        		<label for="check3">#친절한</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check4" value="#생태교육">
+					<input type="checkbox" name="key" id="check4" value="생태교육">
 	        		<label for="check4">#생태교육</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check5" value=">#힐링">
+					<input type="checkbox" name="key" id="check5" value=">힐링">
 	        		<label for="check5">#힐링</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check6" value="#문화유적">
+					<input type="checkbox" name="key" id="check6" value="문화유적">
 	        		<label for="check6">#문화유적</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check7" value="#커플">
+					<input type="checkbox" name="key" id="check7" value="커플">
 	        		<label for="check7">#커플</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check8" value="#봄">
+					<input type="checkbox" name="key" id="check8" value="봄">
 	        		<label for="check8">#봄</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check9" value="#그늘이 많은">
+					<input type="checkbox" name="key" id="check9" value="그늘이 많은">
 	        		<label for="check9">#그늘이 많은</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check10" value="#별 보기 좋은">
+					<input type="checkbox" name="key" id="check10" value="별 보기 좋은">
 	        		<label for="check10">#별 보기 좋은</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check11" value="#익스트림">
+					<input type="checkbox" name="key" id="check11" value="익스트림">
 	        		<label for="check11">#익스트림</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check12" value="#재미있는">
+					<input type="checkbox" name="key" id="check12" value="재미있는">
 	        		<label for="check12">#재미있는</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check13" value="#여유있는">
+					<input type="checkbox" name="key" id="check13" value="여유있는">
 	        		<label for="check13">#여유있는</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check14" value="#물놀이 하기 좋은">
+					<input type="checkbox" name="key" id="check14" value="물놀이 하기 좋은">
 	        		<label for="check14">#물놀이 하기 좋은</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check15" value="#둘레길">
+					<input type="checkbox" name="key" id="check15" value="둘레길">
 	        		<label for="check15">#둘레길</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check16" value="#물맑은">
+					<input type="checkbox" name="key" id="check16" value="물맑은">
 	        		<label for="check16">#물맑은</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check17" value="#가족">
+					<input type="checkbox" name="key" id="check17" value="가족">
 	        		<label for="check17">#가족</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check18" value="#캠핑카">
+					<input type="checkbox" name="key" id="check18" value="캠핑카">
 	        		<label for="check18">#캠핑카</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check19" value="#깨끗한">
+					<input type="checkbox" name="key" id="check19" value="깨끗한">
 	        		<label for="check19">#깨끗한</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check20" value="#가을">
+					<input type="checkbox" name="key" id="check20" value="가을">
 	        		<label for="check20">#가을</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check21" value="#자전거 타기 좋은">
+					<input type="checkbox" name="key" id="check21" value="자전거 타기 좋은">
 	        		<label for="check21">#자전거 타기 좋은</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check22" value="#수영장 있는">
+					<input type="checkbox" name="key" id="check22" value="수영장 있는">
 	        		<label for="check22">#수영장 있는</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check23" value="#차대기 편한">
+					<input type="checkbox" name="key" id="check23" value="차대기 편한">
 	        		<label for="check23">#차대기 편한</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check24" value="#여름">
+					<input type="checkbox" name="key" id="check24" value="여름">
 	        		<label for="check24">#여름</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check25" value="#축제">
+					<input type="checkbox" name="key" id="check25" value="축제">
 	        		<label for="check25">#축제</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check26" value="#계곡옆">
+					<input type="checkbox" name="key" id="check26" value="계곡옆">
 	        		<label for="check26">#계곡옆</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check27" value="#아이들 놀기 좋은">
+					<input type="checkbox" name="key" id="check27" value="아이들 놀기 좋은">
 	        		<label for="check27">#아이들 놀기 좋은</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check28" value="#사이트 간격이 넓은">
+					<input type="checkbox" name="key" id="check28" value="사이트 간격이 넓은">
 	        		<label for="check28">#사이트 간격이 넓은</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check29" value="#온수 잘 나오는">
+					<input type="checkbox" name="key" id="check29" value="온수 잘 나오는">
 	        		<label for="check29">#온수 잘 나오는</label>
 				</li>
 				<li>
-					<input type="checkbox" name="key" id="check30" value="#겨울">
+					<input type="checkbox" name="key" id="check30" value="겨울">
 	        		<label for="check30">#겨울</label>
 				</li>
 			</ul>
@@ -493,8 +502,8 @@ function searchList() {
 	 		</div>
 	 		
 	 		
-	 		 <script type="text/javascript">
-		      	function sendOk() {
+	 	<script type="text/javascript">
+	 		function sendOk() {
 		    	  let form = document.getElementById("keywordForm");
 		    	  let selectedKeywords = [];
 		    	  let array = "";
@@ -517,7 +526,7 @@ function searchList() {
 		    	  if(confirm("선택한 키워드를 검색 하시겠습니까 ?")) {
 						const f = document.keywordForm;
 						//f.action="${pageContext.request.contextPath}/campInfo/list.do?key=" + encodeURIComponent(selectedKeywordsString);
-						f.action= "${pageContext.request.contextPath}/campInfo/list.do?key=" + encodeURIComponent(array);
+						f.action="${pageContext.request.contextPath}/campInfo/list.do?key=" + encodeURIComponent(array);
 						f.submit();
 					}
 		    	 
@@ -530,43 +539,27 @@ function searchList() {
 		</form>
 	</div>
 	<!-- //키워드 검색 -->
+
 	
 	<!-- 이달의 추천 캠핑장 -->
 	<div id="rcm-cont">
 		<div class="rcm-cont-div">
 			<img src="${pageContext.request.contextPath}/resource/images/main/recommended.png" class="img_rcm">
-			<h1>이달의 추천 캠핑장</h1>
+			<h1>여기 캠핑장 어떠세요?</h1>
 			<ul class="rcm-cont-ul">
-				<li>
-					<a href="#">
+				<c:forEach var="vo" items="${images}">
+					<li style="position: relative; width: 30%; height: 310px; overflow: hidden;">
 						<span class="rcm-img">
-							<img src="${pageContext.request.contextPath}/resource/images/main/camp_img01.jpg">
+							<a href="${articleUrl}&num=${vo.camInfoNum}">
+								<img src="${pageContext.request.contextPath}/uploads/campInfo/${vo.camInfoPhotoName}">
+							</a>
 						</span>
 						<span class="rcm-txt">
-							바다와 파도소리, 밤이면 별이 쏟아지는 해변에서 즐기는 감성캠핑. 그곳으로 떠나요~~
+							${vo.camInfoLineContent}
 						</span>
-					</a>
-				</li>
-				<li>
-					<a href="#">
-						<span class="rcm-img">
-							<img src="${pageContext.request.contextPath}/resource/images/main/camp_img01.jpg">
-						</span>
-						<span class="rcm-txt">
-							바다와 파도소리, 밤이면 별이 쏟아지는 해변에서 즐기는 감성캠핑. 그곳으로 떠나요~~
-						</span>
-					</a>
-				</li>
-				<li>
-					<a href="#">
-						<span class="rcm-img">
-							<img src="${pageContext.request.contextPath}/resource/images/main/camp_img01.jpg">
-						</span>
-						<span class="rcm-txt">
-							바다와 파도소리, 밤이면 별이 쏟아지는 해변에서 즐기는 감성캠핑. 그곳으로 떠나요~~
-						</span>
-					</a>
-				</li>
+					</li>
+				</c:forEach>
+
 			</ul>
 		</div>
 	</div>
@@ -597,59 +590,6 @@ resetButton.addEventListener("click", function() {
 	});
 });
 
-/**/
- 
- $('document').ready(function() {
- var area0 = ["시/도 선택","서울특별시","인천광역시","대전광역시","광주광역시","대구광역시","울산광역시","부산광역시","경기도","강원도","충청북도","충청남도","전라북도","전라남도","경상북도","경상남도","제주도"];
-  var area1 = ["강남구","강동구","강북구","강서구","관악구","광진구","구로구","금천구","노원구","도봉구","동대문구","동작구","마포구","서대문구","서초구","성동구","성북구","송파구","양천구","영등포구","용산구","은평구","종로구","중구","중랑구"];
-   var area2 = ["계양구","남구","남동구","동구","부평구","서구","연수구","중구","강화군","옹진군"];
-   var area3 = ["대덕구","동구","서구","유성구","중구"];
-   var area4 = ["광산구","남구","동구",     "북구","서구"];
-   var area5 = ["남구","달서구","동구","북구","서구","수성구","중구","달성군"];
-   var area6 = ["남구","동구","북구","중구","울주군"];
-   var area7 = ["강서구","금정구","남구","동구","동래구","부산진구","북구","사상구","사하구","서구","수영구","연제구","영도구","중구","해운대구","기장군"];
-   var area8 = ["고양시","과천시","광명시","광주시","구리시","군포시","김포시","남양주시","동두천시","부천시","성남시","수원시","시흥시","안산시","안성시","안양시","양주시","오산시","용인시","의왕시","의정부시","이천시","파주시","평택시","포천시","하남시","화성시","가평군","양평군","여주군","연천군"];
-   var area9 = ["강릉시","동해시","삼척시","속초시","원주시","춘천시","태백시","고성군","양구군","양양군","영월군","인제군","정선군","철원군","평창군","홍천군","화천군","횡성군"];
-   var area10 = ["제천시","청주시","충주시","괴산군","단양군","보은군","영동군","옥천군","음성군","증평군","진천군","청원군"];
-   var area11 = ["계룡시","공주시","논산시","보령시","서산시","아산시","천안시","금산군","당진군","부여군","서천군","연기군","예산군","청양군","태안군","홍성군"];
-   var area12 = ["군산시","김제시","남원시","익산시","전주시","정읍시","고창군","무주군","부안군","순창군","완주군","임실군","장수군","진안군"];
-   var area13 = ["광양시","나주시","목포시","순천시","여수시","강진군","고흥군","곡성군","구례군","담양군","무안군","보성군","신안군","영광군","영암군","완도군","장성군","장흥군","진도군","함평군","해남군","화순군"];
-   var area14 = ["경산시","경주시","구미시","김천시","문경시","상주시","안동시","영주시","영천시","포항시","고령군","군위군","봉화군","성주군","영덕군","영양군","예천군","울릉군","울진군","의성군","청도군","청송군","칠곡군"];
-   var area15 = ["거제시","김해시","마산시","밀양시","사천시","양산시","진주시","진해시","창원시","통영시","거창군","고성군","남해군","산청군","의령군","창녕군","하동군","함안군","함양군","합천군"];
-   var area16 = ["서귀포시","제주시","남제주군","북제주군"];
-
- 
-
- // 시/도 선택 박스 초기화
-
- $("select[name^=sido]").each(function() {
-  $selsido = $(this);
-  $.each(eval(area0), function() {
-   $selsido.append("<option value='"+this+"'>"+this+"</option>");
-  });
-  $selsido.next().append("<option value=''>구/군 선택</option>");
- });
-
- 
-
- // 시/도 선택시 구/군 설정
-
- $("select[name^=sido]").change(function() {
-  var area = "area"+$("option",$(this)).index($("option:selected",$(this))); // 선택지역의 구군 Array
-  var $gugun = $(this).next(); // 선택영역 군구 객체
-  $("option",$gugun).remove(); // 구군 초기화
-
-  if(area == "area0")
-   $gugun.append("<option value=''>구/군 선택</option>");
-  else {
-   $.each(eval(area), function() {
-    $gugun.append("<option value='"+this+"'>"+this+"</option>");
-   });
-  }
- });
-
-
-});
 
 </script>
 	

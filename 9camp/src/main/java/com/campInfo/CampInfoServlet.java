@@ -76,7 +76,6 @@ public class CampInfoServlet extends MyUploadServlet {
 		String cp = req.getContextPath();
 		
 		try {
-		//	long num = Long.parseLong(req.getParameter("num"));
 			String page = req.getParameter("page");
 			int current_page = 1;
 			if(page != null) {
@@ -86,12 +85,11 @@ public class CampInfoServlet extends MyUploadServlet {
 		// 검색
 		String condition = req.getParameter("condition");
 		String keyword = req.getParameter("keyword");
+ 
 		if(condition == null) {
 			condition = "all";
 			keyword = "";
 		}
-		//키워드명 배열로 넘어감
-		//String []key = req.getParameterValues("key")
 		
 		// GET 방식인 경우 디코딩
 		if(req.getMethod().equalsIgnoreCase("GET")) {
@@ -100,7 +98,7 @@ public class CampInfoServlet extends MyUploadServlet {
 		
 		// 전체 데이터 개수
 		int dataCount;
-		if (keyword.length() == 0) {
+		if (keyword.length() == 0 ) {
 			dataCount = dao.dataCount();
 		} else {
 			dataCount = dao.dataCount(condition, keyword);
@@ -117,19 +115,22 @@ public class CampInfoServlet extends MyUploadServlet {
 		int offset = (current_page - 1) * size;
 		if(offset < 0) offset = 0;
 		
-		List<CampInfoDTO> list = null;
+		List<CampInfoDTO> listimage = null;
 		if(keyword.length() == 0) {
-			list = dao.listCampInfo(offset, size);
+			listimage = dao.listPhoto(offset, size);
 		} else {
-			list = dao.listCampInfo(offset, size, condition, keyword);
+			listimage = dao.listPhoto(offset, size, condition, keyword);
 		}
-			
+
+		
+		
 		String query = "";
 		if(keyword.length() != 0) {
 			query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");
 		}
 		
-		List<CampInfoDTO> listimage = dao.listPhoto(offset, size);
+		
+		
 		
 		for(CampInfoDTO dto : listimage) {
 			dto.setCamInfoContent(dto.getCamInfoContent().substring(0, 50) + "...");
@@ -154,7 +155,6 @@ public class CampInfoServlet extends MyUploadServlet {
 		
 		
 		// 포워딩할 JSP에 전달할 속성
-		req.setAttribute("list", list);
 		req.setAttribute("page", current_page);
 		req.setAttribute("total_page", total_page);
 		req.setAttribute("dataCount", dataCount);
