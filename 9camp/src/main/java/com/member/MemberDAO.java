@@ -62,7 +62,6 @@ public class MemberDAO {
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
-				dto = new MemberDTO();
 
 				dto.setRestId(rs.getString("userId"));
 				dto.setRestContent(rs.getString("restContent"));

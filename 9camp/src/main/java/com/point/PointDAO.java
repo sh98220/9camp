@@ -236,7 +236,7 @@ public class PointDAO {
 
 		try {
 			sb.append(" SELECT pointnum, pointmode, pointamount, balance2, ");
-			sb.append("       TO_CHAR(pointdate, 'YYYY-MM-DD HH24:MI') pointdate ");
+			sb.append("       TO_CHAR(pointdate, 'YYYY-MM-DD HH24:MI') pointdate, b.userId ");
 			sb.append(" FROM pointrecord b ");
 			sb.append(" JOIN member m ON b.userId = m.userId ");
 			sb.append(" WHERE m.userId = ? OR 'admin' = ? ");
@@ -260,6 +260,7 @@ public class PointDAO {
 				dto.setPointAmount(rs.getLong("pointamount"));
 				dto.setPointDate(rs.getString("pointdate"));
 				dto.setBalance2(rs.getLong("balance2"));
+				dto.setUserId(rs.getString("userId"));
 
 				list.add(dto);
 			}
@@ -292,7 +293,7 @@ public class PointDAO {
 
 		try {
 			sb.append(" SELECT pointnum, pointmode, pointamount, ");
-			sb.append("       TO_CHAR(pointdate, 'YYYY-MM-DD HH24:MI') pointdate ");
+			sb.append("       TO_CHAR(pointdate, 'YYYY-MM-DD HH24:MI') pointdate, b.userId ");
 			sb.append(" FROM pointrecord b ");
 			sb.append(" JOIN member m ON b.userid = m.userId ");
 			sb.append(" (WHERE m.userId = ? OR 'admin' = ?) AND ");
