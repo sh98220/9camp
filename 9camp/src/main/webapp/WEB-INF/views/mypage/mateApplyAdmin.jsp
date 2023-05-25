@@ -77,8 +77,6 @@ function searchList() {
 					<thead>
 						<tr>
 							<th class="num">닉네임</th>
-							<th class="subject">제목</th>
-							<th class="content">내용</th>
 							<th class="gender">성별</th>
 							<th class="age">나이</th>
 							<th class="chk">
@@ -91,8 +89,6 @@ function searchList() {
 						<c:forEach var="member" items="${list}" varStatus="status">
 						<tr>				
 							<td>${member.userNickName}</td>
-							<td>${member.camMateSubject}</td>
-							<td>${member.camMateAppContent}</td>
 							<td>${member.camMateAppGender}</td>
 							<td>${member.camMateAppAge}</td>
 							<td>
@@ -118,8 +114,6 @@ function searchList() {
 						<form name="searchForm" action="${pageContext.request.contextPath}/mypage/mateApplyAdmin.do?page=${page}&num=${num}" method="post">
 							<select name="condition" class="form-select">
 								<option value="userNickName" ${condition=="userNickName"?"selected='selected'":"" }>닉네임</option>
-								<option value="camMateSubject" ${condition=="camMateSubject"?"selected='selected'":"" }>닉네임</option>
-								<option value="camMateAppContent"  ${condition=="camMateAppContent"?"selected='selected'":"" }>내용</option>
 								<option value="camMateAppGender"  ${condition=="camMateAppGender"?"selected='selected'":"" }>성별</option>
 								<option value="camMateAppAge"  ${condition=="camMateAppAge"?"selected='selected'":"" }>나이</option>
 							</select>

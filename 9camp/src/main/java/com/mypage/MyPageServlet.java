@@ -701,7 +701,7 @@ public class MyPageServlet extends MyServlet {
 			}
 
 			// 전체페이지수
-			int size = 2;
+			int size = 10;
 			int total_page = util.pageCount(dataCount, size);
 			if (current_page > total_page) {
 				current_page = total_page;
@@ -975,7 +975,7 @@ public class MyPageServlet extends MyServlet {
 			}
 
 			// 전체페이지수
-			int size = 2;
+			int size = 10;
 			int total_page = util.pageCount(dataCount, size);
 			if (current_page > total_page) {
 				current_page = total_page;

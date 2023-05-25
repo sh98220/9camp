@@ -116,6 +116,7 @@
 						<thead>
 							<tr>
 								<th class="num">닉네임</th>
+								<th class="subject">제목</th>
 								<th class="content">내용</th>
 								<th class="gender">성별</th>
 								<th class="age">나이</th>
@@ -128,6 +129,7 @@
 							<c:forEach var="dto" items="${list}" varStatus="status">
 								<tr>
 									<td>${dto.userNickName}</td>
+									<td>${dto.camMateAppSubject}</td>
 									<td>${dto.camMateAppContent}</td>
 									<td>${dto.camMateAppGender}</td>
 									<td>${dto.camMateAppAge}</td>
@@ -159,6 +161,8 @@
 									<!-- <option value="all" ${condition=="all"?"selected='selected'":"" }>제목+내용</option> -->
 									<option value="userNickName"
 										${condition=="userNickName"?"selected='selected'":"" }>닉네임</option>
+									<option value="camMateSubject"
+										${condition=="camMateSubject"?"selected='selected'":"" }>제목</option>
 									<option value="camMateAppContent"
 										${condition=="camMateAppContent "?"selected='selected'":"" }>내용</option>
 									<option value="camMateAppGender"

@@ -12,7 +12,31 @@ public class MemberDTO {
 	private long userPoint;
 	private String userUpdateDate;
 	
+	//정지 확인
+	private String restId;
+	private String restContent;
+	private String restDate;
 	
+	
+	
+	public String getRestId() {
+		return restId;
+	}
+	public void setRestId(String restId) {
+		this.restId = restId;
+	}
+	public String getRestContent() {
+		return restContent;
+	}
+	public void setRestContent(String restContent) {
+		this.restContent = restContent;
+	}
+	public String getRestDate() {
+		return restDate;
+	}
+	public void setRestDate(String restDate) {
+		this.restDate = restDate;
+	}
 	public String getUserId() {
 		return userId;
 	}
