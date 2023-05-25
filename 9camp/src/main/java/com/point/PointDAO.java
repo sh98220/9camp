@@ -183,14 +183,16 @@ public class PointDAO {
 
 		try {
 			sql = "SELECT NVL(COUNT(*), 0) FROM pointrecord b "
-					+ " JOIN member m ON b.userId = m.userId "
-					+ " (WHERE m.userId = ? OR 'admin' = ?) AND ";
-			if (condition.equals("pointmode")) {
-				sql += "  INSTR(pointmode, ?) >= 1";
-			} else if (condition.equals("pointdate")) {
-				keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
-				sql += "  TO_CHAR(pointdate, 'YYYYMMDD') = ? ";
-			} 
+				    + "JOIN member m ON b.userId = m.userId "
+				    + "WHERE (m.userId = ? OR 'admin' = ?) ";
+				if (condition.equals("pointmode")) {
+				    sql += "AND INSTR(pointmode, ?) >= 1";
+				} else if (condition.equals("pointdate")) {
+				    keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
+				    sql += "AND TO_CHAR(pointdate, 'YYYYMMDD') = ? ";
+				} else if (condition.equals("userId")) {
+				    sql += "AND INSTR(b.userId, ?) >= 1 ";
+				}
 			
 	        pstmt = conn.prepareStatement(sql);
 
@@ -292,17 +294,20 @@ public class PointDAO {
 		StringBuilder sb = new StringBuilder();
 
 		try {
-			sb.append(" SELECT pointnum, pointmode, pointamount, ");
+			sb.append("SELECT pointnum, pointmode, pointamount, ");
 			sb.append("       TO_CHAR(pointdate, 'YYYY-MM-DD HH24:MI') pointdate, b.userId ");
-			sb.append(" FROM pointrecord b ");
-			sb.append(" JOIN member m ON b.userid = m.userId ");
-			sb.append(" (WHERE m.userId = ? OR 'admin' = ?) AND ");
+			sb.append("FROM pointrecord b ");
+			sb.append("JOIN member m ON b.userid = m.userId ");
+			sb.append("WHERE (m.userId = ? OR 'admin' = ?) ");
 			if (condition.equals("pointmode")) {
-				sb.append(" INSTR(pointmode, ?) >= 1");
+			    sb.append("AND INSTR(pointmode, ?) >= 1 ");
 			} else if (condition.equals("pointdate")) {
-				keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
-				sb.append(" TO_CHAR(pointdate, 'YYYYMMDD') = ?");
-			} 
+			    keyword = keyword.replaceAll("(\\-|\\/|\\.)", "");
+			    sb.append("AND TO_CHAR(pointdate, 'YYYYMMDD') = ? ");
+			} else if (condition.equals("userId")) {
+			    sb.append("AND INSTR(b.userId, ?) >= 1 ");
+			}
+			
 			sb.append(" ORDER BY pointNum DESC ");
 			sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
 
