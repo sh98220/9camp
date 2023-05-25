@@ -139,6 +139,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 .table-list th, .table-list td { text-align: center; }
 .table-list .left { text-align: left; padding-left: 5px; }
 
+.table-list .id { width: 60px; }
 .table-list .num { width: 60px; }
 .table-list .subject {  }
 .table-list .name { width: 100px; }
@@ -182,11 +183,13 @@ function searchList() {
 	
 <main>
 	<div class="container body-container">
+	
 	    <div class="body-title">
 			<h2><i class="fa-solid fa-store fa-spin-pulse"></i> 포인트 입출금 내역 </h2>
 	    </div>  
 	    
 	    <div class="body-main mx-auto">
+	    	        <form name="listForm" method="post">
 			<table class="table">
 				<tr>
 					<td width="50%">
@@ -199,6 +202,9 @@ function searchList() {
 			<table class="table table-border table-list">
 				<thead>
 					<tr>
+						<c:if test="${sessionScope.member.userId=='admin'}">
+								<th class="id">아이디</th>
+							</c:if>
 						<th class="num">번호</th>
 						<th class="name">금액</th>
 						<th class="name">입금/출금</th>
@@ -210,6 +216,9 @@ function searchList() {
 				<tbody>
 					<c:forEach var="dto" items="${list}" varStatus="status">
 						<tr>
+							<c:if test="${sessionScope.member.userId=='admin'}">
+								<td>${dto.userId}</td>
+							</c:if>
 							<td>${dataCount - (page-1) * size - status.index}</td>
 							<td>${dto.pointAmount}</td>
 							<td>${dto.pointmode}</td>
@@ -219,6 +228,7 @@ function searchList() {
 					</c:forEach>
 				</tbody>
 			</table>
+						</form>
 			
 			<div class="page-navigation">
 				${dataCount == 0 ? "입출금 내역이 없습니다." : paging}
@@ -232,6 +242,9 @@ function searchList() {
 					<td align="center">
 						<form name="searchForm" action="${pageContext.request.contextPath}/point/list.do" method="post">
 							<select name="condition" class="form-select">
+							<c:if test="${sessionScope.member.userId=='admin'}">
+									<option value="userId" ${condition=="userId"?"selected='selected'":"" }>아이디</option>
+								</c:if>
 								<option value="pointmode"   ${condition=="pointmode"?"selected='selected'":"" }>입금, 출금</option>
 								<option value="pointdate"  ${condition=="pointdate"?"selected='selected'":"" }>날짜</option>
 							</select>
