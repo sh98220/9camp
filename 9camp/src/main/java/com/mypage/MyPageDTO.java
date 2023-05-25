@@ -48,13 +48,22 @@ public class MyPageDTO {
 	private String camMateAppGender;
 	private int camMateAppAge;
 	private String camMateAppConfirm; 
-	
+	private String camMateAppSubject;
 	
 	//restrictedMember
 	private String restContent;
 	private String restStartDate;
 	private String restEndDate;
 	
+	
+	
+	
+	public String getCamMateAppSubject() {
+		return camMateAppSubject;
+	}
+	public void setCamMateAppSubject(String camMateAppSubject) {
+		this.camMateAppSubject = camMateAppSubject;
+	}
 	public String getUserId() {
 		return userId;
 	}
