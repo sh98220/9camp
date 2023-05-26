@@ -10,6 +10,7 @@ public class ReviewsDTO {
 	private String camRevcontent;
 	private int camRevhitcount;
 	private String camRevregdate;
+	private String camname;
 	
 	private int camRevphotonum;
 	private String camRevphotoname;
@@ -96,5 +97,11 @@ public class ReviewsDTO {
 	}
 	public void setReviewsLikeCount(int boardLikeCount) {
 		this.reviewsLikeCount = boardLikeCount;
+	}
+	public String getCamname() {
+		return camname;
+	}
+	public void setCamname(String camname) {
+		this.camname = camname;
 	}
 }

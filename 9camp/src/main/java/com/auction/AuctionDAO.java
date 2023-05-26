@@ -428,7 +428,8 @@ public class AuctionDAO {
 			try {
 				sql = "SELECT b.auctionnum, b.auctionSaleId, userNickName, userName, auctionSubject, auctionContent, "
 						+ " TO_CHAR(auctionRegdate, 'YYYY-MM-DD HH24:MI') auctionregdate, NVL(auctionRecAmount, 0) auctionRecAmount,"
-						+ " TO_CHAR(auctionEnddate, 'YYYY-MM-DD HH24:MI') auctionEnddate, auctionObject, auctionStartamount, auctionFinalamount "
+						+ " TO_CHAR(auctionEnddate, 'YYYY-MM-DD HH24:MI') auctionEnddate, auctionObject, auctionStartamount, auctionFinalamount, "
+						+ " auctionEnddate - auctionregdate diff, auctionEnabled "
 						+ " FROM auction b "
 						+ " JOIN member m ON b.auctionSaleId=m.userId "
 						+ " LEFT OUTER JOIN ("
@@ -460,6 +461,8 @@ public class AuctionDAO {
 					dto.setAuctionStartamount(rs.getLong("auctionStartamount"));
 					dto.setAuctionFinalamount(rs.getLong("auctionFinalamount"));
 					dto.setAuctionRecamount(rs.getLong("auctionRecAmount"));
+					dto.setDiff(rs.getLong("diff"));
+					dto.setAuctionEnabled(rs.getInt("auctionEnabled"));
 					
 				}
 			} catch (SQLException e) {
@@ -677,7 +680,14 @@ public class AuctionDAO {
 				pstmt.setString(2, dto.getUserId());
 				pstmt.executeUpdate();
 			    
-		
+				   pstmt.close();
+				   pstmt= null;
+				   
+				sql = "UPDATE auction SET auctionEnabled = 1 WHERE auctionNum = ?";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setLong(1, dto.getAuctionNum());
+				pstmt.executeUpdate();
+				
 			} finally {
 				if(pstmt != null) {
 					try {

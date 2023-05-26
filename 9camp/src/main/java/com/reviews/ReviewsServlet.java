@@ -187,6 +187,7 @@ public class ReviewsServlet extends MyUploadServlet {
 			dto.setUserId(info.getUserId()); 
 			dto.setCamRevsubject(req.getParameter("camRevsubject"));
 			dto.setCamRevcontent(req.getParameter("camRevcontent"));
+			dto.setCamname(req.getParameter("camname"));
 			
 
 			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);

@@ -492,7 +492,7 @@ $(function(){
 					
 					<tr>
 						<td width="50%">
-							캠핑장 : <a href="#"></a> 우아아아아아아아아아앙캠핑장
+							캠핑장 : ${dto.camname}
 						</td>
 					</tr>
 					

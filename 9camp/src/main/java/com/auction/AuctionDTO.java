@@ -15,6 +15,7 @@ public class AuctionDTO {
 	private long auctionFinalamount;
 	private int auctionEnabled;
 	private long userPoint;
+	private long diff;
 	
 	public long getUserPoint() {
 		return userPoint;
@@ -159,6 +160,12 @@ public class AuctionDTO {
 	}
 	public void setAuctionConfirm(int auctionConfirm) {
 		this.auctionConfirm = auctionConfirm;
+	}
+	public long getDiff() {
+		return diff;
+	}
+	public void setDiff(long diff) {
+		this.diff = diff;
 	}
 	
 	
