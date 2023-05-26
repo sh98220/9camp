@@ -1,7 +1,6 @@
 package com.member;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Random;
 
@@ -88,6 +87,7 @@ public class MemberServlet extends MyServlet {
 		
 			if(dto != null) {
 				
+	
 				
 				if(dto.getRestId() != null) {
 					String msg = dto.getRestId() + "님은 " + dto.getRestDate() + " 까지 로그인 할 수 없습니다. 사유 : " + dto.getRestContent();

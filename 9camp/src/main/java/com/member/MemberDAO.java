@@ -33,7 +33,6 @@ public class MemberDAO {
 
 			if(rs.next()) {
 				dto = new MemberDTO();
-
 				dto.setUserId(rs.getString("userId"));
 				dto.setUserName(rs.getString("userName"));
 				dto.setUserPwd(rs.getString("userPwd"));
@@ -44,21 +43,29 @@ public class MemberDAO {
 				dto.setUserRegDate(rs.getString("userRegDate"));
 				dto.setUserPoint(rs.getLong("userPoint"));
 				dto.setUserUpdateDate(rs.getString("userUpdateDate"));
+
 			}
 	
 	
 			
 			pstmt.close();
 			rs.close();
-			
+ 
 			sql = "";
-			sql = "SELECT userId, restContent, TO_CHAR(restEndDate, 'YYYY-MM-DD') restEndDate "
-					+ " FROM restrictedMember "
-					+ " WHERE userId = ? ";
+			sql = "SELECT restrictedMember.userId, restContent, TO_CHAR(restEndDate, 'YYYY-MM-DD') restEndDate "
+					+ " FROM restrictedMember, member "
+					+ " WHERE restrictedMember.userId = member.userId AND "
+					+ " member.userId = ? AND userPwd = ? ";
+			
+			
+			
+			
+			
 			
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, userId);
+			pstmt.setString(2, userPwd);
 	
 			rs = pstmt.executeQuery();
 			

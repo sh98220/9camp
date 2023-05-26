@@ -16,8 +16,9 @@ public class MemberDTO {
 	private String restId;
 	private String restContent;
 	private String restDate;
+
 	
-	
+
 	public String getRestId() {
 		return restId;
 	}
