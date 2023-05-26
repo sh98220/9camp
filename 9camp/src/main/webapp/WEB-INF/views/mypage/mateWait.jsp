@@ -14,58 +14,82 @@
 	max-width: 700px;
 }
 
-.table-list thead>tr:first-child {
-	background: #f8f8f8;
+.table { width: 69%; border-spacing: 0; border-collapse: collapse; margin-left: 56%; margin-top: 10px;}
+.table th, .table td { padding-top: 10px; padding-bottom: 10px; }
+
+.table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
+.table-border tbody > tr { border-bottom: 1px solid #ff5522; }
+.td-border td { border: 1px solid #ced4da; }
+
+tr.hover:hover { cursor: pointer; background: #f5fffa; }
+
+.table-list thead > tr:first-child { background: #f8f8f8; }
+.table-list th, .table-list td { text-align: center; }
+
+.table-list .mateList { display: inline-block; padding:1px 3px; background: #ed4c00; color: #fff; }
+.table-list .left { text-align: left; padding-left: 5px; }
+
+.table-list .chk { width: 40px; color: #787878; }
+.table-list .num { width: 60px; color: #787878; }
+.table-list .subject { color: #787878; }
+.table-list .thema { width: 100px; color: #787878; }
+.table-list .date { width: 100px; color: #787878; }
+.table-list .addr { width: 150px; color: #787878; }
+
+.table-list input[type=checkbox] { vertical-align: middle; }
+
+.container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+
 }
 
-.table-list th, .table-list td {
-	text-align: center;
+.page-navigation {
+    clear: both;
+    padding: 20px 0;
+    text-align: center;
+    margin-left: 80%;
 }
 
-.table-list .mateList {
-	display: inline-block;
-	padding: 1px 3px;
-	background: #ed4c00;
-	color: #fff;
+/* body-container */
+.body-container {
+	min-height: 500px;
 }
 
-.table-list .left {
-	text-align: left;
-	padding-left: 5px;
+.body-title {
+    display: block;
+    position: relative;
+    width: 36%;
+    margin: 0 auto;
 }
 
-.table-list .chk {
-	width: 40px;
-	color: #787878;
+.body-title h2 {
+    font-size: 24px;
+    min-width: 300px;
+    font-family:"Malgun Gothic", "맑은 고딕", NanumGothic, 나눔고딕, 돋움, sans-serif;
+    color: #ff5522;
+    font-weight: 700;
+    padding-bottom: 10px;
+    display: inline-block;
+    margin: 0 0 -7px 0;
+    border-bottom: 3px solid #ff5522;
 }
 
-.table-list .num {
-	width: 60px;
-	color: #787878;
+
+.body-main {
+	display: block;
+	padding-bottom: 40px;
 }
 
-.table-list .subject {
-	color: #787878;
+.inner-page{
+	display: block;
+	padding-top: 35px;
 }
 
-.table-list .thema {
-	width: 100px;
-	color: #787878;
-}
 
-.table-list .date {
-	width: 100px;
-	color: #787878;
-}
-
-.table-list .addr {
-	width: 150px;
-	color: #787878;
-}
-
-.table-list input[type=checkbox] {
-	vertical-align: middle;
-}
 </style>
 
 <script type="text/javascript">
