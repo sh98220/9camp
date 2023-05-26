@@ -334,7 +334,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 						<td colspan="2">
 							이전글 :
 							<c:if test="${not empty preQnaDto}">
-								<a href="${pageContext.request.contextPath}/qna/article.do?${query}&qnaNum=${preQnaDto.qnaNum}">${preQnaDto.qnaSubject}</a>
+								<a href="${pageContext.request.contextPath}/qna/article.do?page=${page}&qnaNum=${preQnaDto.qnaNum}">${preQnaDto.qnaSubject}</a>
 							</c:if>
 						</td>
 					</tr>
@@ -342,7 +342,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 						<td colspan="2">
 							다음글 :
 							<c:if test="${not empty nextQnaDto}">
-								<a href="${pageContext.request.contextPath}/qna/article.do?${query}&qnaNum=${nextQnaDto.qnaNum}">${nextQnaDto.qnaSubject}</a>
+								<a href="${pageContext.request.contextPath}/qna/article.do?page=${page}&qnaNum=${nextQnaDto.qnaNum}">${nextQnaDto.qnaSubject}</a>
 							</c:if>
 						</td>
 					</tr>
@@ -364,7 +364,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 					
 						<c:choose>
 							<c:when test="${sessionScope.member.userId==dto.userId}">
-								<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/qna/update.do?page=${page}&qnaNum=${dto.qnaNum}';">수정</button>
+								<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/qna/update.do?page=${page}&qnaNum=${dto.qnaNum};">수정</button>
 							</c:when>
 							<c:otherwise>
 								<button type="button" class="btn" disabled="disabled">수정</button>

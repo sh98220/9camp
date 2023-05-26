@@ -7,7 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>렌트</title>
+<title>Q n A / 정보수정요청</title>
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resource/css/paginate.css" type="text/css">
 
@@ -218,11 +218,17 @@ function searchList() {
 								
 								<td class="left">
 									<c:choose>
-									<c:when test="${dto.depth!=0}">
-									<a href="${pageContext.request.contextPath}/qna/pwd.do?qnaNum=${dto.qnaNum}" class="text-reset">└&nbsp;${dto.qnaSubject}</a>
+									<c:when test="${dto.depth!=0} && ${sessionScope.member.userId != 'admin' }">
+									<a href="${pageContext.request.contextPath}/qna/pwd.do?qnaNum=${dto.qnaNum}&page=${page}" class="text-reset">└${dto.qnaNum}번째 글의 답변입니다.</a>
+									</c:when>
+									<c:when test="${dto.depth!=0} && ${sessionScope.member.userId == 'admin' }">
+									<a href="${pageContext.request.contextPath}/qna/article.do?qnaNum=${dto.qnaNum}&page=${page}" class="text-reset">└${dto.qnaNum}번째 글의 답변입니다.</a>
+									</c:when>
+									<c:when test="${sessionScope.member.userId == 'admin' }">
+									<a href="${pageContext.request.contextPath}/qna/article.do?qnaNum=${dto.qnaNum}&page=${page}" class="text-reset">비밀글 입니다.</a>
 									</c:when>
 									<c:otherwise>
-									<a href="${pageContext.request.contextPath}/qna/pwd.do?qnaNum=${dto.qnaNum}" class="text-reset">${dto.qnaSubject}</a>
+									<a href="${pageContext.request.contextPath}/qna/pwd.do?qnaNum=${dto.qnaNum}&page=${page}" class="text-reset">비밀글 입니다.</a>
 									</c:otherwise>
 									</c:choose>
 								</td>

@@ -311,7 +311,7 @@ public class QnaServlet extends MyUploadServlet{
 		QnaDAO dao = new QnaDAO();
 		
 		if(!req.getMethod().equalsIgnoreCase("post")) {
-			resp.sendRedirect(cp + "/qna/list.do?page=" + page);
+			resp.sendRedirect(cp + "/qna/list.do?page="+page);
 			return;
 		}
 				
@@ -324,6 +324,7 @@ public class QnaServlet extends MyUploadServlet{
 			dto.setQnaNum(Long.parseLong(req.getParameter("qnaNum")));
 			dto.setQnaSubject(req.getParameter("qnaSubject"));
 			dto.setQnaContent(req.getParameter("qnaContent"));
+			dto.setQnaOrChange(req.getParameter("qnaOrChange"));
 			
 			Map<String, String[]> map = doFileUpload(req.getParts(), pathname);
 			if (map != null) {
@@ -516,17 +517,21 @@ public class QnaServlet extends MyUploadServlet{
 		// 패스워드 확인 폼
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		QnaDAO dao = new QnaDAO();
 
+		String page = req.getParameter("page");
 		long qnaNum = Long.parseLong(req.getParameter("qnaNum"));
+		QnaDTO dto = dao.readQna(qnaNum);
 		
 		String cp = req.getContextPath();
 		if (info == null) {
 			// 로그 아웃 상태이면
-			resp.sendRedirect(cp + "/qna/member.do");
+			resp.sendRedirect(cp + "/member/member.do");
 			return;
 		}
 		
-		req.setAttribute("qnaNum", qnaNum);
+		req.setAttribute("dto", dto);
+		req.setAttribute("page", page);
 		forward(req, resp, "/WEB-INF/views/qna/pwd.jsp");
 
 	}	
@@ -538,6 +543,7 @@ public class QnaServlet extends MyUploadServlet{
 		QnaDAO dao = new QnaDAO();
 		
 		String cp = req.getContextPath();
+		String page = req.getParameter("page");
 
 		if (req.getMethod().equalsIgnoreCase("GET")) {
 			resp.sendRedirect(cp + "/");
@@ -549,6 +555,10 @@ public class QnaServlet extends MyUploadServlet{
 			long qnaNum = Long.parseLong(req.getParameter("qnaNum"));
 			
 			QnaDTO dto = dao.readQna(qnaNum);
+			
+			if(dto == null) {
+				resp.sendRedirect(cp + "/");
+			}
 
 			String userPwd = req.getParameter("userPwd");
 			
@@ -557,8 +567,10 @@ public class QnaServlet extends MyUploadServlet{
 				forward(req, resp, "/WEB-INF/views/qna/pwd.jsp");
 				return;
 			}
-
-			resp.sendRedirect(cp + "/qna/article.do?qnaNum="+qnaNum);
+			
+			req.setAttribute("dto", dto);
+			req.setAttribute("page", page);
+			forward(req, resp, "/WEB-INF/views/qna/article.jsp");
 			return;
 
 		} catch (Exception e) {

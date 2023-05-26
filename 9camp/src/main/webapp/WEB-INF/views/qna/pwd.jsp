@@ -32,10 +32,9 @@ function sendOk() {
 		f.userPwd.focus();
 		return;
 	}
-
-	f.action = "${pageContext.request.contextPath}/qna/pwd_ok.do";
-	f.submit();
-}
+	f.action = "${pageContext.request.contextPath}/qna/pwd_ok.do?qnaNum=${dto.qnaNum}";
+		f.submit();
+	}
 </script>
 
 </head>

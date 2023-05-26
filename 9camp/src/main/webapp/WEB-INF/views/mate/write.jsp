@@ -260,6 +260,18 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 </style>
 
 <script type="text/javascript">
+window.onload = function(){
+	var now_utc = Date.now()
+	var timeOff = new Date().getTimezoneOffset()*60000;
+	var today = new Date(now_utc-timeOff).toISOString().split("T")[0];
+
+	document.getElementById("dateFrom").setAttribute("min", today);
+
+	document.getElementById("dateTo").setAttribute("min", today);
+
+	}
+
+
 function sendOk() {
     const f = document.boardForm;
 	let str;
@@ -424,9 +436,9 @@ function sendOk() {
 					<tr>
 					    <td>기&nbsp;&nbsp;&nbsp;&nbsp;간</td>
 					    <td>
-					        <p style="display: inline-block;">출발날짜&nbsp;&nbsp;</p><input type="date" name="camMateStartDate" id="dep">&nbsp;&nbsp;
-					        <p  style="display: inline-block;">도착날짜&nbsp;&nbsp;</p><input type="date" name="camMateEndDate" id="ari">&nbsp;&nbsp;
-					   		<p id="result" style="display: inline-block;"></p>
+					        <p style="display: inline-block;">출발날짜&nbsp;&nbsp;</p><input type="date" name="camMateStartDate" id="dateFrom">&nbsp;&nbsp;
+					        <p  style="display: inline-block;">도착날짜&nbsp;&nbsp;</p><input type="date" name="camMateEndDate" id="dateTo">&nbsp;&nbsp;
+					   		<button type="button" id="btnSearch">확인</button>
 					    </td>					   
 					</tr>
 					<tr>
@@ -463,6 +475,44 @@ function sendOk() {
 
 <script>
 //날짜 사이의 기간을 계산하는 함수
+
+$('#btnSearch').click(function(){
+
+    var dateFrom = document.getElementById('dateFrom');
+    var dateTo = document.getElementById('dateTo');
+    var today = new Date();      
+
+    dateFrom = new Date(dateFrom.value);
+    var fromYear = dateFrom.getFullYear();
+    var fromMonth = dateFrom.getMonth() + 1;
+    var fromDay = dateFrom.getDate();
+
+    dateFrom = fromYear +'-'+ fromMonth +'-'+fromDay; 
+
+    dateTo = new Date(dateTo.value);
+    var toYear  = dateTo.getFullYear();
+    var toMonth = dateTo.getMonth() + 1;
+    var toDay   = dateTo.getDate();
+    
+    dateTo = toYear +'-'+ toMonth +'-'+toDay;
+
+    //오늘날짜 날짜 형식으로 지정
+    var todayYear  = today.getFullYear();
+    var todayMonth = today.getMonth() + 1;       
+    var todayDay   = today.getDate();     
+    today = todayYear +'-'+ todayMonth +'-'+todayDay;  
+
+
+    if(dateFrom >= today && dateTo >= dateFrom){
+       alert("유효한 날짜입니다.");
+       dateFrom +" ~ "+dateTo
+       return true;
+    } else {
+       alert("유효하지 않은 날짜입니다.");
+    }
+  });
+  
+  
 function calculateDuration() {
     var depDate = new Date(document.getElementById("dep").value);
     var ariDate = new Date(document.getElementById("ari").value);

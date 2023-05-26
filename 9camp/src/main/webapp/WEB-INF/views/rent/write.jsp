@@ -277,6 +277,18 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 </style>
 
 <script type="text/javascript">
+
+window.onload = function(){
+var now_utc = Date.now()
+var timeOff = new Date().getTimezoneOffset()*60000;
+var today = new Date(now_utc-timeOff).toISOString().split("T")[0];
+
+document.getElementById("dateFrom").setAttribute("min", today);
+
+document.getElementById("dateTo").setAttribute("min", today);
+
+}
+
 function sendOk() {
     const f = document.boardForm;
 	let str;
@@ -312,6 +324,7 @@ function sendOk() {
     f.action = "${pageContext.request.contextPath}/rent/${mode}_ok.do";
     f.submit();
 }
+
 
 <c:if test="${mode == 'update'}">
 	function deleteFile(rentPhotoNum) {
@@ -381,9 +394,9 @@ function sendOk() {
 					<tr>
 					    <td>기&nbsp;&nbsp;&nbsp;&nbsp;간</td>
 					    <td>
-					        <p style="display: inline-block;">렌트날짜&nbsp;&nbsp;</p><input type="date" name="rentStartDate" id="dep">&nbsp;&nbsp;
-					        <p  style="display: inline-block;">반납날짜&nbsp;&nbsp;</p><input type="date" name="rentEndDate" id="ari">&nbsp;&nbsp;
-					   		<p id="result" style="display: inline-block;"></p>
+					        <p style="display: inline-block;">렌트날짜&nbsp;&nbsp;</p><input type="date" name="rentStartDate" id="dateFrom">&nbsp;&nbsp;
+					        <p  style="display: inline-block;">반납날짜&nbsp;&nbsp;</p><input type="date" name="rentEndDate" id="dateTo">&nbsp;&nbsp;
+					   		<button type="button" id="btnSearch">확인</button>
 					    </td>					   
 					</tr>
 					<tr>
@@ -441,7 +454,41 @@ function sendOk() {
 </footer>
 
 <script>
+$('#btnSearch').click(function(){
 
+    var dateFrom = document.getElementById('dateFrom');
+    var dateTo = document.getElementById('dateTo');
+    var today = new Date();      
+
+    dateFrom = new Date(dateFrom.value);
+    var fromYear = dateFrom.getFullYear();
+    var fromMonth = dateFrom.getMonth() + 1;
+    var fromDay = dateFrom.getDate();
+
+    dateFrom = fromYear +'-'+ fromMonth +'-'+fromDay; 
+
+    dateTo = new Date(dateTo.value);
+    var toYear  = dateTo.getFullYear();
+    var toMonth = dateTo.getMonth() + 1;
+    var toDay   = dateTo.getDate();
+    
+    dateTo = toYear +'-'+ toMonth +'-'+toDay;
+
+    //오늘날짜 날짜 형식으로 지정
+    var todayYear  = today.getFullYear();
+    var todayMonth = today.getMonth() + 1;       
+    var todayDay   = today.getDate();     
+    today = todayYear +'-'+ todayMonth +'-'+todayDay;  
+
+
+    if(dateFrom >= today && dateTo >= dateFrom){
+       alert("유효한 날짜입니다.");
+       dateFrom +" ~ "+dateTo
+       return true;
+    } else {
+       alert("유효하지 않은 날짜입니다.");
+    }
+  });
 </script>
 
   
