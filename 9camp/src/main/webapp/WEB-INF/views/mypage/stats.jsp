@@ -371,6 +371,13 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 			<div>
 				<label for="dataCount">총 : ${dataCount} 개</label>
 			</div>
+			
+			<div>
+				<c:if test="${startDate != null && endDate != null }">
+					<label>통계 기간 : ${startDate} ~ ${endDate}</label>
+				</c:if>
+			</div>
+			
 			</div>
 				<table class="table table-border table-list">
 					<thead>

@@ -1007,6 +1007,8 @@ public class MyPageServlet extends MyServlet {
 			req.setAttribute("dataCount", dataCount);
 			req.setAttribute("size", size);
 			req.setAttribute("paging", paging);
+			req.setAttribute("startDate", startDate);
+			req.setAttribute("endDate", endDate);
 
 		} catch (Exception e) {
 			e.printStackTrace();
