@@ -326,44 +326,6 @@ function sendOk() {
 						</td>
 					</tr>
 						
-					<tr>
-						<td> 캠핑장 검색 </td>
-						<td><!-- 검색 버튼 -->
-						    <div class="container">
-								<div class="modal-btn-box">
-									<input type="text" readonly="readonly" style="width: 30%;">
-									<button type="button" id="modal-open" >검색</button>  
-								</div>
-							  
-								<div class="popup-wrap" id="popup">
-									<div class="popup">
-										<div class="popup-head">
-											<span class="head-title">캠핑장 검색</span>
-							      		</div>
-										<div class="popup-body">
-											<div class="popup-content">
-												<input type="text" id="search" style="width: 90%">
-												<button type="button" id="modal-open" class="searchbt">검색</button> 
-												<div class="resultLayout"></div> 
-											</div>
-										</div>
-										<div class="popup-foot">
-											<span class="pop-btn confirm" id="modal-confirm">확인</span>
-											<span class="pop-btn close" id="modal-close">창 닫기</span>
-										</div>
-										<div class="resultLayout"></div>			
-									</div>
-								</div>
-							
-							</div>   				
-   						</td>
-   						
-   							
-						
-					</tr>
-					
-					
-					
 					<tr> 
 						<td valign="top">내&nbsp;&nbsp;&nbsp;&nbsp;용</td>
 						<td> 
