@@ -216,7 +216,7 @@ function searchList() {
 							<td class="left">
 								<a href="${articleUrl}&camMateNum=${dto.camMateNum}">${dto.camMateSubject}</a>
 							</td>
-							<td>${dto.userNickName}</td>
+							<td>${dto.hostNickName}</td>
 							<td>${dto.camMateRegDate}</td>
 							<td>${dto.camMateHitCount}</td>
 						</tr>
