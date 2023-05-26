@@ -730,7 +730,7 @@ public class MyPageDAO {
 					+ " FROM campMate, campMateApply, member "
 					+ " WHERE campMate.camMateNum = campMateApply.camMateNum  AND "
 					+ " member.userId = campMateApply.userid AND " + " campMateApply.camMateAppConfirm = '1' AND "
-					+ " campMateApply.camMateNum= ? AND (campMate.hostId = ? OR 'admin' = ?) ";
+					+ " campMateApply.camMateNum= ? AND (campMate.hostId = ? OR campMateApply.userId = ? OR 'admin' = ?) ";
 			pstmt = conn.prepareStatement(sql);
 
 			pstmt.setLong(1, num);
@@ -790,7 +790,7 @@ public class MyPageDAO {
 			sb.append(" WHERE campMate.camMateNum = campMateApply.camMateNum  AND ");
 			sb.append(" member.userId = campMateApply.userid AND ");
 			sb.append(" campMateApply.camMateAppConfirm = '1' AND ");
-			sb.append(" campMateApply.camMateNum= ? AND (campMate.hostId = ? OR 'admin' = ? ) AND ");
+			sb.append(" campMateApply.camMateNum= ? AND (campMate.hostId = ? OR campMateApply.userId = ? OR 'admin' = ? ) AND ");
 
 			if (condition.equals("userNickName")) {
 				sb.append(" INSTR(LOWER(member.userNickName), LOWER(?)) >= 1  ");
