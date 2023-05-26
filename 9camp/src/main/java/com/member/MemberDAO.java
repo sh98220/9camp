@@ -45,8 +45,8 @@ public class MemberDAO {
 				dto.setUserPoint(rs.getLong("userPoint"));
 				dto.setUserUpdateDate(rs.getString("userUpdateDate"));
 			}
-			System.out.println("dto0 : " + dto);
-			System.out.println("테스트1");
+	
+	
 			
 			pstmt.close();
 			rs.close();
@@ -59,10 +59,10 @@ public class MemberDAO {
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, userId);
-			System.out.println("테스트2");
+	
 			rs = pstmt.executeQuery();
 			
-			System.out.println("dto1 : " + dto);
+		
 			
 			if(rs.next()) {
 				dto = new MemberDTO();
@@ -70,7 +70,7 @@ public class MemberDAO {
 				dto.setRestContent(rs.getString("restContent"));
 				dto.setRestDate(rs.getString("restEndDate"));
 			}
-			System.out.println("dto2 : " + dto);
+	
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
