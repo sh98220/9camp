@@ -62,12 +62,15 @@
 
 /*조회 개수*/
 .sc_result_txt {
-	margin-bottom: 20px;
+	/*margin-bottom: 20px;*/
+	display: inline-block;
 }
+
 
 .sc_result_txt h2 {
 	font-weight: normal;
 	font-size: 22px;
+	display: inline-block;
 }
 
 .sc_result_txt h2 > span.camp_count {
@@ -78,7 +81,7 @@
 .search_list_gr {
     width: 100%;
     height: auto;
-    padding: 15px 20px 15px 0;
+    padding: 15px 20px;
     box-sizing: border-box;
     min-height: 31px;
     background: #f4f4f4;
@@ -267,17 +270,22 @@
 				<h2><i class="fa-solid fa-map-location-dot"></i> 지도 검색 </h2>
 		    </div>
 		    
-		    <div class="sc_result_txt">
-		    	<h2>총 <span class="camp_count">${dataCount}</span>개 캠핑장이 검색되었습니다.</h2>
-		    </div>
+		    
 		    
 		    <div class="search_list_gr">
+		    	<!--
 		    	<div class="select_box">
 		    		<select class="detail_select">
 		    			<option>등록일순</option>
 		    			<option>조회순</option>
 		    		</select>
 		    	</div>
+		    	-->
+		    	
+		    	<div class="sc_result_txt">
+		    		<h2>총 <span class="camp_count">${dataCount}</span>개 캠핑장이 검색되었습니다.</h2>
+		    	</div>
+		    
 		    	<div class="select_map">
 		    		<button type="button" onclick="location.href='${pageContext.request.contextPath}/campInfo/list.do'">리스트로 보기</button>
 		    	</div>
