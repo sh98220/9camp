@@ -1,6 +1,7 @@
 package com.member;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Random;
 
@@ -146,13 +147,15 @@ public class MemberServlet extends MyServlet {
 	protected void memberSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 회원가입 처리
 		MemberDAO dao = new MemberDAO();
+		HttpSession session = req.getSession();
+		
 		String cp = req.getContextPath();
 		if(!req.getMethod().equalsIgnoreCase("post")) {
 			resp.sendRedirect(cp+"/");
 			return;
 		}
-
-		String message = "";
+		String message ="";	
+		
 		try {
 			MemberDTO dto = new MemberDTO();
 
@@ -174,7 +177,9 @@ public class MemberServlet extends MyServlet {
 			dto.setUserEmail(email1 + "@" + email2);
 
 			dao.insertMember(dto);
-			resp.sendRedirect(cp+"/");
+			
+			session.setAttribute("userName", dto.getUserName());
+			resp.sendRedirect(cp+"/member/complete.do?mode="+req.getParameter("mode"));
 			return;
 
 		} catch (SQLException e) {
@@ -191,11 +196,7 @@ public class MemberServlet extends MyServlet {
 			e.printStackTrace();
 		}
 
-		req.setAttribute("title", "회원 가입");
-		req.setAttribute("mode", "member");
-		req.setAttribute("message", message);
-
-		forward(req, resp, "/WEB-INF/views/member/member.jsp");
+		resp.sendRedirect(cp + "/");
 
 	}
 
@@ -479,7 +480,7 @@ public class MemberServlet extends MyServlet {
 		String msg = "";
 		String title = "";
 		msg = "<span style='color:blue;'>" + userName + "</span> 님에게 <br>";
-		if(mode.equals("join")) {
+		if(mode.equals("member")) {
 			title = "회원 가입";
 
 			msg += "회원가입을 축하합니다";

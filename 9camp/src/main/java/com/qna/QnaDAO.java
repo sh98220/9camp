@@ -430,7 +430,7 @@ public class QnaDAO {
 		ResultSet rs = null;
 
 		try {
-			sql = "SELECT qnaNum, q.userId, userNickName, qnaSubject, qnaContent, qnaHitCount, qnaRegDate, qnadepth, qnaOrderNum, qnaGroupNum "
+			sql = "SELECT qnaNum, q.userId, userNickName, qnaPwd, qnaSubject, qnaContent, qnaHitCount, qnaRegDate, qnadepth, qnaOrderNum, qnaGroupNum "
 					+ "FROM qna q JOIN member m ON m.userId=q.userId WHERE qnaNum = ?";
 
 			pstmt = conn.prepareStatement(sql);
@@ -449,6 +449,7 @@ public class QnaDAO {
 				dto.setQnaContent(rs.getString("qnaContent"));
 				dto.setQnaHitCount(rs.getInt("qnaHitCount"));
 				dto.setQnaRegDate(rs.getString("qnaRegDate"));
+				dto.setQnaPwd(rs.getString("qnaPwd"));
 				dto.setDepth(rs.getInt("qnadepth"));
 				dto.setOrderNum(rs.getInt("qnaOrderNum"));
 				dto.setGroupNum(rs.getLong("qnaGroupNum"));

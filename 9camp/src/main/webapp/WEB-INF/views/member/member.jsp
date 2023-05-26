@@ -357,6 +357,7 @@ fjg
 <!-- 김성훈 -->
 
 <script type="text/javascript">
+
 $(document).keydown(function(e){
 	key = (e)?e.keyCode:event.keyCode;
 	//alert(key);
@@ -574,7 +575,7 @@ function changeEmail() {
 								<i class=''></i> <input type="text"  name="userNickName" placeholder="닉네임">
 							</div>
 							<div class="input-group">
-								<i class=''></i> <input type="text" name="userBirth" placeholder="생년월일">
+								<i class=''></i> <input type="date" name="userBirth" placeholder="생년월일">
 							</div>
 							
 						</form>
