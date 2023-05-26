@@ -58,7 +58,7 @@ function sendOk() {
 				<div class="info-box">
 					<form name="pwdForm" method="post">
 						<div class="row text-center">
-							${message1}
+							${message}
 						</div>
 						<div>
 							<button type="button" class="btnConfirm" onclick="sendOk();">확인</button>

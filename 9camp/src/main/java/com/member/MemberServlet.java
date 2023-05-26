@@ -180,7 +180,7 @@ public class MemberServlet extends MyServlet {
 			dao.insertMember(dto);
 			
 			session.setAttribute("userName", dto.getUserName());
-			resp.sendRedirect(cp+"/member/complete.do?mode="+req.getParameter("mode"));
+			resp.sendRedirect(cp+"/member/complete.do?mode=member");
 			return;
 
 		} catch (SQLException e) {
