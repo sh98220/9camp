@@ -84,10 +84,6 @@ public class MemberServlet extends MyServlet {
 		
 		
 		MemberDTO dto = dao.loginMember(userId, userPwd);
-		System.out.println("dto : "+ dto);
-		
-		
-
 		
 			if(dto != null) {
 				

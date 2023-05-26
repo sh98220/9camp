@@ -1216,7 +1216,7 @@ public class MyPageDAO {
 
 		try {
 			sb.append(
-					" SELECT member.userId, userName, userTel, TO_CHAR(TO_DATE(userBirth), 'YYYY-MM-DD') userBirth, userNickName, userEmail, userPoint, "
+					" SELECT distinct member.userId, userName, userTel, TO_CHAR(TO_DATE(userBirth), 'YYYY-MM-DD') userBirth, userNickName, userEmail, userPoint, "
 					+ "TO_CHAR(TO_DATE(userRegDate), 'YYYY-MM-DD') userRegDate, TO_CHAR(TO_DATE(userUpdateDate), 'YYYY-MM-DD') userUpdateDate, NVL(TO_CHAR(TO_DATE(restEndDate), 'YYYY-MM-DD'),' ') restEndDate ");
 			sb.append(" FROM member ");
 			sb.append(" LEFT OUTER JOIN restrictedMember on member.userId = restrictedMember.userId ");
@@ -1275,7 +1275,7 @@ public class MyPageDAO {
 
 		try {
 			sb.append(
-					" SELECT userId, userName, userTel, TO_CHAR(TO_DATE(userBirth), 'YYYY-MM-DD') userBirth, userNickName, userEmail, userPoint, TO_CHAR(TO_DATE(userRegDate), 'YYYY-MM-DD') userRegDate, TO_CHAR(TO_DATE(userUpdateDate), 'YYYY-MM-DD') userUpdateDate ");
+					" SELECT distinct userId, userName, userTel, TO_CHAR(TO_DATE(userBirth), 'YYYY-MM-DD') userBirth, userNickName, userEmail, userPoint, TO_CHAR(TO_DATE(userRegDate), 'YYYY-MM-DD') userRegDate, TO_CHAR(TO_DATE(userUpdateDate), 'YYYY-MM-DD') userUpdateDate ");
 			sb.append(" FROM member WHERE ");
 
 			if (condition.equals("userRegDate")) {
