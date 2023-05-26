@@ -123,7 +123,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     padding-bottom: 10px;
     display: inline-block;
     margin: 0 0 -7px 0;
-    border-bottom: 3px solid #ff5522;
+    border-bottom: 3px solid gray;
 }
 
 .body-title h2 i {

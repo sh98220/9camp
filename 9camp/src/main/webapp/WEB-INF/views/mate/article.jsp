@@ -383,7 +383,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 					
 					<tr>
 						<td width="50%">
-							캠핑장 : <a href="#"></a> ${dto.camInfoSubject}
+							캠핑 스타일 : <a href="#"></a> ${dto.camMateDues}
 						</td>
 					</tr>
 					<tr>

@@ -66,7 +66,7 @@ input[type=checkbox], input[type=radio] { vertical-align: middle; }
 .table th, .table td { padding-top: 10px; padding-bottom: 10px; }
 
 .table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
-.table-border tbody > tr { border-bottom: 1px solid #ff5522; }
+.table-border tbody > tr { border-bottom: 1px solid gray; }
 .td-border td { border: 1px solid #ced4da; }
 
 tr.hover:hover { cursor: pointer; background: #f5fffa; }
@@ -120,7 +120,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     padding-bottom: 10px;
     display: inline-block;
     margin: 0 0 -7px 0;
-    border-bottom: 3px solid #ff5522;
+    border-bottom: 3px solid gray;
 }
 
 .body-title h2 i {

@@ -385,7 +385,12 @@ function ajaxFun(url, method, query, dataType, fn) {
 					</tr>
 					<tr>
 						<td width="50%">
-							날짜 : ${dto.rentStartDate}&nbsp;~&nbsp;${dto.rentEndDate}
+							대여 기간 : ${dto.rentStartDate}&nbsp;~&nbsp;${dto.rentEndDate}
+						</td>
+					</tr>
+					<tr>
+						<td width="50%">
+							품목 : ${dto.rentObject}
 						</td>
 					</tr>
 					<tr>

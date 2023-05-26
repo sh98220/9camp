@@ -403,6 +403,7 @@ public class QnaServlet extends MyUploadServlet{
 			dto.setQnaContent(req.getParameter("qnaContent"));
 			dto.setGroupNum(Long.parseLong(req.getParameter("groupNum")));
 			dto.setOrderNum(Integer.parseInt(req.getParameter("orderNum")));
+			dto.setQnaPwd(req.getParameter("qnaPwd"));
 			dto.setDepth(Integer.parseInt(req.getParameter("depth")));
 			dto.setParent(Long.parseLong(req.getParameter("parent")));
 
