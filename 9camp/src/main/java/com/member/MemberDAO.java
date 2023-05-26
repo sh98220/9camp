@@ -45,11 +45,12 @@ public class MemberDAO {
 				dto.setUserPoint(rs.getLong("userPoint"));
 				dto.setUserUpdateDate(rs.getString("userUpdateDate"));
 			}
-			
+	
+	
 			
 			pstmt.close();
 			rs.close();
-			/*
+			
 			sql = "";
 			sql = "SELECT userId, restContent, TO_CHAR(restEndDate, 'YYYY-MM-DD') restEndDate "
 					+ " FROM restrictedMember "
@@ -61,13 +62,15 @@ public class MemberDAO {
 	
 			rs = pstmt.executeQuery();
 			
+		
+			
 			if(rs.next()) {
-
+				dto = new MemberDTO();
 				dto.setRestId(rs.getString("userId"));
 				dto.setRestContent(rs.getString("restContent"));
 				dto.setRestDate(rs.getString("restEndDate"));
-			}*/
-
+			}
+	
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

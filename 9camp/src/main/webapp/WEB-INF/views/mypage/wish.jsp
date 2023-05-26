@@ -12,7 +12,7 @@
 <style type="text/css">
 
 .body-main {
-	max-width: 700px;
+	max-width: 993px;
 }
 
 /* form-control */

@@ -25,6 +25,9 @@
 	font-size: 14px;
 	font-family: "맑은 고딕", 나눔고딕, 돋움, sans-serif;
 	vertical-align: baseline;
+	width: 11%;
+	height: 88px;
+	margin: 52px;
 }
 .btn:active, .btn:focus, .btn:hover {
 	background-color: #333;
@@ -175,6 +178,7 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	font-weight: bold;
 }
 
+
 #open_layer {
 	position: absolute;
 	top: 0;
@@ -205,6 +209,16 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
 	    max-width: 750px;
 	}
 }
+
+#cont_inner {
+    width: 100%;
+    position: relative;
+    height: auto;
+    clear: both;
+    padding: 87px 0 15px 0;
+    margin-left: 400px;
+    background: #fff;
+}
 </style>
 
 <script type="text/javascript">
@@ -233,11 +247,13 @@ function searchList() {
 	<jsp:include page="/WEB-INF/views/layout/header.jsp"></jsp:include>
 </header>
 	
-<main>
+<main style="height:400px; width: 100%;" >
+<div id="cont_inner">
 <c:if test="${sessionScope.member.userId=='admin'}">
-	<button type="button" onclick="location.href='adminList.do'">모든 회원</button>
-	<button type="button" onclick="location.href='stats.do'">가입자 통계</button>
+	<button class="btn" type="button" onclick="location.href='adminList.do'">모든 회원</button>
+	<button class="btn" type="button" onclick="location.href='stats.do'">가입자 통계</button>
 </c:if>
+</div>
 </main>
 
 <footer>

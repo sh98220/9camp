@@ -85,17 +85,18 @@ public class MemberServlet extends MyServlet {
 		
 		
 		MemberDTO dto = dao.loginMember(userId, userPwd);
-
-		
-		/*
-		if(dto.getRestId() != null) {
-			String msg = dto.getRestId() + "님은 " + dto.getRestDate() + " 까지 로그인 할 수 없습니다. 사유 : " + dto.getRestContent();
-			req.setAttribute("message", msg);
-			forward(req, resp, "/WEB-INF/views/member/member.jsp");
-			return;
-		}*/
 		
 			if(dto != null) {
+				
+				
+				if(dto.getRestId() != null) {
+					String msg = dto.getRestId() + "님은 " + dto.getRestDate() + " 까지 로그인 할 수 없습니다. 사유 : " + dto.getRestContent();
+					req.setAttribute("message", msg);
+					forward(req, resp, "/WEB-INF/views/member/member.jsp");
+					return;
+				}
+				
+				
 				
 				session.setMaxInactiveInterval(60*60);
 	

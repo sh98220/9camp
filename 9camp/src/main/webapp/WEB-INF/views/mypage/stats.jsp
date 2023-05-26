@@ -12,6 +12,90 @@
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 
 <style type="text/css">
+.table { width: 167%; border-spacing: 0; border-collapse: collapse; margin-left: -234px; }
+.table th, .table td { padding-top: 10px; padding-bottom: 10px; }
+
+.table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
+.table-border tbody > tr { border-bottom: 1px solid gray; }
+.td-border td { border: 1px solid #ced4da; }
+
+tr.hover:hover { cursor: pointer; background: #f5fffa; }
+
+
+
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+
+.clear { clear: both; }
+.clear:after { content:''; display:block; clear: both; }
+
+.mx-auto { margin-left: auto; margin-right: auto; }
+
+
+.btnConfirm {
+	background-color:#507cd1; border:none;
+	width: 100%; padding: 15px 0;
+	font-size: 15px; color:#ffffff; font-weight: 700;  cursor: pointer; vertical-align: baseline;
+}
+
+.container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+
+}
+
+/* body-container */
+.body-container {
+	min-height: 500px;
+}
+
+.body-title {
+    color: #424951;
+    padding-top: 35px;
+    padding-bottom: 7px;
+    margin: 0 0 25px 0;
+    border-bottom: 2px solid #eee;
+    margin-left : -222px;
+    width: 162%;
+}
+
+.body-title h2 {
+    font-size: 24px;
+    min-width: 300px;
+    font-family:"Malgun Gothic", "맑은 고딕", NanumGothic, 나눔고딕, 돋움, sans-serif;
+    color: #ff5522;
+    font-weight: 700;
+    padding-bottom: 10px;
+    display: inline-block;
+    margin: 0 0 -7px 0;
+    border-bottom: 3px solid #ff5522;
+}
+
+.body-main {
+	display: block;
+	padding-bottom: 15px;
+}
+
+.inner-page{
+	display: block;
+	padding-top: 35px;
+}
+
+.table-list thead > tr:first-child { color: #4e4e4e; }
+.table-list th, .table-list td { text-align: center; }
+.table-list .left { text-align: left; padding-left: 5px; }
+
+.table-list .num { width: 60px; }
+.table-list .subject {  }
+.table-list .name { width: 100px; }
+.table-list .date { width: 100px; }
+.table-list .hit { width: 70px; }
+.table-list .file { width: 50px; }
+
 #writeMessageWrap {
 	max-width: 700px;
 	margin: 0 auto;
@@ -25,6 +109,8 @@
     padding-bottom: 7px;
     margin: 0 0 25px 0;
     border-bottom: 2px solid #eee;
+    margin-left : -222px;
+    width: 162%;
 }
 
 #writeMessageWrap .body-title h2 {
@@ -159,6 +245,10 @@
 .pop-btn.confirm {
 	border-right:1px solid #3b5fbf;
 }
+
+
+
+
 </style>
 
 
@@ -178,8 +268,9 @@
 
 		<form name="msgForm" method="post" action="${pageContext.request.contextPath}/mypage/stats.do">
 			<input type="hidden" name="page" value="${page}">
+			<div style="margin-left: -235px; margin-bottom: 10px;">
 			<div id="normalMode">
-				<div>
+				<div style="display: inline-block;">
 					<label for="date">시작 날짜
  					<input type="date" name="startDate"
          				id="startDate"
@@ -187,7 +278,7 @@
 					</label>
 				</div>
 
-				<div>
+				<div style="display: inline-block; float: right; margin-right: 536px; " >
 					<label for="date">마지막 날짜
  					<input type="date" name="endDate"
          				id="endDate"
@@ -280,7 +371,7 @@
 			<div>
 				<label for="dataCount">총 : ${dataCount} 개</label>
 			</div>
-				
+			</div>
 				<table class="table table-border table-list">
 					<thead>
 						<tr>
@@ -317,10 +408,10 @@
 					${dataCount == 0 ? "등록된 유저가 없습니다." : paging}
 				</div>
 			
-			
+			<div style="margin-left: -235px; margin-top: 10px;" >
 				<button type="button" class="btn" onclick="sendOk();"> 확인 </button>
 				<button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/main.do';"> 취소 </button>
-				
+			</div>	
 			</form>
 			
 

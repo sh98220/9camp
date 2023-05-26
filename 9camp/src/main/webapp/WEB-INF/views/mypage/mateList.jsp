@@ -62,7 +62,7 @@ textarea:focus, input:focus { outline: none; }
 input[type=checkbox], input[type=radio] { vertical-align: middle; }
 
 /* table */
-.table { width: 100%; border-spacing: 0; border-collapse: collapse; }
+.table { width: 123%; border-spacing: 0; border-collapse: collapse; margin-left: -14%;}
 .table th, .table td { padding-top: 10px; padding-bottom: 10px; }
 
 .table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
@@ -109,6 +109,8 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     padding-bottom: 7px;
     margin: 0 0 25px 0;
     border-bottom: 2px solid #eee;
+    margin-left: -86px;
+    width: 119%;
 }
 
 .body-title h2 {

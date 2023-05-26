@@ -1031,7 +1031,7 @@ public class CampInfoDAO {
 					s = s.substring(0, s.length()-3);
 					sb.append(s);
 				}
-				sb.append(" WHERE INSTR(camkeyword, ?) >= 1");
+
 				sb.append(" ORDER BY camInfoNum DESC ");
 				sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
 
@@ -1086,6 +1086,9 @@ public class CampInfoDAO {
 					}
 				}
 			}
+			
+			System.out.println(list.size());
+			System.out.println(sb.toString());
 
 			return list;
 			
