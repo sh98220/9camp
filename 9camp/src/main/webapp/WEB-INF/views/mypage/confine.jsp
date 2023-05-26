@@ -333,7 +333,7 @@ function sendOk() {
 	    f.userId.focus();
 		return;
 	}
-	
+
 	str = f.restEndDate.value.trim();
 
 	if(!str){
@@ -341,13 +341,7 @@ function sendOk() {
 		return;
 	}
 	
-	if(!end){
-		if (!confirm('이미 정지된 회원입니다. 수정하시겠습니까?')) {
-		     return
-		   }
-	}
-	
-	
+
 	
 	
 	let today = new Date();
@@ -360,6 +354,12 @@ function sendOk() {
 	if(!(str > dateString)){
 		alert("내일 이후로 날짜를 선택하세요.")
 		return;
+	}
+	
+	if(end){
+		if (!confirm('현재 ' + end + ' 까지 정지된 회원입니다. 수정하시겠습니까?')) {
+		     return
+		   }
 	}
 	
 	
