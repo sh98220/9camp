@@ -206,8 +206,8 @@ tr.hover:hover { cursor: pointer; background: #f5fffa; }
     출금 전 잔액: ${ prebalance}point&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           출금금액: ${  amount }point  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     출금 후 잔액: ${ balance}point  
-        
         </div>
+       <h3> 기업 972-009706-01-017 예금주:이정현 계좌로 입금되었습니다.  </h3>
         <div class="button-wrapper">
             <button type="button" class="btn" onclick="location.href='${pageContext.request.contextPath}/point/list.do';" title="돌아가기">돌아가기</button>
         </div>
