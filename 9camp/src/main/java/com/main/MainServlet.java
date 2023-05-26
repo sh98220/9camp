@@ -50,7 +50,7 @@ public class MainServlet extends MyServlet {
       String condition = req.getParameter("condition");
       String keyword = req.getParameter("keyword");
    
-        String[] keys = req.getParameterValues("key"); // 키워드명 배열로 받기
+      String[] keys = req.getParameterValues("key"); // 키워드명 배열로 받기
        
  
       if(condition == null) {

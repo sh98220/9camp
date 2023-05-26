@@ -87,6 +87,8 @@ public class CampInfoServlet extends MyUploadServlet {
 		// 검색
 		String condition = req.getParameter("condition");
 		String keyword = req.getParameter("keyword");
+		
+	    String[] keys = req.getParameterValues("key"); // 키워드명 배열로 받기
  
 		if(condition == null) {
 			condition = "all";
@@ -100,11 +102,17 @@ public class CampInfoServlet extends MyUploadServlet {
 		
 		// 전체 데이터 개수
 		int dataCount;
-		if (keyword.length() == 0 ) {
-			dataCount = dao.dataCount();
-		} else {
-			dataCount = dao.dataCount(condition, keyword);
-		}
+		
+	      if(keyword.length() == 0) {
+	          if(keys == null || keys.length == 0) {
+	        	  dataCount = dao.dataCount();
+	          } else {
+	             // 키워드로 검색
+	        	  dataCount = dao.dataCount(keys);
+	          }
+	       } else {
+	    	   dataCount = dao.dataCount(condition, keyword);
+	       }
 		
 		// 전체 페이지 수
 		int size = 5;
@@ -117,13 +125,17 @@ public class CampInfoServlet extends MyUploadServlet {
 		int offset = (current_page - 1) * size;
 		if(offset < 0) offset = 0;
 		
-		List<CampInfoDTO> listimage = null;
-		if(keyword.length() == 0) {
-			listimage = dao.listPhoto(offset, size);
-		} else {
-			listimage = dao.listPhoto(offset, size, condition, keyword);
-		}
-
+      List<CampInfoDTO> listimage = null;
+      if(keyword.length() == 0) {
+         if(keys == null || keys.length == 0) {
+            listimage = dao.listPhoto(offset, size);
+         } else {
+            // 키워드로 검색
+            listimage = dao.listPhoto(keys, offset, size);
+         }
+      } else {
+         listimage = dao.listPhoto(offset, size, condition, keyword);
+      }
 		
 		
 		String query = "";
@@ -131,17 +143,18 @@ public class CampInfoServlet extends MyUploadServlet {
 			query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");
 		}
 		
-		
+		if(keyword.length() == 0 && keys != null && keys.length !=0) {
+			for(String s : keys) {
+				query += "key=" + URLEncoder.encode(s, "utf-8") + "&";
+			}
+			query = query.substring(0, query.length()-1);
+		}
 		
 		
 		for(CampInfoDTO dto : listimage) {
 			dto.setCamInfoContent(dto.getCamInfoContent().substring(0, 50) + "...");
 			dto.setCamInfoAddr(dto.getCamInfoAddr().substring(0, dto.getCamInfoAddr().indexOf(' ', dto.getCamInfoAddr().indexOf((' ') ) + 1 ) )  );
 		}
-	
-		
-		
-		
 		
 		
 		String listUrl = cp + "/campInfo/list.do";
@@ -153,7 +166,6 @@ public class CampInfoServlet extends MyUploadServlet {
 
 		String paging = util.paging(current_page, total_page, listUrl);
 	
-		
 		
 		
 		// 포워딩할 JSP에 전달할 속성

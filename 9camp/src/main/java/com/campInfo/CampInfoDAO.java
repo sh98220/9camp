@@ -1096,29 +1096,31 @@ public class CampInfoDAO {
 		}
 		
 		// 키워드로 검색 데이터 개수
-		public int dataCount(String key[]) {
+		public int dataCount(String keys[]) {
 			int result = 0;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			String sql;
 
 			try {
-				sql = "SELECT NVL(COUNT(*), 0)\r\n"
-						+ "FROM campInfo c\r\n"
-						+ "LEFT OUTER JOIN (\r\n"
-						+ "    SELECT camInfoPhotoNum, camInfoNum, camInfoPhotoName FROM (\r\n"
-						+ "        SELECT camInfoPhotoNum, camInfoNum, camInfoPhotoName,\r\n"
-						+ "            ROW_NUMBER() OVER (PARTITION BY camInfoNum ORDER BY camInfoPhotoNum ASC) AS RANK\r\n"
-						+ "        FROM campPhoto\r\n"
-						+ "    ) WHERE RANK = 1\r\n"
-						+ ") i ON c.camInfoNum = i.camInfoNum\r\n"
-						+ "WHERE INSTR(camkeyword, ?) >= 1\r\n"
-						+ "ORDER BY c.camInfoNum DESC";
+				sql = "SELECT NVL(COUNT(*), 0) FROM campInfo ";
 				
+				if( keys!=null && keys.length != 0) {
+					String s = " WHERE ";
+					for(int i=0; i<keys.length; i++) {
+						s += " INSTR(camkeyword, ?) >= 1 OR ";
+					}
+					s = s.substring(0, s.length()-3);
+					sql += s;
+				}
 
 				pstmt = conn.prepareStatement(sql);
 				
-			//	pstmt.setString(1, key);
+				if(keys != null && keys.length != 0) {
+					for(int i=0; i<keys.length; i++) {
+						pstmt.setString(i+1, keys[i]);
+					}
+				}
 			
 				rs = pstmt.executeQuery();
 				
