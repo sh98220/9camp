@@ -736,6 +736,7 @@ public class MyPageDAO {
 			pstmt.setLong(1, num);
 			pstmt.setString(2, userId);
 			pstmt.setString(3, userId);
+			pstmt.setString(4, userId);
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
@@ -809,7 +810,8 @@ public class MyPageDAO {
 			pstmt.setLong(1, num);
 			pstmt.setString(2, userId);
 			pstmt.setString(3, userId);
-			pstmt.setString(4, keyword);
+			pstmt.setString(4, userId);
+			pstmt.setString(5, keyword);
 
 			rs = pstmt.executeQuery();
 
