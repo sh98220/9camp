@@ -494,7 +494,8 @@ function searchList() {
 				<button type="button" class="btn" id="reset-button">초기화</button>		 
 	 		</div>
 	 		
-	 		
+		</form>
+			 		
 	 	<script type="text/javascript">
      		 function sendOk() {
             // 체크된 모든 체크박스 가져오기
@@ -523,7 +524,7 @@ function searchList() {
 */            
           
 
-            document.forms['keywordForm'].submit();
+            document.keywordForm.submit();
           }
          
          </script>
@@ -531,7 +532,7 @@ function searchList() {
 	 		
 	 		
 	 		
-		</form>
+
 	</div>
 	<!-- //키워드 검색 -->
 
