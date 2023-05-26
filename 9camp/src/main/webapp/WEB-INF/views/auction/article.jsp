@@ -440,7 +440,7 @@ function ajaxFun(url, method, query, dataType, fn) {
 					<tr>
 						<td width="50%">
 						  <c:choose>
-					   		  <c:when test="${dto.diff > 0 && sessionScope.member.userId!=dto.auctionSaleId && sessionScope.member.userId!='admin'}"> 
+					   		  <c:when test="${ sessionScope.member.userId!=dto.auctionSaleId && sessionScope.member.userId!='admin'}"> 
 									<button type="button" id="bidButton" class="btn" onclick="sendOk();">입찰하기</button>
 								
 				     	 	</c:when>  
