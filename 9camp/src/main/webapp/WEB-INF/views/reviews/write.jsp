@@ -207,12 +207,20 @@ function sendOk() {
         return;
     }
 
+    str = f.camname.value.trim();
+    if(!str) {
+        alert("캠핑장 이름을 입력하세요. ");
+        f.camname.focus();
+        return;
+    }
+    
     str = f.camRevcontent.value.trim();
     if(!str) {
         alert("내용을 입력하세요. ");
         f.camRevcontent.focus();
         return;
     }
+
 
     let mode = "${mode}";
     if( (mode === "write") && (!f.selectFile.value) ) {
@@ -276,7 +284,7 @@ function sendOk() {
 					<tr> 
 						<td>캠핑장</td>
 						<td> 
-							<input type="text" name="camInfosubject" maxlength="100" class="form-control" value="">						
+							<input type="text" name="camname" maxlength="100" class="form-control" value="${dto.camname}">						
 						</td>
 					</tr>
 					

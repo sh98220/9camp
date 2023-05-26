@@ -35,15 +35,16 @@ public class ReviewsDAO {
 			rs = null;
 			pstmt = null;
 			
-			sql = "INSERT INTO CAMPREVIEWS(camRevnum, camInfonum, userId, camRevsubject, camRevcontent, camRevhitcount, camRevregdate) "
-					+ " VALUES (?, 36, ?, ?, ?, 0, SYSDATE)";
+			sql = "INSERT INTO CAMPREVIEWS(camRevnum, camInfonum, camname, userId, camRevsubject, camRevcontent, camRevhitcount, camRevregdate) "
+					+ " VALUES (?, 36, ?, ?, ?, ?, 0, SYSDATE)";
 			
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setLong(1, dto.getCamRevnum());
-			pstmt.setString(2, dto.getUserId());
-			pstmt.setString(3, dto.getCamRevsubject());
-			pstmt.setString(4, dto.getCamRevcontent());
+			pstmt.setString(2, dto.getCamname());
+			pstmt.setString(3, dto.getUserId());
+			pstmt.setString(4, dto.getCamRevsubject());
+			pstmt.setString(5, dto.getCamRevcontent());
 			
 			pstmt.executeUpdate();
 			
@@ -297,7 +298,7 @@ public class ReviewsDAO {
 			String sql;
 
 			try {
-				sql = "SELECT b.camRevnum, b.userId, userNickName, userName, camRevsubject, camRevcontent, "
+				sql = "SELECT b.camRevnum, b.userId, userNickName, userName, camRevsubject, camname, camRevcontent, "
 						+ " camRevregdate, camRevhitCount, NVL(reviewsLikeCount, 0) reviewsLikeCount "
 						+ " FROM campreviews b "
 						+ " JOIN member m ON b.userId=m.userId "
@@ -320,6 +321,7 @@ public class ReviewsDAO {
 					dto.setUserName(rs.getString("userName"));
 					dto.setUserNickName(rs.getString("userNickName"));
 					dto.setCamRevsubject(rs.getString("camRevsubject"));
+					dto.setCamname(rs.getString("camname"));
 					dto.setCamRevcontent(rs.getString("camRevcontent"));
 					dto.setCamRevhitcount(rs.getInt("camRevhitCount"));
 					dto.setCamRevregdate(rs.getString("camRevregdate"));
