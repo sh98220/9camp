@@ -862,10 +862,7 @@ public class MyPageServlet extends MyServlet {
 			dao.confineMember(userId, content, endDate);
 
 			
-			List<MyPageDTO> list = dao.listMember(userId);
-			
-			System.out.println(list);
-			
+			dao.listMember(userId);
 			
 			req.setAttribute("userId", userId);
 			req.setAttribute("content", content);
