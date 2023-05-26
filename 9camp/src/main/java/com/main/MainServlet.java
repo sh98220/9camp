@@ -50,7 +50,7 @@ public class MainServlet extends MyServlet {
 		String condition = req.getParameter("condition");
 		String keyword = req.getParameter("keyword");
 	
-        // String[] keys = req.getParameterValues("key"); // 키워드명 배열로 받기
+        String[] keys = req.getParameterValues("key"); // 키워드명 배열로 받기
        
  
 		if(condition == null) {
@@ -84,24 +84,20 @@ public class MainServlet extends MyServlet {
 		
 		List<CampInfoDTO> listimage = null;
 		if(keyword.length() == 0) {
-			listimage = dao.listPhoto(offset, size);
+			if(keys == null || keys.length == 0) {
+				listimage = dao.listPhoto(offset, size);
+			} else {
+				// 키워드로 검색
+				listimage = dao.listPhoto(keys, offset, size);
+			}
 		} else {
 			listimage = dao.listPhoto(offset, size, condition, keyword);
 		}
-		
-		// 키워드로 검색
-		// listimage = dao.listPhoto(keys, offset, size);
-		
-		
-		
 		
 		String query = "";
 		if(keyword.length() != 0) {
 			query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");
 		}
-		
-		// 키워드로 검색
-		
 		
 		
 		for(CampInfoDTO dto : listimage) {
@@ -109,8 +105,6 @@ public class MainServlet extends MyServlet {
 			dto.setCamInfoAddr(dto.getCamInfoAddr().substring(0, dto.getCamInfoAddr().indexOf(' ', dto.getCamInfoAddr().indexOf((' ') ) + 1 ) )  );
 		}
 	
-		
-		
 		// 메인화면 -  이런 캠핑장은 어떄요?
 		List<CampInfoDTO> images = new ArrayList<>();
 		
@@ -135,9 +129,6 @@ public class MainServlet extends MyServlet {
 				images.add(listimage.get(nn[i]));
 			}
 		}
-		
-		
-		
 		
 		String listUrl = cp + "/campInfo/list.do";
 		String articleUrl = cp + "/campInfo/article.do?page=" + current_page;
