@@ -14,6 +14,15 @@
 	max-width: 700px;
 }
 
+.table { width: 69%; border-spacing: 0; border-collapse: collapse; margin-left: 56%; margin-top: 10px;}
+.table th, .table td { padding-top: 10px; padding-bottom: 10px; }
+
+.table-border thead > tr { border-top: 2px solid #666; border-bottom: 1px solid #666; }
+.table-border tbody > tr { border-bottom: 1px solid #ff5522; }
+.td-border td { border: 1px solid #ced4da; }
+
+tr.hover:hover { cursor: pointer; background: #f5fffa; }
+
 .table-list thead > tr:first-child { background: #f8f8f8; }
 .table-list th, .table-list td { text-align: center; }
 
@@ -28,6 +37,59 @@
 .table-list .addr { width: 150px; color: #787878; }
 
 .table-list input[type=checkbox] { vertical-align: middle; }
+
+.container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+
+}
+
+.page-navigation {
+    clear: both;
+    padding: 20px 0;
+    text-align: center;
+    margin-left: 80%;
+}
+
+/* body-container */
+.body-container {
+	min-height: 500px;
+}
+
+.body-title {
+    display: block;
+    position: relative;
+    width: 36%;
+    margin: 0 auto;
+}
+
+.body-title h2 {
+    font-size: 24px;
+    min-width: 300px;
+    font-family:"Malgun Gothic", "맑은 고딕", NanumGothic, 나눔고딕, 돋움, sans-serif;
+    color: #ff5522;
+    font-weight: 700;
+    padding-bottom: 10px;
+    display: inline-block;
+    margin: 0 0 -7px 0;
+    border-bottom: 3px solid #ff5522;
+}
+
+
+.body-main {
+	display: block;
+	padding-bottom: 40px;
+}
+
+.inner-page{
+	display: block;
+	padding-top: 35px;
+}
+
+
 </style>
 
 <script type="text/javascript">
@@ -73,7 +135,7 @@ function searchList() {
 					</tr>
 				</table>
 				
-				<table class="table table-border table-list">
+				<table class="table table-border table-list mateList">
 					<thead>
 						<tr>
 							<th class="num">닉네임</th>
