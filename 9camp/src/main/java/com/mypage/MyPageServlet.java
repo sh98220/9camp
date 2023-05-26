@@ -858,25 +858,13 @@ public class MyPageServlet extends MyServlet {
 			if (content.length() == 0 ) {
 				content = " ";
 			}
-
-			dao.cofineMember(userId, content, endDate);
+			
+			dao.confineMember(userId, content, endDate);
 
 			
 			List<MyPageDTO> list = dao.listMember(userId);
 			
 			System.out.println(list);
-			
-			
-			/*for(MyPageDTO dto : list) {
-				int contentLength = dto.getCamInfoContent().length();
-				if (contentLength > 20) {
-					contentLength = 20;
-					dto.setCamInfoContent(dto.getCamInfoContent().substring(0, contentLength) + "...");
-				}
-			}*/
-			
-			
-			
 			
 			
 			req.setAttribute("userId", userId);

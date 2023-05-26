@@ -1501,7 +1501,7 @@ public class MyPageDAO {
 	
 
 	//테이블에 데이터가 있으면 해당 데이터 수정, 없으면 새로운 데이터 추가
-	public void cofineMember(String userId, String content, String endDate) throws SQLException {
+	public void confineMember(String userId, String content, String endDate) throws SQLException {
 		PreparedStatement pstmt = null;
 		StringBuilder sb = new StringBuilder();
 		

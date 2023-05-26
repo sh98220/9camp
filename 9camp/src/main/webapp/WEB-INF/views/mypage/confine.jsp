@@ -295,31 +295,6 @@
 </footer>
 
 <script type="text/javascript">
-/*
-$(function () {
-	$("#who").keyup(function(event) {		
-		const searchWord = $("#who").val();
-		$.ajax({
-   			url:"autocomplete.jsp"
-   			,dataType:"json"
-   			,type:"get"
-   			,data:searchWord
-   			,cache:false 
-   			,success:function(data){  //["JAMES","JONES"]
-   				//alert(data);
-   				$( "#who" ).autocomplete({
-   			      source: data //검색한 값이 소스로 들어가도록
-   			    });
-   			}
-		    ,error: function() {
-				//alert("에러");
-			}
-   		});//ajax
-		
-		
-	}); //keyup
-});
-*/
 
 $(function(){
 	$("#modal-confirm").click(function(){
@@ -343,10 +318,17 @@ function sendOk() {
 	const f = document.msgForm;
 	let date = document.querySelector("#restEndDate");
 	let str;
+	let ad = document.querySelector("#who").value;
 	
 	str = f.userId.value.trim();
 	if(!str) {
 	    alert("아이디를 입력하세요. ");
+	    f.userId.focus();
+		return;
+	}
+	
+	if(ad = 'admin') {
+	    alert("관리자 자신에게는 할 수 없습니다.");
 	    f.userId.focus();
 		return;
 	}
