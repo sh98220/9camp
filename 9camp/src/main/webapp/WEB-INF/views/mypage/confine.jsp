@@ -317,6 +317,7 @@ $(function(){
 function sendOk() {
 	const f = document.msgForm;
 	let date = document.querySelector("#restEndDate");
+	let end = document.querySelector("#endDate").value;
 	let str;
 	let ad = document.querySelector("#who").value;
 	
@@ -327,7 +328,7 @@ function sendOk() {
 		return;
 	}
 	
-	if(ad = 'admin') {
+	if(ad === 'admin') {
 	    alert("관리자 자신에게는 할 수 없습니다.");
 	    f.userId.focus();
 		return;
@@ -339,6 +340,15 @@ function sendOk() {
 		alert("날짜를 입력하세요.")
 		return;
 	}
+	
+	if(!end){
+		if (!confirm('이미 정지된 회원입니다. 수정하시겠습니까?')) {
+		     return
+		   }
+	}
+	
+	
+	
 	
 	let today = new Date();
 
